@@ -38,6 +38,8 @@ useSeoMeta({
         :light="global.picture?.light!"
         :dark="global.picture?.dark!"
         :alt="global.picture?.alt!"
+        size="2xl"
+
       />
     </UPageHero>
     <UPageSection

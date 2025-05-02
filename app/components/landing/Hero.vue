@@ -178,13 +178,15 @@ defineProps<{
           delay: index * 0.1
         }"
       >
+      <NuxtLink :to="img.link ?? '#'">
         <img
-          width="234"
-          height="234"
-          class="rounded-lg"
-          :class="index % 2 === 0 ? '-rotate-2' : 'rotate-2'"
-          v-bind="img"
+        width="234"
+        height="234"
+        class="rounded-lg"
+        :class="index % 2 === 0 ? '-rotate-2' : 'rotate-2'"
+        v-bind="img"
         >
+      </NuxtLink>
       </Motion>
     </UPageMarquee>
   </UPageHero>

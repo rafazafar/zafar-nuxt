@@ -1,59 +1,42 @@
-# Nuxt Portfolio Template
+# Zafar.dev - Personal Website
 
-[![Nuxt UI Pro](https://img.shields.io/badge/Made%20with-Nuxt%20UI%20Pro-00DC82?logo=nuxt&labelColor=020420)](https://ui.nuxt.com/pro)
-[![Deploy to NuxtHub](https://img.shields.io/badge/Deploy%20to-NuxtHub-00DC82?logo=nuxt&labelColor=020420)](https://hub.nuxt.com/new?repo=nuxt-ui-pro/portfolio)
+[![Built with Nuxt](https://img.shields.io/badge/Built%20with-Nuxt-00DC82?logo=nuxt&labelColor=020420)](https://nuxt.com)
 
-Use this template to create your own portfolio with [Nuxt UI Pro](https://ui.nuxt.com/pro).
+This is the source code for my personal website [zafar.dev](https://zafar.dev), showcasing my work, experience, and thoughts on technology.
 
-- [Live demo](https://portfolio-template.nuxt.dev/)
-- [Documentation](https://ui.nuxt.com/getting-started/installation/pro/nuxt)
+## About Me
 
-<a href="https://portfolio-template.nuxt.dev/" target="_blank">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://assets.hub.nuxt.com/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJodHRwczovL3BvcnRmb2xpby10ZW1wbGF0ZS5udXh0LmRldiIsImlhdCI6MTc0NTkzNDczMX0.XDWnQoyVy3XVtKQD6PLQ8RFUwr4yr1QnVwPxRrjCrro.jpg?theme=dark">
-    <source media="(prefers-color-scheme: light)" srcset="https://assets.hub.nuxt.com/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJodHRwczovL3BvcnRmb2xpby10ZW1wbGF0ZS5udXh0LmRldiIsImlhdCI6MTc0NTkzNDczMX0.XDWnQoyVy3XVtKQD6PLQ8RFUwr4yr1QnVwPxRrjCrro.jpg?theme=light">
-    <img alt="Nuxt Portfolio Template" src="https://assets.hub.nuxt.com/eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJodHRwczovL3BvcnRmb2xpby10ZW1wbGF0ZS5udXh0LmRldiIsImlhdCI6MTc0NTkzNDczMX0.XDWnQoyVy3XVtKQD6PLQ8RFUwr4yr1QnVwPxRrjCrro.jpg">
-  </picture>
-</a>
+I'm Zafar, a multi-industry code deleter and product-focused developer based in Tokyo, Japan. I specialize in creating useful and impactful products that make a real difference in people's lives.
 
-## Quick Start
+With experience in designing, simplifying, building, and scaling solutions for startups using first-principle thinking, I've developed a strong track record of success in achieving clients' goals and objectives.
 
-```bash [Terminal]
-npx nuxi init -t github:nuxt-ui-pro/portfolio
-```
+## My Approach
 
-## Setup
+- Iterate fast, iterate often, and don't stop iterating
+- Never say no, just dwell on it for a good moment
+- Communication is key, there is no room for ego in pursuit of excellence
 
-Make sure to install the dependencies:
+## Technical Stack
+
+This website is built with:
+
+- [Nuxt 3](https://nuxt.com) - The Vue.js Framework
+- [Nuxt UI](https://ui.nuxt.com) - UI components for Nuxt
+- [Nuxt Content](https://content.nuxt.com) - Content management
+
+## Development
 
 ```bash
+# Install dependencies
 pnpm install
-```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
+# Start development server
 pnpm dev
-```
 
-## Production
-
-Build the application for production:
-
-```bash
+# Build for production
 pnpm build
 ```
 
-Locally preview production build:
+## Contact
 
-```bash
-pnpm preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
-
-## Renovate integration
-
-Install [Renovate GitHub app](https://github.com/apps/renovate/installations/select_target) on your repository and you are good to go.
+Feel free to reach out to me at [hello@zafar.dev](mailto:hello@zafar.dev) if you'd like to collaborate or have any questions.
