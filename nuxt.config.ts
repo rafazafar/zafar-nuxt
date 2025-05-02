@@ -28,7 +28,19 @@ export default defineNuxtConfig({
         '/'
       ],
       crawlLinks: true
+    },
+    experimental:{
+      openAPI: true
+    },
+    openAPI: {
+      production: 'runtime',
+      ui: {
+        scalar: {
+          theme: 'purple'
+        }
+      }
     }
+    
   },
 
   eslint: {
