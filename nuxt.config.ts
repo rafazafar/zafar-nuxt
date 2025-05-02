@@ -36,7 +36,7 @@ export default defineNuxtConfig({
       production: 'runtime',
       ui: {
         scalar: {
-          theme: 'purple'
+          theme: 'cyan'
         }
       }
     }

@@ -18,6 +18,8 @@ useHead({
 })
 
 useSeoMeta({
+  ogImage: 'https://r2.zafar.dev/img/web-og.png',
+  ogDescription: 'My primary focus is on creating useful and impactful products that make a real difference in people\'s lives. Over the course of my career, I gained extensive experience in designing, simplifying, coding and scaling various processes and solutions for startups, which has helped me develop a strong track record of success in achieving clients\' goals and objectives.',
   titleTemplate: '%s - Zafar Portfolio',
   twitterCard: 'summary_large_image'
 })
