@@ -29,6 +29,9 @@ hero:
     - src: "https://r2.zafar.dev/img/building-blocks.png"
       link: "/projects"
       alt: "Building Blocks"
+    - src: "https://cover.sli.dev"
+      link: "/projects"
+      alt: "Random"
 about:
   title: "About Me"
   description: |

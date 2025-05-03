@@ -85,15 +85,19 @@ useSeoMeta({
           </template>
           <template #footer>
             <ULink
+              v-if="project.url"
               :to="project.url"
               class="text-sm text-primary flex items-center"
             >
-              View Project
+              {{ project.alt ?? 'View Project' }}
               <UIcon
                 name="i-lucide-arrow-right"
                 class="size-4 text-primary transition-all opacity-0 group-hover:translate-x-1 group-hover:opacity-100"
               />
             </ULink>
+            <p v-else-if="project.alt" class="text-sm text-muted">
+              {{ project.alt }}
+            </p>
           </template>
           <img
             :src="project.image"

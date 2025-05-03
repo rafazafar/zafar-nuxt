@@ -25,7 +25,7 @@ export default defineAppConfig({
     }
   },
   footer: {
-    credits: `Copyright © ${new Date().getFullYear()}`,
+    credits: `Copyright © Zafar`,
     colorMode: false,
     links: [
       {

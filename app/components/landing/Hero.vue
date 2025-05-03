@@ -107,7 +107,7 @@ defineProps<{
         >
           <UButton v-bind="page.hero.links[0]" />
           <UButton
-            :color="global.available ? 'success' : 'error'"
+            :color="global.available ? 'primary' : 'error'"
             variant="ghost"
             class="gap-2"
             :to="global.available ? global.meetingLink : ''"
@@ -117,11 +117,11 @@ defineProps<{
               <span class="relative flex size-2">
                 <span
                   class="absolute inline-flex size-full rounded-full opacity-75"
-                  :class="global.available ? 'bg-success animate-ping' : 'bg-error'"
+                  :class="global.available ? 'bg-primary animate-ping' : 'bg-error'"
                 />
                 <span
                   class="relative inline-flex size-2 scale-90 rounded-full"
-                  :class="global.available ? 'bg-success' : 'bg-error'"
+                  :class="global.available ? 'bg-primary' : 'bg-error'"
                 />
               </span>
             </template>
