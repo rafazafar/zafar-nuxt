@@ -38,14 +38,14 @@ export default defineNuxtSchema({
               title: 'Dark mode',
               description: 'Your profile picture in dark mode.',
               icon: 'lucide:moon',
-              default: 'https://r2.zafar.dev/img/hisoka.jpg'
+              default: 'https://r2.zafar.dev/img/lei.png'
             }),
             light: field({
               type: 'string',
               title: 'Light mode',
               description: 'Your profile picture in light mode.',
               icon: 'lucide:sun',
-              default: 'https://r2.zafar.dev/img/hisoka.jpg'
+              default: 'https://r2.zafar.dev/img/lei.png'
             }),
             alt: field({
               type: 'string',
