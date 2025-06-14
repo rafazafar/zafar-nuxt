@@ -27,5 +27,6 @@
   "devDependencies": {
     "@nuxt/eslint": "^1.4.1",
     "eslint": "^9.29.0"
-  }
+  },
+  "packageManager": "pnpm@10.11.0"
 }
