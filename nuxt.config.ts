@@ -23,6 +23,19 @@ export default defineNuxtConfig({
   compatibilityDate: "2025-04-01",
 
   nitro: {
+    compatibilityDate: "2024-09-19",
+    preset: "cloudflare_module",
+    cloudflare: {
+      deployConfig: true,
+      nodeCompat: true,
+      wrangler: {
+        observability: {
+          logs: {
+            enabled: true
+          }
+        }
+      }
+    },
     routeRules: {
       "/blog/*": { ssr: false, static: true },
     },
