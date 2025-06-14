@@ -23,8 +23,10 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
 
   nitro: {
+    preset: "cloudflare-module",
     routeRules: {
-      "/blog/**": { static: true },
+      "/blog/**": { ssr: false },
+      "/blog/*": { ssr: false },
     },
     prerender: {
       routes: ["/", "/blog"],
