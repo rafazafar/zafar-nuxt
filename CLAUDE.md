@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a personal portfolio website built with Nuxt 3, showcasing Zafar's work, experience, and blog posts. The site is configured for deployment on Cloudflare with static site generation for blog content.
+This is a personal portfolio website built with Nuxt 4, showcasing Zafar's work, experience, and blog posts. The site is configured for deployment on Cloudflare with static site generation for blog content.
 
 ## Development Commands
 
@@ -39,7 +39,7 @@ This is a personal portfolio website built with Nuxt 3, showcasing Zafar's work,
 - `server/` - Server-side code
 
 ### Key Technologies
-- **Nuxt 3** with compatibility version 4
+- **Nuxt 4** (upgraded from v3 with full v4 support)
 - **Nuxt UI Pro** for UI components
 - **Nuxt Content** for content management with structured collections
 - **Nuxt Image** for optimized images

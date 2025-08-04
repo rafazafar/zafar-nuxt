@@ -22,7 +22,7 @@
     "@vueuse/nuxt": "^13.3.0",
     "better-sqlite3": "^11.10.0",
     "motion-v": "^1.2.1",
-    "nuxt": "^3.17.5",
+    "nuxt": "^4.0.0",
     "nuxt-og-image": "^5.1.6"
   },
   "devDependencies": {
