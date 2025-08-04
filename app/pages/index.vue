@@ -3,7 +3,13 @@ const { locale } = useI18n()
 
 const { data: page } = await useAsyncData(`index-${locale.value}`, async () => {
   const collection = `content_${locale.value}` as keyof Collections
-  return await queryCollection(collection).path('/index').first()
+  const allContent = await queryCollection(collection).all()
+  // Look for index.yml specifically
+  return allContent.find(item => 
+    item._source?.includes('index.yml') || 
+    item.title?.includes("Hey, I'm Zafar") ||
+    (item._path && !item._path.includes('/blog/') && !item._path.includes('/projects/'))
+  )
 })
 
 if (!page.value) {
@@ -15,10 +21,10 @@ if (!page.value) {
 }
 
 useSeoMeta({
-  title: page.value?.seo.title || page.value?.title,
-  ogTitle: page.value?.seo.title || page.value?.title,
-  description: page.value?.seo.description || page.value?.description,
-  ogDescription: page.value?.seo.description || page.value?.description
+  title: page.value?.seo?.title || page.value?.title,
+  ogTitle: page.value?.seo?.title || page.value?.title,
+  description: page.value?.seo?.description || page.value?.description,
+  ogDescription: page.value?.seo?.description || page.value?.description
 })
 </script>
 
