@@ -15,7 +15,8 @@ if (!page.value) {
 
 const { data: projects } = await useAsyncData(`projects-${locale.value}`, async () => {
   const collection = `content_${locale.value}` as keyof Collections
-  return await queryCollection(collection).where('_path', { $contains: '/projects/' }).all()
+  const allContent = await queryCollection(collection).all()
+  return allContent.filter(item => item._path?.includes('/projects/'))
 })
 
 const { global } = useAppConfig()

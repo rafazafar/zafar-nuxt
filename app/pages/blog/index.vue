@@ -14,7 +14,8 @@ if (!page.value) {
 }
 const { data: posts } = await useAsyncData(`blogs-${locale.value}`, async () => {
   const collection = `content_${locale.value}` as keyof Collections
-  return await queryCollection(collection).where('_path', { $contains: '/blog/' }).order('date', 'DESC').all()
+  const allContent = await queryCollection(collection).all()
+  return allContent.filter(item => item._path?.includes('/blog/')).sort((a, b) => new Date(b.date) - new Date(a.date))
 })
 if (!posts.value) {
   throw createError({
