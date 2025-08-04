@@ -1,8 +1,6 @@
 ---
-title: Write better Typescript and less Unit Testing
-description: Why designing digital experiences that encourage users to slow down
-  and engage deeply can lead to more meaningful interactions and better
-  outcomes.
+title: Schreiben Sie besseres Typescript und weniger Unit-Tests
+description: Warum das Entwerfen digitaler Erlebnisse, die Benutzer dazu anregen, langsamer zu werden und sich intensiv zu engagieren, zu bedeutungsvolleren Interaktionen und besseren Ergebnissen führen kann.
 date: 2025-01-28
 image: https://images.pexels.com/photos/4050314/pexels-photo-4050314.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1
 minRead: 7
@@ -12,26 +10,26 @@ author:
     src: https://r2.zafar.dev/img/profile.jpg
     alt: Zafar
 ---
-I’ve found that using strong and well-defined TypeScript typings can greatly reduce the need for extensive unit testing. While testing is an essential part of software development, it can, no, it will often be time-consuming and can slow down the development process tremendously. With well-typed code, we prevent many errors before they even happen.
+Ich habe festgestellt, dass die Verwendung starker und gut definierter TypeScript-Typisierungen den Bedarf an umfangreichen Unit-Tests erheblich reduzieren kann. Während das Testen ein wesentlicher Bestandteil der Softwareentwicklung ist, kann es, nein, es wird oft zeitaufwändig sein und den Entwicklungsprozess enorm verlangsamen. Mit gut typisiertem Code verhindern wir viele Fehler, bevor sie überhaupt auftreten.
 
-By doing so, we can catch a lot of errors at compile-time, before they make it to testing/production. This not only saves time and effort, but it also makes our code more reliable and easier to maintain.
+Dadurch können wir viele Fehler zur Kompilierungszeit abfangen, bevor sie zum Testen/in die Produktion gelangen. Dies spart nicht nur Zeit und Mühe, sondern macht unseren Code auch zuverlässiger und einfacher zu warten.
 
-That being said, I don’t want to suggest that testing is not important. On the contrary, unit testing is still a crucial part of software development. However, by using TypeScript, we can reduce the amount of testing that needs to be done.
+Das heißt nicht, dass ich andeuten möchte, dass Testen nicht wichtig ist. Im Gegenteil, Unit-Testing ist immer noch ein entscheidender Teil der Softwareentwicklung. Durch die Verwendung von TypeScript können wir jedoch die Menge der durchzuführenden Tests reduzieren.
 
-Remember, the ratio between the production code and the test code could be anywhere between 1:1 and 1:3.
+Denken Sie daran, das Verhältnis zwischen dem Produktionscode und dem Testcode kann zwischen 1:1 und 1:3 liegen.
 
-> *Tests are good; impossible states are better — Richard Feldman*
+> *Tests sind gut; unmögliche Zustände sind besser – Richard Feldman*
 
-In addition, TypeScript allows us to use the concept of “impossible states.” Impossible states are states that are impossible to reach because they are prevented by our typings. By using it, we can eliminate a lot of unnecessary testing, as we know that these states can never happen, and therefore, don’t need to be tested.
+Darüber hinaus ermöglicht uns TypeScript die Verwendung des Konzepts der „unmöglichen Zustände“. Unmögliche Zustände sind Zustände, die unmöglich zu erreichen sind, da sie durch unsere Typisierungen verhindert werden. Durch die Verwendung können wir viele unnötige Tests eliminieren, da wir wissen, dass diese Zustände niemals eintreten können und daher nicht getestet werden müssen.
 
 ---
 
-Heres common examples of how using better TypeScript typings in React can be more efficient than extensive unit testing:
+Hier sind häufige Beispiele dafür, wie die Verwendung besserer TypeScript-Typisierungen in React effizienter sein kann als umfangreiche Unit-Tests:
 
-## 1. Type-checking props and state
-In React, components often receive props and manage their own state. Without TypeScript, it can be difficult to ensure that the correct data types are being used for props and state. This can lead to runtime errors and a need for extensive unit testing.
+## 1. Typüberprüfung von Props und State
+In React empfangen Komponenten häufig Props und verwalten ihren eigenen Zustand. Ohne TypeScript kann es schwierig sein sicherzustellen, dass die richtigen Datentypen für Props und State verwendet werden. Dies kann zu Laufzeitfehlern und einem Bedarf an umfangreichen Unit-Tests führen.
 
-With TypeScript, however, we can define interfaces for our props and state, which can catch errors at compile-time and eliminate the need for some unit tests. For example:
+Mit TypeScript können wir jedoch Schnittstellen für unsere Props und unseren State definieren, die Fehler zur Kompilierungszeit abfangen und die Notwendigkeit einiger Unit-Tests eliminieren können. Zum Beispiel:
 
 ```ts
 interface Props {
@@ -49,9 +47,9 @@ class MyComponent extends React.Component<Props, State> {
 }
 ```
 
-By defining these interfaces, we can ensure that the correct data types are being used for our props and state, which can catch errors at compile-time and make our code more reliable.
+Durch die Definition dieser Schnittstellen können wir sicherstellen, dass die richtigen Datentypen für unsere Props und unseren State verwendet werden, was Fehler zur Kompilierungszeit abfangen und unseren Code zuverlässiger machen kann.
 
-Instead of :
+Anstatt von :
 
 ```ts
 it('renders with correct props', () => {
@@ -65,11 +63,11 @@ it('renders with correct state', () => {
 });
 ```
 
-## 2. Defining event handlers
+## 2. Definieren von Event-Handlern
 
-Event handlers are often used to handle user interactions, such as clicks or form submissions. Without TypeScript, it can be difficult to ensure that event handlers are defined correctly and handle the correct types of events.
+Event-Handler werden häufig verwendet, um Benutzerinteraktionen wie Klicks oder Formularübermittlungen zu behandeln. Ohne TypeScript kann es schwierig sein sicherzustellen, dass Event-Handler korrekt definiert sind und die richtigen Arten von Ereignissen behandeln.
 
-With TypeScript, however, we can define types for our event handlers, which can catch errors at compile-time and eliminate the need for some unit tests. For example:
+Mit TypeScript können wir jedoch Typen für unsere Event-Handler definieren, die Fehler zur Kompilierungszeit abfangen und die Notwendigkeit einiger Unit-Tests eliminieren können. Zum Beispiel:
 
 ```ts
 interface MyComponentProps {
@@ -83,9 +81,9 @@ function MyComponent(props: MyComponentProps) {
 }
 ```
 
-By defining the onClick prop with a type that includes the React.MouseEvent type, we can ensure that the event handler is defined correctly and handles the correct types of events, which can make our code more reliable and reduce the need for unit tests.
+Durch die Definition der onClick-Prop mit einem Typ, der den React.MouseEvent-Typ enthält, können wir sicherstellen, dass der Event-Handler korrekt definiert ist und die richtigen Arten von Ereignissen behandelt, was unseren Code zuverlässiger machen und den Bedarf an Unit-Tests reduzieren kann.
 
-Without TypeScript typings, we would need to write unit tests to ensure that event handlers are defined correctly and handle the correct types of events.
+Ohne TypeScript-Typisierungen müssten wir Unit-Tests schreiben, um sicherzustellen, dass Event-Handler korrekt definiert sind und die richtigen Arten von Ereignissen behandeln.
 
 ```ts
 it('calls onClick handler when button is clicked', () => {
@@ -96,13 +94,13 @@ it('calls onClick handler when button is clicked', () => {
 });
 ```
 
-## 3. Type-checking external APIs
+## 3. Typüberprüfung externer APIs
 
-For any app/webapp it’s common to use external APIs, such as REST APIs or GraphQL APIs, to retrieve data for our components. Without TypeScript, it can be difficult to ensure that the correct data types are being used throughout the app. This makes refactoring code an absolute nightmare.
+Für jede App/Web-App ist es üblich, externe APIs wie REST-APIs oder GraphQL-APIs zu verwenden, um Daten für unsere Komponenten abzurufen. Ohne TypeScript kann es schwierig sein sicherzustellen, dass die richtigen Datentypen in der gesamten App verwendet werden. Dies macht das Refactoring von Code zu einem absoluten Albtraum.
 
-Using types, Backend/API developers will also be less restricted knowing the frontend can quickly grab the new DTO and quckly update frontend code. This ensure less legacy bloat and faster development cycle.
+Durch die Verwendung von Typen sind Backend-/API-Entwickler auch weniger eingeschränkt, da sie wissen, dass das Frontend das neue DTO schnell abrufen und den Frontend-Code schnell aktualisieren kann. Dies gewährleistet weniger Legacy-Ballast und einen schnelleren Entwicklungszyklus.
 
-For example:
+Zum Beispiel:
 ```ts
 interface UserDto {
   id: number;
@@ -117,9 +115,9 @@ async function fetchUser(id: number): Promise<UserDto> {
 }
 ```
 
-By defining the User interface for the API response, we can ensure that the correct data types are being used for the API response, which can catch errors at compile-time and make our code more reliable.
+Durch die Definition der User-Schnittstelle für die API-Antwort können wir sicherstellen, dass die richtigen Datentypen für die API-Antwort verwendet werden, was Fehler zur Kompilierungszeit abfangen und unseren Code zuverlässiger machen kann.
 
-Without TS , we would need to write unit tests to ensure that the correct data types are being used for the API responses. For example:
+Ohne TS müssten wir Unit-Tests schreiben, um sicherzustellen, dass die richtigen Datentypen für die API-Antworten verwendet werden. Zum Beispiel:
 
 ```ts
 it('fetches user data and returns the correct object', async () => {
@@ -131,10 +129,10 @@ it('fetches user data and returns the correct object', async () => {
 ```
 
 
-## 4. Type-checking Redux actions
-When using Redux to manage state in a web application, it’s important to ensure that the actions are well-typed and consistent. Without TypeScript, we might need to write extensive unit tests to ensure that the actions are being dispatched correctly and handling errors appropriately.
+## 4. Typüberprüfung von Redux-Aktionen
+Bei der Verwendung von Redux zur Verwaltung des Zustands in einer Webanwendung ist es wichtig sicherzustellen, dass die Aktionen gut typisiert und konsistent sind. Ohne TypeScript müssten wir möglicherweise umfangreiche Unit-Tests schreiben, um sicherzustellen, dass die Aktionen korrekt versendet werden und Fehler angemessen behandeln.
 
-Instead, we can define interfaces for our Redux actions. For example:
+Stattdessen können wir Schnittstellen für unsere Redux-Aktionen definieren. Zum Beispiel:
 
 ```ts
 interface User {
@@ -165,8 +163,8 @@ function fetchUser(id: number): UserAction {
 }
 ```
 
-By defining the UserAction interface for the Redux actions, we can ensure that the actions are well-typed and consistent, which can catch errors at compile-time and make our code more reliable.
+Durch die Definition der UserAction-Schnittstelle für die Redux-Aktionen können wir sicherstellen, dass die Aktionen gut typisiert und konsistent sind, was Fehler zur Kompilierungszeit abfangen und unseren Code zuverlässiger machen kann.
 
-In summary, using better TypeScript typings will help catch errors at compile-time, make our code more reliable, and eliminate the need for some unit tests. By ensuring that the correct data types are being used for props, state, event handlers, and API responses, we can reduce cost and make ship happen faster
+Zusammenfassend lässt sich sagen, dass die Verwendung besserer TypeScript-Typisierungen dazu beiträgt, Fehler zur Kompilierungszeit abzufangen, unseren Code zuverlässiger zu machen und die Notwendigkeit einiger Unit-Tests zu eliminieren. Indem wir sicherstellen, dass die richtigen Datentypen für Props, State, Event-Handler und API-Antworten verwendet werden, können wir Kosten senken und die Auslieferung beschleunigen.
 
-Important Note: Please dont block testing/preview CICD just because of Type errors. Blocking main or production sure but dont slowdown developers testing prematurely. Happy coding!
+Wichtiger Hinweis: Bitte blockieren Sie das Testen/die Vorschau von CICD nicht nur wegen Typfehlern. Das Blockieren von Main oder Produktion ist sicher, aber verlangsamen Sie das Testen von Entwicklern nicht vorzeitig. Viel Spaß beim Codieren!

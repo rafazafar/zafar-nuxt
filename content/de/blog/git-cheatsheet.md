@@ -1,6 +1,6 @@
 ---
-title: "Git Cheatsheet: Essential Commands for Developers"
-description: A comprehensive reference guide to Git commands and workflows for developers of all experience levels, with tips to avoid common mistakes.
+title: "Git-Spickzettel: Wichtige Befehle für Entwickler"
+description: Eine umfassende Referenzanleitung zu Git-Befehlen und -Workflows für Entwickler aller Erfahrungsstufen, mit Tipps zur Vermeidung häufiger Fehler.
 date: 2022-04-23
 image: https://images.unsplash.com/photo-1556075798-4825dfaaf498?q=80&w=800
 minRead: 5
@@ -11,74 +11,74 @@ author:
     alt: Zafar
 ---
 
-## Basic Commands
+## Grundlegende Befehle
 
-- `git init`: Initialize a new Git repository
-- `git clone <repository>`: Clone an existing repository
-- `git add <file>`: Add a file to the staging area
-- `git commit -m "<message>"`: Commit changes with a message
-- `git push`: Push changes to the remote repository
-- `git pull`: Pull changes from the remote repository
-- `git status`: Check the status of the repository
+- `git init`: Initialisiert ein neues Git-Repository
+- `git clone <repository>`: Klont ein vorhandenes Repository
+- `git add <file>`: Fügt eine Datei zum Staging-Bereich hinzu
+- `git commit -m "<message>"`: Überträgt Änderungen mit einer Nachricht
+- `git push`: Pusht Änderungen in das Remote-Repository
+- `git pull`: Holt Änderungen aus dem Remote-Repository
+- `git status`: Überprüft den Status des Repositorys
 
 ## Branching
 
-- `git branch <branch>`: Create a new branch
-- `git checkout <branch>`: Switch to a different branch
-- `git merge <branch>`: Merge a branch into the current branch
-- `git branch -d <branch>`: Delete a branch
+- `git branch <branch>`: Erstellt einen neuen Branch
+- `git checkout <branch>`: Wechselt zu einem anderen Branch
+- `git merge <branch>`: Führt einen Branch in den aktuellen Branch zusammen
+- `git branch -d <branch>`: Löscht einen Branch
 
-## Other Useful Commands
+## Andere nützliche Befehle
 
-- `git log`: View the commit history
-- `git diff`: View the changes made in the repository
-- `git reset <file>`: Unstage a file
-- `git stash`: Save changes temporarily
-- `git stash pop`: Restore the most recently stashed changes
+- `git log`: Zeigt den Commit-Verlauf an
+- `git diff`: Zeigt die im Repository vorgenommenen Änderungen an
+- `git reset <file>`: Macht das Staging einer Datei rückgängig
+- `git stash`: Speichert Änderungen vorübergehend
+- `git stash pop`: Stellt die zuletzt zwischengespeicherten Änderungen wieder her
 
-## Basic Workflow
+## Grundlegender Workflow
 
-1. Make changes to your local repository: Create or edit files, add them to the staging area using `git add`, and then commit the changes using `git commit`.
-2. Push your changes to the remote repository: Use `git push` to send your committed changes to the remote repository.
-3. Update your local repository with changes from the remote repository: Use `git pull` to fetch and merge changes from the remote repository into your local repository.
+1. Nehmen Sie Änderungen an Ihrem lokalen Repository vor: Erstellen oder bearbeiten Sie Dateien, fügen Sie sie mit `git add` zum Staging-Bereich hinzu und übertragen Sie die Änderungen dann mit `git commit`.
+2. Pushen Sie Ihre Änderungen in das Remote-Repository: Verwenden Sie `git push`, um Ihre übertragenen Änderungen an das Remote-Repository zu senden.
+3. Aktualisieren Sie Ihr lokales Repository mit Änderungen aus dem Remote-Repository: Verwenden Sie `git pull`, um Änderungen aus dem Remote-Repository abzurufen und in Ihr lokales Repository zusammenzuführen.
 
-## Branching Workflow
+## Branching-Workflow
 
-1. Create a new branch: Use `git branch <branch>` to create a new branch.
-2. Switch to the new branch: Use `git checkout <branch>` to switch to the new branch.
-3. Make changes and commit them as usual.
-4. Merge the branch into the main branch: When you are ready to incorporate the changes from your new branch into the main branch (usually master), switch back to the main branch using `git checkout <branch>` and then use `git merge <branch>` to merge the changes from your new branch into the main branch.
+1. Erstellen Sie einen neuen Branch: Verwenden Sie `git branch <branch>`, um einen neuen Branch zu erstellen.
+2. Wechseln Sie zum neuen Branch: Verwenden Sie `git checkout <branch>`, um zum neuen Branch zu wechseln.
+3. Nehmen Sie Änderungen vor und übertragen Sie sie wie gewohnt.
+4. Führen Sie den Branch in den Haupt-Branch zusammen: Wenn Sie bereit sind, die Änderungen aus Ihrem neuen Branch in den Haupt-Branch (normalerweise Master) zu übernehmen, wechseln Sie mit `git checkout <branch>` zurück zum Haupt-Branch und verwenden Sie dann `git merge <branch>`, um die Änderungen aus Ihrem neuen Branch in den Haupt-Branch zusammenzuführen.
 
-## Undo a Commit That's Already Pushed
+## Einen bereits gepushten Commit rückgängig machen
 
-If you want to leave the original commit in place, but just undo the changes it made, you can use the `git revert` command to create a new commit that undoes the changes made by the original commit. For example:
+Wenn Sie den ursprünglichen Commit beibehalten, aber nur die von ihm vorgenommenen Änderungen rückgängig machen möchten, können Sie den Befehl `git revert` verwenden, um einen neuen Commit zu erstellen, der die vom ursprünglichen Commit vorgenommenen Änderungen rückgängig macht. Zum Beispiel:
 
 ```
 git revert <commit-hash>
 ```
 
-This will create a new commit that undoes the changes made in the original commit. You can then push the revert commit to the remote repository to undo the changes on the remote.
+Dadurch wird ein neuer Commit erstellt, der die im ursprünglichen Commit vorgenommenen Änderungen rückgängig macht. Sie können den Revert-Commit dann in das Remote-Repository pushen, um die Änderungen auf dem Remote rückgängig zu machen.
 
-## Common Developer Mistakes When Using Git
+## Häufige Entwicklerfehler bei der Verwendung von Git
 
-### Forgetting to Commit Changes
+### Vergessen, Änderungen zu committen
 
-It's important to commit your changes regularly so that you have a record of the progress you have made. If you forget to commit your changes, you may lose your work if something goes wrong.
+Es ist wichtig, Ihre Änderungen regelmäßig zu committen, damit Sie einen Überblick über die von Ihnen gemachten Fortschritte haben. Wenn Sie vergessen, Ihre Änderungen zu committen, können Sie Ihre Arbeit verlieren, wenn etwas schief geht.
 
-### Not Committing Often Enough
+### Nicht oft genug committen
 
-On the other hand, it's also important to commit your changes often enough so that you don't have too many changes in a single commit. Large commits can be harder to review and troubleshoot if there are problems.
+Auf der anderen Seite ist es auch wichtig, Ihre Änderungen oft genug zu committen, damit Sie nicht zu viele Änderungen in einem einzigen Commit haben. Große Commits können schwieriger zu überprüfen und zu beheben sein, wenn es Probleme gibt.
 
-Try to commit at least once per hour.
+Versuchen Sie, mindestens einmal pro Stunde zu committen.
 
-### Not Branching
+### Kein Branching
 
-It's a good idea to use branches when working on new features or making significant changes to your codebase. This helps to keep your main branch (usually master) stable and allows you to work on multiple features at the same time.
+Es ist eine gute Idee, Branches zu verwenden, wenn Sie an neuen Funktionen arbeiten oder wesentliche Änderungen an Ihrer Codebasis vornehmen. Dies hilft, Ihren Haupt-Branch (normalerweise Master) stabil zu halten und ermöglicht es Ihnen, gleichzeitig an mehreren Funktionen zu arbeiten.
 
-### Not Keeping the Main Branch Clean
+### Den Haupt-Branch nicht sauber halten
 
-It's important to keep your main branch (usually master) clean and only include well-tested code. This makes it easier to roll back changes if necessary and reduces the risk of introducing bugs into your codebase.
+Es ist wichtig, Ihren Haupt-Branch (normalerweise Master) sauber zu halten und nur gut getesteten Code aufzunehmen. Dies erleichtert das Zurücksetzen von Änderungen bei Bedarf und verringert das Risiko, Fehler in Ihre Codebasis einzuführen.
 
-### Not Reviewing Changes Before Merging
+### Änderungen vor dem Zusammenführen nicht überprüfen
 
-It's a good idea to review changes before merging them into the main branch, especially if you are working with a team. This helps to ensure that the code is of high quality and does not introduce any issues.
+Es ist eine gute Idee, Änderungen vor dem Zusammenführen in den Haupt-Branch zu überprüfen, insbesondere wenn Sie mit einem Team arbeiten. Dies hilft sicherzustellen, dass der Code von hoher Qualität ist und keine Probleme verursacht.

@@ -1,7 +1,7 @@
 title: DiGi CyberSafe
-description: Competition & education site for schools
+description: Wettbewerbs- und Bildungsseite für Schulen
 image: https://r2.zafar.dev/img/digi/digi-cybersafe.png
 url: "https://corporate.celcomdigi.com/sustainability/safe-internet"
-tags: ["Development"]
+tags: ["Entwicklung"]
 techStack: ["Angular", "Nest"]
 date: "2022"

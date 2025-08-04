@@ -1,6 +1,6 @@
 ---
 title: Walk-up Simple
-description: A guide to the Tesla's Walk Up Simple method and the Law of Two Feet
+description: Eine Anleitung zur Walk-Up-Simple-Methode von Tesla und zum Gesetz der zwei Füße
 date: 2025-04-20
 image: https://images.unsplash.com/photo-1663008519747-9da38bbfd132?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
 minRead: 3
@@ -11,23 +11,23 @@ author:
     alt: Zafar
 ---
 
-# シンプルなウォークアップと「二本の足の法則」
+# Walk-up Simple und das „Gesetz der zwei Füße“
 
-## ハイパーフレキシブルなチーム / 動的スケーリング
+## Hyperflexible Teams / Dynamische Skalierung
 
-仕事や目標が時間単位で劇的に変化する環境。それを可能にするものは何か？「ウォークアップ・シンプル」のコンセプト。目標は、現場に到着して 5 分以内に自分がどのように貢献できるかを完全に理解できるようにすること。スタートアップにとって、情報やコンテキストを凝縮して誰でもすぐにアクセスできるようにすることは、全員を同じ方向に揃えるために不可欠です。リソースが限られている若い企業では、明確で共有された理解がなければ、チームは迅速に動けず、貴重な時間や機会を失います。積極的な役割の切り替え、内部ビジネスのアジリティ、集中した問題解決能力により、10,000 人を数分以内に問題に集中させることも可能です。
+Eine Umgebung, in der sich Arbeit und Ziele stündlich drastisch ändern. Was macht das möglich? Das Konzept von „Walk-up Simple“. Das Ziel ist es, innerhalb von 5 Minuten nach Ankunft am Tatort vollständig zu verstehen, wie man beitragen kann. Für Start-ups ist die Verdichtung von Informationen und Kontext, sodass jeder sofort darauf zugreifen kann, entscheidend, um alle auf eine Linie zu bringen. In jungen Unternehmen mit begrenzten Ressourcen können sich Teams ohne ein klares, gemeinsames Verständnis nicht schnell bewegen und verlieren wertvolle Zeit und Möglichkeiten. Proaktiver Rollenwechsel, interne Geschäftsagilität und konzentrierte Problemlösungsfähigkeiten können es sogar ermöglichen, 10.000 Menschen innerhalb von Minuten auf ein Problem zu konzentrieren.
 
-## 現地現物を最大限に活用
+## Genchi Genbutsu optimal nutzen
 
-「現場（げんば）」は、価値が生み出される場所を意味する日本の言葉。リーンな実践では、製造業の工場フロア、病院の手術室、建設現場、レストランのキッチン、ソフトウェアプログラマーのワークステーションなど、「価値が生まれる場所」を指します。スタートアップでは、現場は小さなオフィスやリモートの Slack チャンネルかもしれませんが、価値創造の場所であることに変わりはありません。現地現物ウォークは、MBWA（Management By Walking Around）と同様に、経営陣やチームリーダーが最前線に出て、ムダを見つけ、改善のための現地現物の実践機会を探す活動です。スタートアップでは、重要な情報（目標、優先事項、進捗状況）を一元化し、誰もが一目で把握できるようにすることで、新入社員や外部パートナーでもすぐに貢献を開始できます。
+„Genba“ ist ein japanisches Wort, das den Ort bedeutet, an dem Wert geschaffen wird. In der Lean-Praxis bezieht es sich auf den „Ort, an dem Wert geschaffen wird“, wie z. B. die Fabrikhalle in der Fertigung, der Operationssaal in einem Krankenhaus, die Baustelle, die Küche eines Restaurants oder der Arbeitsplatz eines Softwareprogrammierers. In einem Startup mag der Genba ein kleines Büro oder ein Remote-Slack-Kanal sein, aber es ist immer noch der Ort der Wertschöpfung. Ein Genchi-Genbutsu-Spaziergang, ähnlich wie MBWA (Management By Walking Around), ist eine Aktivität, bei der das Management oder die Teamleiter an die Front gehen, um Verschwendung zu finden und Möglichkeiten für die Genchi-Genbutsu-Praxis zur Verbesserung zu suchen. In einem Startup können wichtige Informationen (Ziele, Prioritäten, Fortschritt) zentralisiert werden, sodass jeder sie auf einen Blick erfassen kann, sodass auch neue Mitarbeiter oder externe Partner sofort mitwirken können.
 
-## なぜ凝縮された情報がスタートアップに重要か？
+## Warum sind verdichtete Informationen für Start-ups wichtig?
 
-- **迅速なオンボーディング**: スタートアップは成長が速く、チームメンバーが頻繁に入れ替わることがあります。重要なコンテキスト（例：プロジェクトの目的、タスクの優先順位）が簡潔にまとめられていれば、新メンバーが数分で状況を把握し、即座に価値を加えられます。
-- **混乱の回避**: 情報が散在していると、誤解や重複作業が生じ、限られたリソースを浪費します。明確な情報ハブ（ボード、ドキュメント、チャット）は、全員が同じ情報を基に動くことを保証します。
-- **スケーラビリティの基盤**: スタートアップが成長するにつれ、チームやプロジェクトが増えます。シンプルでアクセスしやすい情報システムを早期に確立することで、拡大しても効率を維持できます。
-- **協力の強化**: 誰もが同じページにいることで、アイデアの共有や問題解決がスムーズになり、チームの創造性と生産性が向上します。
+- **Schnelles Onboarding**: Start-ups wachsen schnell und Teammitglieder können häufig wechseln. Wenn wichtiger Kontext (z. B. Projektziele, Aufgabenprioritäten) kurz und bündig zusammengefasst wird, können neue Mitglieder die Situation in wenigen Minuten erfassen und sofort einen Mehrwert schaffen.
+- **Vermeidung von Verwirrung**: Wenn Informationen verstreut sind, führt dies zu Missverständnissen und doppelter Arbeit, wodurch begrenzte Ressourcen verschwendet werden. Ein klares Informationszentrum (Board, Dokument, Chat) stellt sicher, dass alle auf der Grundlage derselben Informationen arbeiten.
+- **Grundlage für Skalierbarkeit**: Wenn ein Startup wächst, nehmen Teams und Projekte zu. Die frühzeitige Etablierung eines einfachen und zugänglichen Informationssystems trägt dazu bei, die Effizienz auch bei der Expansion aufrechtzuerhalten.
+- **Stärkung der Zusammenarbeit**: Wenn alle auf dem gleichen Stand sind, werden der Austausch von Ideen und die Problemlösung reibungsloser, was die Kreativität und Produktivität des Teams verbessert.
 
-## 実践例
+## Praxisbeispiel
 
-目標は、現場に到着して 5〜7 分以内に自分がどのように貢献できるかを完全に理解できるようにすること。何百回も拭かれたボードを見て、どれだけ多くの人が問題解決に取り組んでいるかを想像できます。完了の定義（DoD）と準備完了の定義（DoR）を使用する：「xxx が起こったとき、私たちは完了する」というもの。現場に到着すると、DoD と DoR の柱が見え、願い事が入ってきて、願い事が解決されていく様子がわかります。そして、中央を見て、「二本の足の法則」に基づいて自問します：「今ここに立っていることが最も価値あることか？」もしそうなら留まり、そうでなければ「二本の足の法則」に従って、価値を加えられる別の場所に移動します。このアイデアは、非常に短い時間であなたを現場につなげること。スタートアップでは、情報が明確でアクセスしやすければ、人が迅速に場所から場所へ移動し、変化に適応できます。
+Das Ziel ist es, innerhalb von 5-7 Minuten nach Ankunft am Tatort vollständig zu verstehen, wie man beitragen kann. Man kann sich vorstellen, auf ein hundertmal abgewischtes Brett zu schauen und zu sehen, wie viele Menschen an der Lösung eines Problems arbeiten. Verwendung der Definition of Done (DoD) und der Definition of Ready (DoR): „Wenn xxx passiert, sind wir fertig.“ Wenn Sie am Tatort ankommen, sehen Sie die Säulen von DoD und DoR, Sie sehen, wie Wünsche eingehen und Wünsche gelöst werden. Und dann schauen Sie in die Mitte und fragen sich basierend auf dem „Gesetz der zwei Füße“: „Ist es das Wertvollste, jetzt hier zu stehen?“ Wenn ja, bleiben Sie, wenn nicht, folgen Sie dem „Gesetz der zwei Füße“ und gehen Sie an einen anderen Ort, an dem Sie einen Mehrwert schaffen können. Die Idee ist, Sie in sehr kurzer Zeit mit dem Tatort zu verbinden. In einem Startup können sich Menschen schnell von Ort zu Ort bewegen und sich an Veränderungen anpassen, wenn Informationen klar und zugänglich sind.

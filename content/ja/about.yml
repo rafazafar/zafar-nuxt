@@ -1,23 +1,23 @@
-title: About Me
-description: Learn more about my journey as a Tokyo-based senior software engineer, my philosophy, and my passion for crafting intuitive experiences.
+title: 私について
+description: 東京を拠点とするシニアソフトウェアエンジニアとしての私の歩み、哲学、そして直感的な体験を創造することへの情熱について詳しくご覧ください。
 content: |
-  I'm  Zafar, and I build experiences. Based in Tokyo, Japan, my focus is on creating **useful, impactful products** that solve real-world problems.
+  私はザファーです。エクスペリエンスを構築しています。日本の東京を拠点とし、現実世界の問題を解決する**有用でインパクトのある製品**を作成することに重点を置いています。
   <br><br>
-  My professional experience spans the full spectrum – from the rapid, ground-up innovation required in startups to navigating and modernizing complex systems within large, established enterprises. This dual background gives me a unique perspective on architecting scalable solutions, whether taking an idea from **zero-to-one** or **cleaning up** and enhancing capabilities within existing, large-scale architectures.
+  私の専門的な経験は、スタートアップで求められる迅速でゼロからのイノベーションから、大規模で確立された企業内の複雑なシステムのナビゲートと近代化まで、全範囲に及びます。この二重のバックグラウンドは、アイデアを**ゼロからイチ**にする場合でも、既存の大規模アーキテクチャ内で**クリーンアップ**して機能を強化する場合でも、スケーラブルなソリューションを設計するための独自の視点を与えてくれます。
   <br><br>
-  My technical toolkit is broad – spanning full-stack development (web, mobile, serverless, edge), DevOps, product management, and more. Regardless of the environment, i enjoy **simplifying complexity** and building robust solutions (earning me the occasional nickname 'Code Deleter'!).
+  私の技術的なツールキットは、フルスタック開発（Web、モバイル、サーバーレス、エッジ）、DevOps、プロダクトマネジメントなど、幅広く対応しています。環境に関係なく、私は**複雑さを単純化**し、堅牢なソリューションを構築することを楽しんでいます（そのせいで時々「コードデリーター」というニックネームが付けられることもあります！）。
   <br><br>
-  I operate with a mindset of **"Don't Stop Building"** embracing rapid iteration cycles and a pragmatic approach guided by **first-principle thinking**. Clear, ego-free communication is paramount, ensuring we iterate towards the best outcome, regardless of the project's scale or context.
+  私は**「ビルドを止めない」**という考え方で仕事をしており、**第一原理思考**に導かれた迅速なイテレーションサイクルと実用的なアプローチを取り入れています。明確でエゴのないコミュニケーションが最も重要であり、プロジェクトの規模やコンテキストに関係なく、最良の結果に向けて反復することを保証します。
   <br><br>
-  If you have a project or an idea you're passionate about—whether it's a nimble new venture or a challenge within an established system—I'd love to hear about it. 
-  <br><br>Enough talk, **[let's get it done!](https://cal.com/zafar)**
+  情熱を傾けているプロジェクトやアイデアがあれば、それが機敏な新しいベンチャーであろうと、確立されたシステム内の課題であろうと、ぜひお聞かせください。
+  <br><br>話はこれくらいにして、**[やり遂げましょう！](https://cal.com/zafar)**
 
 images:
   - src: https://r2.zafar.dev/img/hobby/berlin.jpg
-    alt: Berlin
+    alt: ベルリン
   - src: https://r2.zafar.dev/img/hobby/sakura.jpg
-    alt: Kagoshima
+    alt: 鹿児島
   - src: https://r2.zafar.dev/img/hobby/cat.jpg
-    alt: Malaysia
+    alt: マレーシア
   - src: https://r2.zafar.dev/img/hobby/tokyo.png
-    alt: Tokyo
+    alt: 東京

@@ -1,8 +1,8 @@
 title: HantarJapan
-description: Founded a crowdsourced Malaysia > Japan personal parcel forwarding service.
+description: マレーシアから日本への個人向け小包転送サービスをクラウドソーシングで設立。
 image: https://r2.zafar.dev/img/hantarjapan.png
 # url: ""
-tags: ["Business", "Development"]
+tags: ["ビジネス", "開発"]
 techStack: ["Nuxt", "Directus"]
 date: "2023"
-alt: "Re-launching soon"
+alt: "間もなく再開"

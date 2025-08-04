@@ -1,6 +1,6 @@
 ---
-title: Walk-up Simple
-description: A guide to the Tesla's Walk Up Simple method and the Law of Two Feet
+title: ウォークアップ・シンプル
+description: テスラのウォークアップ・シンプル・メソッドと二本の足の法則についてのガイド
 date: 2025-04-20
 image: https://images.unsplash.com/photo-1663008519747-9da38bbfd132?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
 minRead: 3

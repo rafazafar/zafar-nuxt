@@ -1,14 +1,14 @@
 seo:
-  title: "Zafar.dev | Dont Sop Building"
-  description: "My primary focus is on creating useful and impactful products that make a real difference in people's lives. Over the course of my career, I gained extensive experience in designing, simplifying, coding and scaling various processes and solutions for startups, which has helped me develop a strong track record of success in achieving clients' goals and objectives."
-title: "Hey, I'm Zafar"
-description: "Professional Code Deleter. What are we building next?"
+  title: "Zafar.dev | ビルディングを止めない"
+  description: "私の主な焦点は、人々の生活に真の違いをもたらす、有用でインパクトのある製品を作ることです。私のキャリアを通じて、スタートアップ向けのさまざまなプロセスとソリューションの設計、簡素化、コーディング、スケーリングにおいて豊富な経験を積んできました。これにより、クライアントの目標と目的を達成する上で、成功の実績を積み重ねることができました。"
+title: "こんにちは、ザファーです"
+description: "プロのコードデリーター。次に何を構築しますか？"
 hero:
   links:
-    - label: "Le Resume"
+    - label: "履歴書"
       to: "https://docs.google.com/document/d/e/2PACX-1vTqFnfyHNvn48h_-v__nIAxO77b1cJLzTVT_O5cpRvjzDlYLy6bwhQZcagAiF5dXc21eblTIPVgJy6y/pub"
       color: "neutral"
-    - label: "Contact Me"
+    - label: "お問い合わせ"
       to: "#contact"
   images:
     - src: "https://r2.zafar.dev/img/digi/digi-cybersafe.png"
@@ -28,104 +28,104 @@ hero:
       alt: "Taberuuu"
     - src: "https://r2.zafar.dev/img/building-blocks.png"
       link: "/projects"
-      alt: "Building Blocks"
+      alt: "ビルディングブロック"
     - src: "https://cover.sli.dev"
       link: "/projects"
-      alt: "Random"
+      alt: "ランダム"
 about:
-  title: "About Me"
+  title: "私について"
   description: |
-    I'm in love with creating useful and impactful products that brings people together. Experienced in multiple industries designing, simplifying, building and scaling solutions for startups and the enterprise. Using first-principle thinking.
+    私は、人々を結びつける、有用でインパクトのある製品を作ることに夢中です。スタートアップや大企業向けに、第一原理思考を用いて、ソリューションの設計、簡素化、構築、スケーリングを複数の業界で経験してきました。
 
-    My approach is simple: Iterate fast, iterate often, and dont stop iterating. And never say no, just dwell on it for a good moment.
+    私のやり方はシンプルです。速く反復し、頻繁に反復し、反復を止めないことです。そして、決してノーとは言わず、しばらくじっくり考えます。
 experience:
-  title: Work Experience
+  title: 職務経歴
   items:
-    - position: "Software Engineer at"
-      date: "2023 - Present"
+    - position: "ソフトウェアエンジニア"
+      date: "2023年 - 現在"
       company:
-        name: AXA Japan
+        name: AXAジャパン
         logo: ""
         url: "https://axa.co.jp/"
         color: "#00008F"
-    - position: "Lead Developer at"
-      date: "2019 - 2023"
+    - position: "リード開発者"
+      date: "2019年 - 2023年"
       company:
         name: Seekers
         logo: ""
         url: "https://seekers.my"
         color: "#FF6363"
-    - position: "Senior Software Developer at"
-      date: "2020 - 2023"
+    - position: "シニアソフトウェア開発者"
+      date: "2020年 - 2023年"
       company:
         name: KL Wing
         logo: ""
         url: "https://recruit.jobsearch-asia.com/"
         color: "#5E6AD2"
-    - position: "Product Manager at"
-      date: "2017 - 2021"
+    - position: "プロダクトマネージャー"
+      date: "2017年 - 2021年"
       company:
         name: Halal Navi
         logo: ""
         url: "https://halal-navi.com"
         color: "#4CAF50"
 testimonials:
-  - quote: "Its difficult to find someone who is as dedicated as you are. You helped us out a lot."
+  - quote: "あなたほど献身的な人を見つけるのは難しいです。本当に助かりました。"
     author:
-      name: 'Yuya Suzuki'
-      description: 'Director - JSA | KLWing'
+      name: '鈴木 優也'
+      description: 'ディレクター - JSA | KLWing'
       avatar:
         src: 'https://r2.zafar.dev/img/suzuki.jpg'
-  - quote: "Thank you for helping us to grow. Even during the tough times."
+  - quote: "困難な時期でも、私たちの成長を助けてくれてありがとう。"
     author:
-      name: 'Shusaku Ueda'
-      description: 'Director - Seekers'
+      name: '上田 修作'
+      description: 'ディレクター - Seekers'
       avatar:
         src: 'https://r2.zafar.dev/img/ueda.jpg'
-  - quote: "Relentless work. Gets the job done."
+  - quote: "執拗な仕事ぶり。仕事をやり遂げます。"
     author:
-      name: 'Hidayat'
+      name: 'ヒダヤット'
       description: 'Fronyx Gmbh'
       avatar:
         src: 'https://r2.zafar.dev/img/py.jpg'
 blog:
-  title: "Latest Articles"
-  description: "Thoughts on technology and business"
+  title: "最新記事"
+  description: "テクノロジーとビジネスに関する考察"
 faq:
-  title: Frequently Asked Questions
-  description: Answers to common questions about my process and services.
+  title: よくある質問
+  description: 私のプロセスとサービスに関する一般的な質問への回答。
   categories:
-    - title: Services & Process
+    - title: サービスとプロセス
       questions:
-        - label: What services do you offer?
+        - label: どのようなサービスを提供していますか？
           content: |
-            I specialize in full-stack development and product management. This includes designing, simplifying, building and scaling solutions for startups using first-principle thinking. My expertise spans multiple industries, and I focus on creating useful and impactful products that make a real difference in people's lives.
-        - label: What is your development process like?
+            私はフルスタック開発とプロダクトマネジメントを専門としています。これには、第一原理思考を用いたスタートアップ向けのソリューションの設計、簡素化、構築、スケーリングが含まれます。私の専門知識は複数の業界に及び、人々の生活に真の違いをもたらす、有用でインパクトのある製品を作ることに重点を置いています。
+        - label: あなたの開発プロセスはどのようなものですか？
           content: |
-            My process is collaborative and iterative, typically involving a strong customer-developer feedback loop and focus on delivering value quickly. Communication is key, and there is no room for ego in the pursuit of excellence.
-        - label: Do you work with startups?
+            私のプロセスは協調的かつ反復的であり、通常、強力な顧客と開発者のフィードバックループと、迅速な価値提供に重点を置いています。コミュニケーションが鍵であり、卓越性を追求する上でエゴの入る余地はありません。
+        - label: スタートアップと協力しますか？
           content: |
-            Absolutely! I love working with startups to help shape their product vision and create solutions from the ground up. I've been involved in multiple zero-to-one startups and have experience taking ideas to MVP in as little as 1 week, and to product launch in as little as 2 weeks.
-    - title: Technical Skills
+            もちろんです！私はスタートアップと協力して、彼らの製品ビジョンを形作り、ゼロからソリューションを構築するのが大好きです。私は複数のゼロから1へのスタートアップに関与しており、わずか1週間でアイデアをMVPに、わずか2週間で製品を発売した経験があります。
+    - title: 技術スキル
       questions:
-        - label: What programming languages do you work with?
+        - label: どのようなプログラミング言語を使用していますか？
           content: |
-            I work with Typescript, Python, Dart, Go, Java, and I'm currently learning Rust. I'm comfortable with both frontend and backend development.
-        - label: What frameworks and technologies do you use?
+            私はTypescript、Python、Dart、Go、Javaを使用しており、現在Rustを学習中です。フロントエンドとバックエンドの両方の開発に精通しています。
+        - label: どのようなフレームワークやテクノロジーを使用していますか？
           content: |
-            For frontend: VueJS/Nuxt, React/Nextjs, Vite, Svelte
-            For backend: Nitro, Springboot, Directus, Laravel
-            For mobile: Flutter, Ionic
-            For DevOps: Nginx, Kubernetes, Pipeline/Actions, CircleCI, Serverless/CDK
-            For Cloud: AWS, Cloudflare, CodeMagic CI/CD, Actions, Cloudinary
-        - label: Do you have experience with AI/ML?
+            フロントエンド：VueJS/Nuxt、React/Nextjs、Vite、Svelte
+            バックエンド：Nitro、Springboot、Directus、Laravel
+            モバイル：Flutter、Ionic
+            DevOps：Nginx、Kubernetes、Pipeline/Actions、CircleCI、Serverless/CDK
+            クラウド：AWS、Cloudflare、CodeMagic CI/CD、Actions、Cloudinary
+        - label: AI/MLの経験はありますか？
           content: |
-            Yes, I work with CF Workers AI, Qdrant, and Vectorize. I also have experience with search technologies like Elasticsearch, Meilisearch, and Algolia.
-    - title: About Me
+            はい、CF Workers AI、Qdrant、Vectorizeを使用しています。また、Elasticsearch、Meilisearch、Algoliaなどの検索テクノロジーの経験もあります。
+    - title: 私について
       questions:
-        - label: What do you enjoy most about your work?
+        - label: あなたの仕事で最も楽しいことは何ですか？
           content: |
-            I love creating useful and impactful products that make a real difference in people's lives. It's incredibly rewarding to see people interact with something I've built and find it genuinely useful. I enjoy the challenge of solving complex problems and the constant learning that comes with working in technology.
-        - label: Where are you based?
+            私は、人々の生活に真の違いをもたらす、有用でインパクトのある製品を作るのが大好きです。私が作ったものと人々が対話し、本当に役立つと感じてもらえるのを見るのは、信じられないほどやりがいがあります。複雑な問題を解決するという挑戦と、テクノロジー業界で働くことで得られる絶え間ない学習を楽しんでいます。
+        - label: どこを拠点に活動していますか？
           content: |
-            I'm currently based in Tokyo, Japan. However, I work remotely with clients from around the world.
+            私は現在、日本の東京を拠点としています。ただし、世界中のクライアントとリモートで仕事をしています。

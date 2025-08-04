@@ -1,16 +1,16 @@
-title: About Me
-description: Learn more about my journey as a Tokyo-based senior software engineer, my philosophy, and my passion for crafting intuitive experiences.
+title: Über mich
+description: Erfahren Sie mehr über meine Reise als Senior Software Engineer in Tokio, meine Philosophie und meine Leidenschaft für die Entwicklung intuitiver Erlebnisse.
 content: |
-  I'm  Zafar, and I build experiences. Based in Tokyo, Japan, my focus is on creating **useful, impactful products** that solve real-world problems.
+  Ich bin Zafar und ich schaffe Erlebnisse. Mit Sitz in Tokio, Japan, konzentriere ich mich auf die Schaffung von **nützlichen, wirkungsvollen Produkten**, die reale Probleme lösen.
   <br><br>
-  My professional experience spans the full spectrum – from the rapid, ground-up innovation required in startups to navigating and modernizing complex systems within large, established enterprises. This dual background gives me a unique perspective on architecting scalable solutions, whether taking an idea from **zero-to-one** or **cleaning up** and enhancing capabilities within existing, large-scale architectures.
+  Meine berufliche Erfahrung umfasst das gesamte Spektrum – von der schnellen, von Grund auf neuen Innovation, die in Startups erforderlich ist, bis hin zur Navigation und Modernisierung komplexer Systeme in großen, etablierten Unternehmen. Dieser doppelte Hintergrund verleiht mir eine einzigartige Perspektive auf die Architektur skalierbarer Lösungen, sei es, eine Idee von **Null auf Eins** zu bringen oder bestehende, große Architekturen zu **bereinigen** und deren Fähigkeiten zu verbessern.
   <br><br>
-  My technical toolkit is broad – spanning full-stack development (web, mobile, serverless, edge), DevOps, product management, and more. Regardless of the environment, i enjoy **simplifying complexity** and building robust solutions (earning me the occasional nickname 'Code Deleter'!).
+  Mein technisches Toolkit ist breit gefächert und umfasst die gesamte Stack-Entwicklung (Web, Mobile, Serverless, Edge), DevOps, Produktmanagement und mehr. Unabhängig von der Umgebung genieße ich es, **Komplexität zu vereinfachen** und robuste Lösungen zu entwickeln (was mir gelegentlich den Spitznamen „Code Deleter“ einbrachte!).
   <br><br>
-  I operate with a mindset of **"Don't Stop Building"** embracing rapid iteration cycles and a pragmatic approach guided by **first-principle thinking**. Clear, ego-free communication is paramount, ensuring we iterate towards the best outcome, regardless of the project's scale or context.
+  Ich arbeite mit der Einstellung **"Hör nicht auf zu bauen"** und bevorzuge schnelle Iterationszyklen und einen pragmatischen Ansatz, der von **First-Principle-Thinking** geleitet wird. Klare, ego-freie Kommunikation ist von größter Bedeutung, um sicherzustellen, dass wir unabhängig von Umfang oder Kontext des Projekts auf das beste Ergebnis hinarbeiten.
   <br><br>
-  If you have a project or an idea you're passionate about—whether it's a nimble new venture or a challenge within an established system—I'd love to hear about it. 
-  <br><br>Enough talk, **[let's get it done!](https://cal.com/zafar)**
+  Wenn Sie ein Projekt oder eine Idee haben, für die Sie sich begeistern – sei es ein agiles neues Unternehmen oder eine Herausforderung innerhalb eines etablierten Systems – würde ich gerne davon hören.
+  <br><br>Genug geredet, **[packen wir es an!](https://cal.com/zafar)**
 
 images:
   - src: https://r2.zafar.dev/img/hobby/berlin.jpg
@@ -20,4 +20,4 @@ images:
   - src: https://r2.zafar.dev/img/hobby/cat.jpg
     alt: Malaysia
   - src: https://r2.zafar.dev/img/hobby/tokyo.png
-    alt: Tokyo
+    alt: Tokio

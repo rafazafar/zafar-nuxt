@@ -1,48 +1,48 @@
-title: Talks & Workshops
-description: Explore talks and workshops I've given on UX design, front-end development, and building better digital products.
+title: 講演とワークショップ
+description: 私がUXデザイン、フロントエンド開発、そしてより良いデジタル製品の構築について行った講演とワークショップをご覧ください。
 links:
-  - label: Invite me to speak
+  - label: 講演に招待する
     size: md
 events:
-  - category: Conference
-    title: "Bridging the Gap: Design Systems for Designer-Developer Collaboration"
+  - category: カンファレンス
+    title: "ギャップを埋める：デザイナーと開発者のコラボレーションのためのデザインシステム"
     date: "2024-10-26"
     location: "VueConf US, Miami, FL"
     url: "#"
-  - category: Conference
-    title: "Intuitive Interfaces: Applying UX Principles in Nuxt.js Applications"
+  - category: カンファレンス
+    title: "直感的なインターフェース：Nuxt.jsアプリケーションにおけるUX原則の適用"
     date: "2024-06-15"
     location: "Nuxt Nation, Online"
     url: "#"
-  - category: Conference
-    title: "Accessibility First: Building Inclusive Web Apps"
+  - category: カンファレンス
+    title: "アクセシビリティ第一：インクルーシブなWebアプリの構築"
     date: "2023-11-08"
     location: "Boston Web Performance Meetup, Boston, MA"
-  - category: Live talk
-    title: "Mastering Component Design in Figma & Vue"
+  - category: ライブトーク
+    title: "FigmaとVueにおけるコンポーネントデザインの習得"
     date: "2024-08-20"
     location: "Design & Dev Boston Meetup, Boston, MA"
     url: "#"
-  - category: Live talk
-    title: "From Wireframe to Web: A Practical Front-End Workflow"
+  - category: ライブトーク
+    title: "ワイヤーフレームからWebへ：実践的なフロントエンドワークフロー"
     date: "2024-03-05"
     location: "Internal Workshop @ PreviousCompany Inc."
-  - category: Live talk
-    title: "The Power of User Research in Product Development"
+  - category: ライブトーク
+    title: "製品開発におけるユーザーリサーチの力"
     date: "2023-09-12"
-    location: "Boston University Guest Lecture, Boston, MA"
-  - category: Podcast
-    title: "Designing for Developers: A UX Perspective"
+    location: "ボストン大学ゲスト講義, Boston, MA"
+  - category: ポッドキャスト
+    title: "開発者向けのデザイン：UXの視点"
     date: "2024-07-18"
-    location: "Syntax.fm (Guest)"
+    location: "Syntax.fm (ゲスト)"
     url: "#"
-  - category: Podcast
-    title: "The Future of Front-End Frameworks & Design Tooling"
+  - category: ポッドキャスト
+    title: "フロントエンドフレームワークとデザインツールの未来"
     date: "2024-01-30"
-    location: "Design Details Podcast (Guest)"
+    location: "Design Details Podcast (ゲスト)"
     url: "#"
-  - category: Podcast
-    title: "Building a Career in UX/UI & Development"
+  - category: ポッドキャスト
+    title: "UX/UIと開発におけるキャリアの構築"
     date: "2023-05-22"
     location: "TechForward Boston Podcast"
     url: "#"

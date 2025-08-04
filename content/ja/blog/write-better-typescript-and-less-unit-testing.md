@@ -1,8 +1,6 @@
 ---
-title: Write better Typescript and less Unit Testing
-description: Why designing digital experiences that encourage users to slow down
-  and engage deeply can lead to more meaningful interactions and better
-  outcomes.
+title: より良いTypescriptを書き、単体テストを減らす
+description: ユーザーに速度を落として深く関わることを促すデジタル体験を設計することが、より有意義なインタラクションとより良い結果につながる理由。
 date: 2025-01-28
 image: https://images.pexels.com/photos/4050314/pexels-photo-4050314.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1
 minRead: 7
@@ -12,26 +10,26 @@ author:
     src: https://r2.zafar.dev/img/profile.jpg
     alt: Zafar
 ---
-I’ve found that using strong and well-defined TypeScript typings can greatly reduce the need for extensive unit testing. While testing is an essential part of software development, it can, no, it will often be time-consuming and can slow down the development process tremendously. With well-typed code, we prevent many errors before they even happen.
+強力で明確に定義されたTypeScriptの型付けを使用すると、広範な単体テストの必要性を大幅に削減できることがわかりました。テストはソフトウェア開発の不可欠な部分ですが、時間がかかり、開発プロセスを大幅に遅くすることがよくあります。適切に型付けされたコードを使用すると、多くのエラーが発生する前に防ぐことができます。
 
-By doing so, we can catch a lot of errors at compile-time, before they make it to testing/production. This not only saves time and effort, but it also makes our code more reliable and easier to maintain.
+そうすることで、テスト/本番に到達する前に、コンパイル時に多くのエラーをキャッチできます。これにより、時間と労力が節約されるだけでなく、コードの信頼性が高まり、保守が容易になります。
 
-That being said, I don’t want to suggest that testing is not important. On the contrary, unit testing is still a crucial part of software development. However, by using TypeScript, we can reduce the amount of testing that needs to be done.
+とはいえ、テストが重要ではないと示唆したいわけではありません。それどころか、単体テストは依然としてソフトウェア開発の重要な部分です。ただし、TypeScriptを使用することで、実行する必要のあるテストの量を減らすことができます。
 
-Remember, the ratio between the production code and the test code could be anywhere between 1:1 and 1:3.
+本番コードとテストコードの比率は、1：1から1：3の範囲になる可能性があることを忘れないでください。
 
-> *Tests are good; impossible states are better — Richard Feldman*
+> *テストは良いものです。不可能な状態はさらに良いものです。— リチャード・フェルドマン*
 
-In addition, TypeScript allows us to use the concept of “impossible states.” Impossible states are states that are impossible to reach because they are prevented by our typings. By using it, we can eliminate a lot of unnecessary testing, as we know that these states can never happen, and therefore, don’t need to be tested.
+さらに、TypeScriptでは「不可能な状態」の概念を使用できます。不可能な状態とは、型付けによって妨げられているため到達できない状態です。それを使用することで、これらの状態は決して発生しないことがわかっているため、多くの不要なテストを排除できます。
 
 ---
 
-Heres common examples of how using better TypeScript typings in React can be more efficient than extensive unit testing:
+Reactでより良いTypeScriptの型付けを使用することが、広範な単体テストよりも効率的である一般的な例を次に示します。
 
-## 1. Type-checking props and state
-In React, components often receive props and manage their own state. Without TypeScript, it can be difficult to ensure that the correct data types are being used for props and state. This can lead to runtime errors and a need for extensive unit testing.
+## 1. propsとstateの型チェック
+Reactでは、コンポーネントは多くの場合、propsを受け取り、独自のstateを管理します。TypeScriptがないと、propsとstateに正しいデータ型が使用されていることを確認するのが難しい場合があります。これにより、ランタイムエラーが発生し、広範な単体テストが必要になる可能性があります。
 
-With TypeScript, however, we can define interfaces for our props and state, which can catch errors at compile-time and eliminate the need for some unit tests. For example:
+ただし、TypeScriptを使用すると、propsとstateのインターフェイスを定義できます。これにより、コンパイル時にエラーをキャッチし、一部の単体テストの必要性をなくすことができます。例：
 
 ```ts
 interface Props {
@@ -49,9 +47,9 @@ class MyComponent extends React.Component<Props, State> {
 }
 ```
 
-By defining these interfaces, we can ensure that the correct data types are being used for our props and state, which can catch errors at compile-time and make our code more reliable.
+これらのインターフェイスを定義することで、propsとstateに正しいデータ型が使用されていることを確認できます。これにより、コンパイル時にエラーをキャッチし、コードの信頼性を高めることができます。
 
-Instead of :
+代わりに：
 
 ```ts
 it('renders with correct props', () => {
@@ -65,11 +63,11 @@ it('renders with correct state', () => {
 });
 ```
 
-## 2. Defining event handlers
+## 2. イベントハンドラの定義
 
-Event handlers are often used to handle user interactions, such as clicks or form submissions. Without TypeScript, it can be difficult to ensure that event handlers are defined correctly and handle the correct types of events.
+イベントハンドラは、クリックやフォームの送信などのユーザー操作を処理するためによく使用されます。TypeScriptがないと、イベントハンドラが正しく定義され、正しい種類のイベントを処理していることを確認するのが難しい場合があります。
 
-With TypeScript, however, we can define types for our event handlers, which can catch errors at compile-time and eliminate the need for some unit tests. For example:
+ただし、TypeScriptを使用すると、イベントハンドラの型を定義できます。これにより、コンパイル時にエラーをキャッチし、一部の単体テストの必要性をなくすことができます。例：
 
 ```ts
 interface MyComponentProps {
@@ -83,9 +81,9 @@ function MyComponent(props: MyComponentProps) {
 }
 ```
 
-By defining the onClick prop with a type that includes the React.MouseEvent type, we can ensure that the event handler is defined correctly and handles the correct types of events, which can make our code more reliable and reduce the need for unit tests.
+React.MouseEvent型を含む型でonClickプロパティを定義することで、イベントハンドラが正しく定義され、正しい種類のイベントを処理していることを確認できます。これにより、コードの信頼性が高まり、単体テストの必要性が減ります。
 
-Without TypeScript typings, we would need to write unit tests to ensure that event handlers are defined correctly and handle the correct types of events.
+TypeScriptの型付けがないと、イベントハンドラが正しく定義され、正しい種類のイベントを処理していることを確認するために単体テストを作成する必要があります。
 
 ```ts
 it('calls onClick handler when button is clicked', () => {
@@ -96,13 +94,13 @@ it('calls onClick handler when button is clicked', () => {
 });
 ```
 
-## 3. Type-checking external APIs
+## 3. 外部APIの型チェック
 
-For any app/webapp it’s common to use external APIs, such as REST APIs or GraphQL APIs, to retrieve data for our components. Without TypeScript, it can be difficult to ensure that the correct data types are being used throughout the app. This makes refactoring code an absolute nightmare.
+アプリ/ウェブアプリでは、REST APIやGraphQL APIなどの外部APIを使用してコンポーネントのデータを取得するのが一般的です。TypeScriptがないと、アプリ全体で正しいデータ型が使用されていることを確認するのが難しい場合があります。これにより、コードのリファクタリングはまったくの悪夢になります。
 
-Using types, Backend/API developers will also be less restricted knowing the frontend can quickly grab the new DTO and quckly update frontend code. This ensure less legacy bloat and faster development cycle.
+型を使用すると、バックエンド/ API開発者は、フロントエンドが新しいDTOをすばやく取得してフロントエンドコードをすばやく更新できることを知っているため、制限が少なくなります。これにより、レガシーの肥大化が少なくなり、開発サイクルが速くなります。
 
-For example:
+例：
 ```ts
 interface UserDto {
   id: number;
@@ -117,9 +115,9 @@ async function fetchUser(id: number): Promise<UserDto> {
 }
 ```
 
-By defining the User interface for the API response, we can ensure that the correct data types are being used for the API response, which can catch errors at compile-time and make our code more reliable.
+API応答のUserインターフェイスを定義することで、API応答に正しいデータ型が使用されていることを確認できます。これにより、コンパイル時にエラーをキャッチし、コードの信頼性を高めることができます。
 
-Without TS , we would need to write unit tests to ensure that the correct data types are being used for the API responses. For example:
+TSがないと、API応答に正しいデータ型が使用されていることを確認するために単体テストを作成する必要があります。例：
 
 ```ts
 it('fetches user data and returns the correct object', async () => {
@@ -131,10 +129,10 @@ it('fetches user data and returns the correct object', async () => {
 ```
 
 
-## 4. Type-checking Redux actions
-When using Redux to manage state in a web application, it’s important to ensure that the actions are well-typed and consistent. Without TypeScript, we might need to write extensive unit tests to ensure that the actions are being dispatched correctly and handling errors appropriately.
+## 4. Reduxアクションの型チェック
+Webアプリケーションで状態を管理するためにReduxを使用する場合、アクションが適切に型付けされ、一貫していることを確認することが重要です。TypeScriptがないと、アクションが正しくディスパッチされ、エラーが適切に処理されていることを確認するために、広範な単体テストを作成する必要がある場合があります。
 
-Instead, we can define interfaces for our Redux actions. For example:
+代わりに、Reduxアクションのインターフェイスを定義できます。例：
 
 ```ts
 interface User {
@@ -165,8 +163,8 @@ function fetchUser(id: number): UserAction {
 }
 ```
 
-By defining the UserAction interface for the Redux actions, we can ensure that the actions are well-typed and consistent, which can catch errors at compile-time and make our code more reliable.
+ReduxアクションのUserActionインターフェイスを定義することで、アクションが適切に型付けされ、一貫していることを確認できます。これにより、コンパイル時にエラーをキャッチし、コードの信頼性を高めることができます。
 
-In summary, using better TypeScript typings will help catch errors at compile-time, make our code more reliable, and eliminate the need for some unit tests. By ensuring that the correct data types are being used for props, state, event handlers, and API responses, we can reduce cost and make ship happen faster
+要約すると、より良いTypeScriptの型付けを使用すると、コンパイル時にエラーをキャッチし、コードの信頼性を高め、一部の単体テストの必要性をなくすのに役立ちます。props、state、イベントハンドラ、API応答に正しいデータ型が使用されていることを確認することで、コストを削減し、より速く出荷できます。
 
-Important Note: Please dont block testing/preview CICD just because of Type errors. Blocking main or production sure but dont slowdown developers testing prematurely. Happy coding!
+重要な注意：型エラーのためだけにテスト/プレビューCICDをブロックしないでください。メインまたは本番をブロックするのは確かですが、開発者のテストを時期尚早に遅くしないでください。ハッピーコーディング！

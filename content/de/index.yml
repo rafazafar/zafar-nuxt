@@ -1,14 +1,14 @@
 seo:
-  title: "Zafar.dev | Dont Sop Building"
-  description: "My primary focus is on creating useful and impactful products that make a real difference in people's lives. Over the course of my career, I gained extensive experience in designing, simplifying, coding and scaling various processes and solutions for startups, which has helped me develop a strong track record of success in achieving clients' goals and objectives."
-title: "Hey, I'm Zafar"
-description: "Professional Code Deleter. What are we building next?"
+  title: "Zafar.dev | Hör nicht auf zu bauen"
+  description: "Mein Hauptaugenmerk liegt auf der Schaffung nützlicher und wirkungsvoller Produkte, die einen echten Unterschied im Leben der Menschen machen. Im Laufe meiner Karriere habe ich umfangreiche Erfahrungen im Entwerfen, Vereinfachen, Codieren und Skalieren verschiedener Prozesse und Lösungen für Start-ups gesammelt, was mir geholfen hat, eine starke Erfolgsbilanz bei der Erreichung der Ziele und Vorgaben meiner Kunden zu entwickeln."
+title: "Hallo, ich bin Zafar"
+description: "Professioneller Code-Löscher. Was bauen wir als nächstes?"
 hero:
   links:
-    - label: "Le Resume"
+    - label: "Lebenslauf"
       to: "https://docs.google.com/document/d/e/2PACX-1vTqFnfyHNvn48h_-v__nIAxO77b1cJLzTVT_O5cpRvjzDlYLy6bwhQZcagAiF5dXc21eblTIPVgJy6y/pub"
       color: "neutral"
-    - label: "Contact Me"
+    - label: "Kontaktieren Sie mich"
       to: "#contact"
   images:
     - src: "https://r2.zafar.dev/img/digi/digi-cybersafe.png"
@@ -28,41 +28,41 @@ hero:
       alt: "Taberuuu"
     - src: "https://r2.zafar.dev/img/building-blocks.png"
       link: "/projects"
-      alt: "Building Blocks"
+      alt: "Bausteine"
     - src: "https://cover.sli.dev"
       link: "/projects"
-      alt: "Random"
+      alt: "Zufällig"
 about:
-  title: "About Me"
+  title: "Über mich"
   description: |
-    I'm in love with creating useful and impactful products that brings people together. Experienced in multiple industries designing, simplifying, building and scaling solutions for startups and the enterprise. Using first-principle thinking.
+    Ich liebe es, nützliche und wirkungsvolle Produkte zu schaffen, die Menschen zusammenbringen. Erfahren in mehreren Branchen im Entwerfen, Vereinfachen, Bauen und Skalieren von Lösungen für Start-ups und Unternehmen. Unter Verwendung des First-Principle-Thinking.
 
-    My approach is simple: Iterate fast, iterate often, and dont stop iterating. And never say no, just dwell on it for a good moment.
+    Mein Ansatz ist einfach: Schnell iterieren, oft iterieren und nicht aufhören zu iterieren. Und niemals Nein sagen, sondern einen guten Moment darüber nachdenken.
 experience:
-  title: Work Experience
+  title: Arbeitserfahrung
   items:
-    - position: "Software Engineer at"
-      date: "2023 - Present"
+    - position: "Software-Ingenieur bei"
+      date: "2023 - heute"
       company:
         name: AXA Japan
         logo: ""
         url: "https://axa.co.jp/"
         color: "#00008F"
-    - position: "Lead Developer at"
+    - position: "Lead-Entwickler bei"
       date: "2019 - 2023"
       company:
         name: Seekers
         logo: ""
         url: "https://seekers.my"
         color: "#FF6363"
-    - position: "Senior Software Developer at"
+    - position: "Senior Software-Entwickler bei"
       date: "2020 - 2023"
       company:
         name: KL Wing
         logo: ""
         url: "https://recruit.jobsearch-asia.com/"
         color: "#5E6AD2"
-    - position: "Product Manager at"
+    - position: "Produktmanager bei"
       date: "2017 - 2021"
       company:
         name: Halal Navi
@@ -70,62 +70,62 @@ experience:
         url: "https://halal-navi.com"
         color: "#4CAF50"
 testimonials:
-  - quote: "Its difficult to find someone who is as dedicated as you are. You helped us out a lot."
+  - quote: "Es ist schwierig, jemanden zu finden, der so engagiert ist wie Sie. Sie haben uns sehr geholfen."
     author:
       name: 'Yuya Suzuki'
-      description: 'Director - JSA | KLWing'
+      description: 'Direktor - JSA | KLWing'
       avatar:
         src: 'https://r2.zafar.dev/img/suzuki.jpg'
-  - quote: "Thank you for helping us to grow. Even during the tough times."
+  - quote: "Danke, dass Sie uns geholfen haben zu wachsen. Auch in den schwierigen Zeiten."
     author:
       name: 'Shusaku Ueda'
-      description: 'Director - Seekers'
+      description: 'Direktor - Seekers'
       avatar:
         src: 'https://r2.zafar.dev/img/ueda.jpg'
-  - quote: "Relentless work. Gets the job done."
+  - quote: "Unerbittliche Arbeit. Erledigt die Arbeit."
     author:
       name: 'Hidayat'
       description: 'Fronyx Gmbh'
       avatar:
         src: 'https://r2.zafar.dev/img/py.jpg'
 blog:
-  title: "Latest Articles"
-  description: "Thoughts on technology and business"
+  title: "Neueste Artikel"
+  description: "Gedanken zu Technologie und Wirtschaft"
 faq:
-  title: Frequently Asked Questions
-  description: Answers to common questions about my process and services.
+  title: Häufig gestellte Fragen
+  description: Antworten auf häufige Fragen zu meinem Prozess und meinen Dienstleistungen.
   categories:
-    - title: Services & Process
+    - title: Dienstleistungen & Prozess
       questions:
-        - label: What services do you offer?
+        - label: Welche Dienstleistungen bieten Sie an?
           content: |
-            I specialize in full-stack development and product management. This includes designing, simplifying, building and scaling solutions for startups using first-principle thinking. My expertise spans multiple industries, and I focus on creating useful and impactful products that make a real difference in people's lives.
-        - label: What is your development process like?
+            Ich bin spezialisiert auf Full-Stack-Entwicklung und Produktmanagement. Dies umfasst das Entwerfen, Vereinfachen, Bauen und Skalieren von Lösungen für Start-ups unter Verwendung des First-Principle-Thinking. Meine Expertise erstreckt sich über mehrere Branchen, und ich konzentriere mich auf die Schaffung nützlicher und wirkungsvoller Produkte, die einen echten Unterschied im Leben der Menschen machen.
+        - label: Wie sieht Ihr Entwicklungsprozess aus?
           content: |
-            My process is collaborative and iterative, typically involving a strong customer-developer feedback loop and focus on delivering value quickly. Communication is key, and there is no room for ego in the pursuit of excellence.
-        - label: Do you work with startups?
+            Mein Prozess ist kollaborativ und iterativ und beinhaltet in der Regel eine starke Feedbackschleife zwischen Kunde und Entwickler und den Fokus auf eine schnelle Wertschöpfung. Kommunikation ist der Schlüssel, und es gibt keinen Platz für Ego im Streben nach Exzellenz.
+        - label: Arbeiten Sie mit Start-ups zusammen?
           content: |
-            Absolutely! I love working with startups to help shape their product vision and create solutions from the ground up. I've been involved in multiple zero-to-one startups and have experience taking ideas to MVP in as little as 1 week, and to product launch in as little as 2 weeks.
-    - title: Technical Skills
+            Absolut! Ich liebe es, mit Start-ups zusammenzuarbeiten, um ihre Produktvision zu gestalten und Lösungen von Grund auf zu entwickeln. Ich war an mehreren Null-zu-Eins-Start-ups beteiligt und habe Erfahrung darin, Ideen in nur einer Woche zum MVP und in nur zwei Wochen zum Produktstart zu bringen.
+    - title: Technische Fähigkeiten
       questions:
-        - label: What programming languages do you work with?
+        - label: Mit welchen Programmiersprachen arbeiten Sie?
           content: |
-            I work with Typescript, Python, Dart, Go, Java, and I'm currently learning Rust. I'm comfortable with both frontend and backend development.
-        - label: What frameworks and technologies do you use?
+            Ich arbeite mit Typescript, Python, Dart, Go, Java und lerne derzeit Rust. Ich bin sowohl mit der Frontend- als auch mit der Backend-Entwicklung vertraut.
+        - label: Welche Frameworks und Technologien verwenden Sie?
           content: |
-            For frontend: VueJS/Nuxt, React/Nextjs, Vite, Svelte
-            For backend: Nitro, Springboot, Directus, Laravel
-            For mobile: Flutter, Ionic
-            For DevOps: Nginx, Kubernetes, Pipeline/Actions, CircleCI, Serverless/CDK
-            For Cloud: AWS, Cloudflare, CodeMagic CI/CD, Actions, Cloudinary
-        - label: Do you have experience with AI/ML?
+            Für Frontend: VueJS/Nuxt, React/Nextjs, Vite, Svelte
+            Für Backend: Nitro, Springboot, Directus, Laravel
+            Für Mobilgeräte: Flutter, Ionic
+            Für DevOps: Nginx, Kubernetes, Pipeline/Actions, CircleCI, Serverless/CDK
+            Für Cloud: AWS, Cloudflare, CodeMagic CI/CD, Actions, Cloudinary
+        - label: Haben Sie Erfahrung mit KI/ML?
           content: |
-            Yes, I work with CF Workers AI, Qdrant, and Vectorize. I also have experience with search technologies like Elasticsearch, Meilisearch, and Algolia.
-    - title: About Me
+            Ja, ich arbeite mit CF Workers AI, Qdrant und Vectorize. Ich habe auch Erfahrung mit Suchtechnologien wie Elasticsearch, Meilisearch und Algolia.
+    - title: Über mich
       questions:
-        - label: What do you enjoy most about your work?
+        - label: Was gefällt Ihnen an Ihrer Arbeit am besten?
           content: |
-            I love creating useful and impactful products that make a real difference in people's lives. It's incredibly rewarding to see people interact with something I've built and find it genuinely useful. I enjoy the challenge of solving complex problems and the constant learning that comes with working in technology.
-        - label: Where are you based?
+            Ich liebe es, nützliche und wirkungsvolle Produkte zu schaffen, die einen echten Unterschied im Leben der Menschen machen. Es ist unglaublich lohnend zu sehen, wie Menschen mit etwas interagieren, das ich gebaut habe, und es wirklich nützlich finden. Ich genieße die Herausforderung, komplexe Probleme zu lösen, und das ständige Lernen, das mit der Arbeit in der Technologie einhergeht.
+        - label: Wo sind Sie ansässig?
           content: |
-            I'm currently based in Tokyo, Japan. However, I work remotely with clients from around the world.
+            Ich lebe derzeit in Tokio, Japan. Ich arbeite jedoch remote mit Kunden aus der ganzen Welt zusammen.

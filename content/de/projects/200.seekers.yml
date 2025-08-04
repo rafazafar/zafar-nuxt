@@ -1,7 +1,7 @@
 title: Seekers
-description: Led founding team to created a multi-tenant, multi-role, crowdsourced recreuitment agency. A new way to seek Oppertunities and connect with Talents
+description: Leitete das Gründungsteam bei der Schaffung einer mandantenfähigen, mehrstufigen Crowdsourcing-Personalvermittlungsagentur. Eine neue Möglichkeit, Chancen zu suchen und mit Talenten in Kontakt zu treten
 image: https://r2.zafar.dev/img/seekers/1.png
 url: "https://seekers.my"
-tags: ["Developement", "Business"]
+tags: ["Entwicklung", "Business"]
 techStack: ["Nuxt", "React Native", "PHP"]
 date: "2021"
