@@ -9,18 +9,17 @@ const switchLanguage = async (code: string) => {
   await setLocale(code)
 }
 
-const items = computed(() => [
+const items = computed(() => 
   availableLocales.value.map(locale => ({
     label: locale.name,
-    icon: 'i-lucide-globe',
     click: () => switchLanguage(locale.code)
   }))
-])
+)
 </script>
 
 <template>
   <UDropdown
-    :items="items"
+    :items="[items]"
   >
     <UButton
       :icon="'i-lucide-globe'"

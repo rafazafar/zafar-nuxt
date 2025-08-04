@@ -1,6 +1,9 @@
 <script setup lang="ts">
-const { data: page } = await useAsyncData('blog-page', () => {
-  return queryCollection('pages').path('/blog').first()
+const { locale } = useI18n()
+
+const { data: page } = await useAsyncData(`blog-page-${locale.value}`, async () => {
+  const collection = `content_${locale.value}` as keyof Collections
+  return await queryCollection(collection).path('/blog').first()
 })
 if (!page.value) {
   throw createError({
@@ -9,9 +12,10 @@ if (!page.value) {
     fatal: true
   })
 }
-const { data: posts } = await useAsyncData('blogs', () =>
-  queryCollection('blog').order('date', 'DESC').all()
-)
+const { data: posts } = await useAsyncData(`blogs-${locale.value}`, async () => {
+  const collection = `content_${locale.value}` as keyof Collections
+  return await queryCollection(collection).where('_path', { $contains: '/blog/' }).order('date', 'DESC').all()
+})
 if (!posts.value) {
   throw createError({
     statusCode: 404,

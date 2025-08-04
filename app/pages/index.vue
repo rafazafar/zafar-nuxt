@@ -1,7 +1,11 @@
 <script setup lang="ts">
-const { data: page } = await useAsyncData('index', () => {
-  return queryCollection('index').first()
+const { locale } = useI18n()
+
+const { data: page } = await useAsyncData(`index-${locale.value}`, async () => {
+  const collection = `content_${locale.value}` as keyof Collections
+  return await queryCollection(collection).path('/index').first()
 })
+
 if (!page.value) {
   throw createError({
     statusCode: 404,

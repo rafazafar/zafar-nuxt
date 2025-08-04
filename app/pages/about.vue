@@ -1,6 +1,9 @@
 <script setup lang="ts">
-const { data: page } = await useAsyncData('about', () => {
-  return queryCollection('about').first()
+const { locale } = useI18n()
+
+const { data: page } = await useAsyncData(`about-${locale.value}`, async () => {
+  const collection = `content_${locale.value}` as keyof Collections
+  return await queryCollection(collection).path('/about').first()
 })
 if (!page.value) {
   throw createError({
