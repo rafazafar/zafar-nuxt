@@ -1,0 +1,23 @@
+title: About Me
+description: Learn more about my journey as a Tokyo-based senior software engineer, my philosophy, and my passion for crafting intuitive experiences.
+content: |
+  I'm  Zafar, and I build experiences. Based in Tokyo, Japan, my focus is on creating **useful, impactful products** that solve real-world problems.
+  <br><br>
+  My professional experience spans the full spectrum – from the rapid, ground-up innovation required in startups to navigating and modernizing complex systems within large, established enterprises. This dual background gives me a unique perspective on architecting scalable solutions, whether taking an idea from **zero-to-one** or **cleaning up** and enhancing capabilities within existing, large-scale architectures.
+  <br><br>
+  My technical toolkit is broad – spanning full-stack development (web, mobile, serverless, edge), DevOps, product management, and more. Regardless of the environment, i enjoy **simplifying complexity** and building robust solutions (earning me the occasional nickname 'Code Deleter'!).
+  <br><br>
+  I operate with a mindset of **"Don't Stop Building"** embracing rapid iteration cycles and a pragmatic approach guided by **first-principle thinking**. Clear, ego-free communication is paramount, ensuring we iterate towards the best outcome, regardless of the project's scale or context.
+  <br><br>
+  If you have a project or an idea you're passionate about—whether it's a nimble new venture or a challenge within an established system—I'd love to hear about it. 
+  <br><br>Enough talk, **[let's get it done!](https://cal.com/zafar)**
+
+images:
+  - src: https://r2.zafar.dev/img/hobby/berlin.jpg
+    alt: Berlin
+  - src: https://r2.zafar.dev/img/hobby/sakura.jpg
+    alt: Kagoshima
+  - src: https://r2.zafar.dev/img/hobby/cat.jpg
+    alt: Malaysia
+  - src: https://r2.zafar.dev/img/hobby/tokyo.png
+    alt: Tokyo

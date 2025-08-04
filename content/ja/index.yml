@@ -1,0 +1,131 @@
+seo:
+  title: "Zafar.dev | Dont Sop Building"
+  description: "My primary focus is on creating useful and impactful products that make a real difference in people's lives. Over the course of my career, I gained extensive experience in designing, simplifying, coding and scaling various processes and solutions for startups, which has helped me develop a strong track record of success in achieving clients' goals and objectives."
+title: "Hey, I'm Zafar"
+description: "Professional Code Deleter. What are we building next?"
+hero:
+  links:
+    - label: "Le Resume"
+      to: "https://docs.google.com/document/d/e/2PACX-1vTqFnfyHNvn48h_-v__nIAxO77b1cJLzTVT_O5cpRvjzDlYLy6bwhQZcagAiF5dXc21eblTIPVgJy6y/pub"
+      color: "neutral"
+    - label: "Contact Me"
+      to: "#contact"
+  images:
+    - src: "https://r2.zafar.dev/img/digi/digi-cybersafe.png"
+      link: "/projects"
+      alt: "Digi"
+    - src: "https://r2.zafar.dev/img/others/taberuuu-logo-min.png"
+      link: "/projects"
+      alt: "Halal Navi"
+    - src: "https://r2.zafar.dev/img/axa/logo.png"
+      link: "/projects"
+      alt: "AXA"
+    - src: "https://r2.zafar.dev/img/halalnavi/1.png"
+      link: "/projects"
+      alt: "Taberuuu"
+    - src: "https://r2.zafar.dev/img/seekers/1.png"
+      link: "/projects"
+      alt: "Taberuuu"
+    - src: "https://r2.zafar.dev/img/building-blocks.png"
+      link: "/projects"
+      alt: "Building Blocks"
+    - src: "https://cover.sli.dev"
+      link: "/projects"
+      alt: "Random"
+about:
+  title: "About Me"
+  description: |
+    I'm in love with creating useful and impactful products that brings people together. Experienced in multiple industries designing, simplifying, building and scaling solutions for startups and the enterprise. Using first-principle thinking.
+
+    My approach is simple: Iterate fast, iterate often, and dont stop iterating. And never say no, just dwell on it for a good moment.
+experience:
+  title: Work Experience
+  items:
+    - position: "Software Engineer at"
+      date: "2023 - Present"
+      company:
+        name: AXA Japan
+        logo: ""
+        url: "https://axa.co.jp/"
+        color: "#00008F"
+    - position: "Lead Developer at"
+      date: "2019 - 2023"
+      company:
+        name: Seekers
+        logo: ""
+        url: "https://seekers.my"
+        color: "#FF6363"
+    - position: "Senior Software Developer at"
+      date: "2020 - 2023"
+      company:
+        name: KL Wing
+        logo: ""
+        url: "https://recruit.jobsearch-asia.com/"
+        color: "#5E6AD2"
+    - position: "Product Manager at"
+      date: "2017 - 2021"
+      company:
+        name: Halal Navi
+        logo: ""
+        url: "https://halal-navi.com"
+        color: "#4CAF50"
+testimonials:
+  - quote: "Its difficult to find someone who is as dedicated as you are. You helped us out a lot."
+    author:
+      name: 'Yuya Suzuki'
+      description: 'Director - JSA | KLWing'
+      avatar:
+        src: 'https://r2.zafar.dev/img/suzuki.jpg'
+  - quote: "Thank you for helping us to grow. Even during the tough times."
+    author:
+      name: 'Shusaku Ueda'
+      description: 'Director - Seekers'
+      avatar:
+        src: 'https://r2.zafar.dev/img/ueda.jpg'
+  - quote: "Relentless work. Gets the job done."
+    author:
+      name: 'Hidayat'
+      description: 'Fronyx Gmbh'
+      avatar:
+        src: 'https://r2.zafar.dev/img/py.jpg'
+blog:
+  title: "Latest Articles"
+  description: "Thoughts on technology and business"
+faq:
+  title: Frequently Asked Questions
+  description: Answers to common questions about my process and services.
+  categories:
+    - title: Services & Process
+      questions:
+        - label: What services do you offer?
+          content: |
+            I specialize in full-stack development and product management. This includes designing, simplifying, building and scaling solutions for startups using first-principle thinking. My expertise spans multiple industries, and I focus on creating useful and impactful products that make a real difference in people's lives.
+        - label: What is your development process like?
+          content: |
+            My process is collaborative and iterative, typically involving a strong customer-developer feedback loop and focus on delivering value quickly. Communication is key, and there is no room for ego in the pursuit of excellence.
+        - label: Do you work with startups?
+          content: |
+            Absolutely! I love working with startups to help shape their product vision and create solutions from the ground up. I've been involved in multiple zero-to-one startups and have experience taking ideas to MVP in as little as 1 week, and to product launch in as little as 2 weeks.
+    - title: Technical Skills
+      questions:
+        - label: What programming languages do you work with?
+          content: |
+            I work with Typescript, Python, Dart, Go, Java, and I'm currently learning Rust. I'm comfortable with both frontend and backend development.
+        - label: What frameworks and technologies do you use?
+          content: |
+            For frontend: VueJS/Nuxt, React/Nextjs, Vite, Svelte
+            For backend: Nitro, Springboot, Directus, Laravel
+            For mobile: Flutter, Ionic
+            For DevOps: Nginx, Kubernetes, Pipeline/Actions, CircleCI, Serverless/CDK
+            For Cloud: AWS, Cloudflare, CodeMagic CI/CD, Actions, Cloudinary
+        - label: Do you have experience with AI/ML?
+          content: |
+            Yes, I work with CF Workers AI, Qdrant, and Vectorize. I also have experience with search technologies like Elasticsearch, Meilisearch, and Algolia.
+    - title: About Me
+      questions:
+        - label: What do you enjoy most about your work?
+          content: |
+            I love creating useful and impactful products that make a real difference in people's lives. It's incredibly rewarding to see people interact with something I've built and find it genuinely useful. I enjoy the challenge of solving complex problems and the constant learning that comes with working in technology.
+        - label: Where are you based?
+          content: |
+            I'm currently based in Tokyo, Japan. However, I work remotely with clients from around the world.
