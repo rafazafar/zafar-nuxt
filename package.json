@@ -18,6 +18,7 @@
     "@nuxt/content": "^3.6.0",
     "@nuxt/image": "^1.10.0",
     "@nuxt/ui-pro": "https://pkg.pr.new/@nuxt/ui-pro@ddb3b0b",
+    "@nuxtjs/i18n": "^10.0.3",
     "@vueuse/nuxt": "^13.3.0",
     "better-sqlite3": "^11.10.0",
     "motion-v": "^1.2.1",

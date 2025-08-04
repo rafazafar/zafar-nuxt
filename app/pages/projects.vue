@@ -95,7 +95,10 @@ useSeoMeta({
                 class="size-4 text-primary transition-all opacity-0 group-hover:translate-x-1 group-hover:opacity-100"
               />
             </ULink>
-            <p v-else-if="project.alt" class="text-sm text-muted">
+            <p
+              v-else-if="project.alt"
+              class="text-sm text-muted"
+            >
               {{ project.alt }}
             </p>
           </template>

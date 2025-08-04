@@ -8,7 +8,7 @@ const { footer } = useAppConfig()
     :ui="{ left: 'text-xs' }"
   >
     <template #left>
-      {{ footer.credits }}
+      {{ $t('common.copyright') }}
     </template>
 
     <template #right>

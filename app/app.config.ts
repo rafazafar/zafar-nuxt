@@ -29,21 +29,21 @@ export default defineAppConfig({
     colorMode: false,
     links: [
       {
-      'icon': 'i-simple-icons-linkedin',
-      'to': 'https://linkedin.com/in/rafazafar/',
-      'target': '_blank',
-      'aria-label': 'rafazafar on LinkedIn'
+        'icon': 'i-simple-icons-linkedin',
+        'to': 'https://linkedin.com/in/rafazafar/',
+        'target': '_blank',
+        'aria-label': 'rafazafar on LinkedIn'
       },
       {
-      'icon': 'i-simple-icons-x',
-      'to': 'https://x.com/rafazafar',
-      'target': '_blank',
-      'aria-label': 'rafazafar on X'
-    }, {
-      'icon': 'i-simple-icons-github',
-      'to': 'https://github.com/rafazafar',
-      'target': '_blank',
-      'aria-label': 'rafazafar on GitHub'
-    }]
+        'icon': 'i-simple-icons-x',
+        'to': 'https://x.com/rafazafar',
+        'target': '_blank',
+        'aria-label': 'rafazafar on X'
+      }, {
+        'icon': 'i-simple-icons-github',
+        'to': 'https://github.com/rafazafar',
+        'target': '_blank',
+        'aria-label': 'rafazafar on GitHub'
+      }]
   }
 })
