@@ -1,48 +1,10 @@
-title: 講演とワークショップ
-description: 私がUXデザイン、フロントエンド開発、そしてより良いデジタル製品の構築について行った講演とワークショップをご覧ください。
+seo:
+  title: "スピーキング | Zafar.dev"
+  description: "カンファレンスの講演とポッドキャスト出演。"
+title: "スピーキング"
+description: "カンファレンスの講演とポッドキャスト出演。"
 links:
-  - label: 講演に招待する
-    size: md
-events:
-  - category: カンファレンス
-    title: "ギャップを埋める：デザイナーと開発者のコラボレーションのためのデザインシステム"
-    date: "2024-10-26"
-    location: "VueConf US, Miami, FL"
-    url: "#"
-  - category: カンファレンス
-    title: "直感的なインターフェース：Nuxt.jsアプリケーションにおけるUX原則の適用"
-    date: "2024-06-15"
-    location: "Nuxt Nation, Online"
-    url: "#"
-  - category: カンファレンス
-    title: "アクセシビリティ第一：インクルーシブなWebアプリの構築"
-    date: "2023-11-08"
-    location: "Boston Web Performance Meetup, Boston, MA"
-  - category: ライブトーク
-    title: "FigmaとVueにおけるコンポーネントデザインの習得"
-    date: "2024-08-20"
-    location: "Design & Dev Boston Meetup, Boston, MA"
-    url: "#"
-  - category: ライブトーク
-    title: "ワイヤーフレームからWebへ：実践的なフロントエンドワークフロー"
-    date: "2024-03-05"
-    location: "Internal Workshop @ PreviousCompany Inc."
-  - category: ライブトーク
-    title: "製品開発におけるユーザーリサーチの力"
-    date: "2023-09-12"
-    location: "ボストン大学ゲスト講義, Boston, MA"
-  - category: ポッドキャスト
-    title: "開発者向けのデザイン：UXの視点"
-    date: "2024-07-18"
-    location: "Syntax.fm (ゲスト)"
-    url: "#"
-  - category: ポッドキャスト
-    title: "フロントエンドフレームワークとデザインツールの未来"
-    date: "2024-01-30"
-    location: "Design Details Podcast (ゲスト)"
-    url: "#"
-  - category: ポッドキャスト
-    title: "UX/UIと開発におけるキャリアの構築"
-    date: "2023-05-22"
-    location: "TechForward Boston Podcast"
-    url: "#"
+  - label: "スピーチを依頼する"
+    to: "mailto:zafar@example.com"
+    color: "primary"
+events: []

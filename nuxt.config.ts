@@ -6,7 +6,7 @@ export default defineNuxtConfig({
     '@nuxt/ui-pro',
     '@nuxt/content',
     '@vueuse/nuxt',
-    'nuxt-og-image',
+    // 'nuxt-og-image',
     'motion-v/nuxt',
     '@nuxtjs/i18n',
     // Dev-only modules excluded from production builds
@@ -37,10 +37,6 @@ export default defineNuxtConfig({
     },
     routeRules: {
       '/blog/*': { ssr: false, static: true }
-    },
-    prerender: {
-      routes: ['/', '/blog'],
-      crawlLinks: true
     }
   },
 

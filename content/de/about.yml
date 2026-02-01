@@ -1,23 +1,10 @@
-title: Über mich
-description: Erfahren Sie mehr über meine Reise als Senior Software Engineer in Tokio, meine Philosophie und meine Leidenschaft für die Entwicklung intuitiver Erlebnisse.
+seo:
+  title: "Über mich | Zafar.dev"
+  description: "Erfahren Sie mehr über mich und meine Arbeit."
+title: "Über mich"
+description: "Senior Software Engineer & Produkt-Builder."
 content: |
-  Ich bin Zafar und ich schaffe Erlebnisse. Mit Sitz in Tokio, Japan, konzentriere ich mich auf die Schaffung von **nützlichen, wirkungsvollen Produkten**, die reale Probleme lösen.
-  <br><br>
-  Meine berufliche Erfahrung umfasst das gesamte Spektrum – von der schnellen, von Grund auf neuen Innovation, die in Startups erforderlich ist, bis hin zur Navigation und Modernisierung komplexer Systeme in großen, etablierten Unternehmen. Dieser doppelte Hintergrund verleiht mir eine einzigartige Perspektive auf die Architektur skalierbarer Lösungen, sei es, eine Idee von **Null auf Eins** zu bringen oder bestehende, große Architekturen zu **bereinigen** und deren Fähigkeiten zu verbessern.
-  <br><br>
-  Mein technisches Toolkit ist breit gefächert und umfasst die gesamte Stack-Entwicklung (Web, Mobile, Serverless, Edge), DevOps, Produktmanagement und mehr. Unabhängig von der Umgebung genieße ich es, **Komplexität zu vereinfachen** und robuste Lösungen zu entwickeln (was mir gelegentlich den Spitznamen „Code Deleter“ einbrachte!).
-  <br><br>
-  Ich arbeite mit der Einstellung **"Hör nicht auf zu bauen"** und bevorzuge schnelle Iterationszyklen und einen pragmatischen Ansatz, der von **First-Principle-Thinking** geleitet wird. Klare, ego-freie Kommunikation ist von größter Bedeutung, um sicherzustellen, dass wir unabhängig von Umfang oder Kontext des Projekts auf das beste Ergebnis hinarbeiten.
-  <br><br>
-  Wenn Sie ein Projekt oder eine Idee haben, für die Sie sich begeistern – sei es ein agiles neues Unternehmen oder eine Herausforderung innerhalb eines etablierten Systems – würde ich gerne davon hören.
-  <br><br>Genug geredet, **[packen wir es an!](https://cal.com/zafar)**
-
-images:
-  - src: https://r2.zafar.dev/img/hobby/berlin.jpg
-    alt: Berlin
-  - src: https://r2.zafar.dev/img/hobby/sakura.jpg
-    alt: Kagoshima
-  - src: https://r2.zafar.dev/img/hobby/cat.jpg
-    alt: Malaysia
-  - src: https://r2.zafar.dev/img/hobby/tokyo.png
-    alt: Tokio
+  Ich liebe es, nützliche und wirkungsvolle Produkte zu schaffen, die Menschen zusammenbringen. Erfahren in mehreren Branchen beim Entwerfen, Vereinfachen, Bauen und Skalieren von Lösungen für Start-ups und Unternehmen. Mit First-Principle-Denken.
+  
+  Mein Ansatz ist einfach: Schnell iterieren, oft iterieren und nicht aufhören zu iterieren. Und niemals Nein sagen, sondern einen guten Moment darüber nachdenken.
+images: []
