@@ -110,19 +110,79 @@ const commonSchema = z.union([
 
 export default defineContentConfig({
   collections: {
+    blog: defineCollection({
+      type: 'page',
+      source: { include: 'en/blog/**', prefix: '/blog' },
+      schema: commonSchema
+    }),
+    blog_de: defineCollection({
+      type: 'page',
+      source: { include: 'de/blog/**', prefix: '/blog' },
+      schema: commonSchema
+    }),
+    blog_ja: defineCollection({
+      type: 'page',
+      source: { include: 'ja/blog/**', prefix: '/blog' },
+      schema: commonSchema
+    }),
+    projects: defineCollection({
+      type: 'page',
+      source: { include: 'en/projects/**', prefix: '/projects' },
+      schema: commonSchema
+    }),
+    projects_de: defineCollection({
+      type: 'page',
+      source: { include: 'de/projects/**', prefix: '/projects' },
+      schema: commonSchema
+    }),
+    projects_ja: defineCollection({
+      type: 'page',
+      source: { include: 'ja/projects/**', prefix: '/projects' },
+      schema: commonSchema
+    }),
+    speaking: defineCollection({
+      type: 'page',
+      source: { include: 'en/speaking/**', prefix: '/speaking' },
+      schema: commonSchema
+    }),
+    speaking_de: defineCollection({
+      type: 'page',
+      source: { include: 'de/speaking/**', prefix: '/speaking' },
+      schema: commonSchema
+    }),
+    speaking_ja: defineCollection({
+      type: 'page',
+      source: { include: 'ja/speaking/**', prefix: '/speaking' },
+      schema: commonSchema
+    }),
+    about: defineCollection({
+      type: 'page',
+      source: { include: 'en/about/**', prefix: '/about' },
+      schema: commonSchema
+    }),
+    about_de: defineCollection({
+      type: 'page',
+      source: { include: 'de/about/**', prefix: '/about' },
+      schema: commonSchema
+    }),
+    about_ja: defineCollection({
+      type: 'page',
+      source: { include: 'ja/about/**', prefix: '/about' },
+      schema: commonSchema
+    }),
     content_en: defineCollection({
       type: 'page',
-      source: { include: 'en/**', prefix: '' },
+      source: { include: 'en/index.yml', prefix: '' },
       schema: commonSchema
     }),
     content_de: defineCollection({
       type: 'page',
-      source: { include: 'de/**', prefix: '' },
+      source: { include: 'de/index.yml', prefix: '' },
       schema: commonSchema
     }),
     content_ja: defineCollection({
       type: 'page',
-      source: { include: 'ja/**', prefix: '' },
+      source: { include: 'ja/index.yml', prefix: '' },
       schema: commonSchema
     })
   }

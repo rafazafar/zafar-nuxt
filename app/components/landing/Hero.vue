@@ -10,6 +10,7 @@ defineProps<{
 
 <template>
   <UPageHero
+    v-if="page"
     :ui="{
       headline: 'flex items-center justify-center',
       title: 'text-shadow-md max-w-lg mx-auto',

@@ -8,12 +8,12 @@ defineProps<{
 const { locale } = useI18n()
 
 const { data: posts } = await useAsyncData(`index-blogs-${locale.value}`, async () => {
-  const collection = `content_${locale.value}` as keyof Collections
-  const allContent = await queryCollection(collection).all()
-  return allContent
-    .filter(item => item._path?.includes('/blog/'))
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 3)
+  const collection = locale.value === 'en' ? 'blog' : `blog_${locale.value}` as keyof Collections
+  return await queryCollection(collection).all().then(content =>
+    content
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 3)
+  )
 })
 if (!posts.value) {
   throw createError({ statusCode: 404, statusMessage: 'blogs posts not found', fatal: true })
@@ -22,6 +22,7 @@ if (!posts.value) {
 
 <template>
   <UPageSection
+    v-if="page?.blog"
     :title="page.blog.title"
     :description="page.blog.description"
     :ui="{

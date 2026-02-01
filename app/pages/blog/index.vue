@@ -3,7 +3,7 @@ const { locale } = useI18n()
 
 const { data: page } = await useAsyncData(`blog-page-${locale.value}`, async () => {
   const collection = `content_${locale.value}` as keyof Collections
-  return await queryCollection(collection).path('/blog').first()
+  return await queryCollection(collection).first()
 })
 if (!page.value) {
   throw createError({
@@ -13,9 +13,9 @@ if (!page.value) {
   })
 }
 const { data: posts } = await useAsyncData(`blogs-${locale.value}`, async () => {
-  const collection = `content_${locale.value}` as keyof Collections
+  const collection = locale.value === 'en' ? 'blog' : `blog_${locale.value}` as keyof Collections
   const allContent = await queryCollection(collection).all()
-  return allContent.filter(item => item._path?.includes('/blog/')).sort((a, b) => new Date(b.date) - new Date(a.date))
+  return allContent.sort((a, b) => new Date(b.date) - new Date(a.date))
 })
 if (!posts.value) {
   throw createError({
