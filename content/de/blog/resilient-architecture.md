@@ -1,8 +1,14 @@
 ---
 title: "Resiliente Architektur aufbauen: Ein praktischer Leitfaden"
 description: "Praktische Muster für den Aufbau von Systemen, die Ausfälle elegant überstehen und sich schnell erholen."
-image: "/img/blog/resilience.png"
 date: 2025-10-15
+image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800"
+minRead: 7
+author:
+  name: Zafar
+  avatar:
+    src: https://r2.zafar.dev/img/profile.jpg
+    alt: Zafar
 tags:
   - Resilienz
   - Zuverlässigkeit

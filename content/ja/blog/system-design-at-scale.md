@@ -1,8 +1,14 @@
 ---
 title: "スケールでのシステム設計：7年間の構築からの教訓"
 description: "ゼロから数十万ユーザーまで製品をスケーリングする際に学んだ重要なアーキテクチャ上の意思決定とパターン"
-image: "/img/blog/system-design.png"
 date: 2025-12-15
+image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800"
+minRead: 8
+author:
+  name: Zafar
+  avatar:
+    src: https://r2.zafar.dev/img/profile.jpg
+    alt: Zafar
 tags:
   - アーキテクチャ
   - システム設計

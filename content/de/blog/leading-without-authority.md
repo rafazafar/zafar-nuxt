@@ -1,8 +1,14 @@
 ---
 title: "Führen ohne Autorität: Engineering Leadership Lektionen"
 description: "Wie man technische Initiativen vorantreibt und Entscheidungen beeinflusst, wenn man nicht der Chef ist."
-image: "/img/blog/leadership.png"
 date: 2025-09-20
+image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800"
+minRead: 7
+author:
+  name: Zafar
+  avatar:
+    src: https://r2.zafar.dev/img/profile.jpg
+    alt: Zafar
 tags:
   - Führung
   - Teamarbeit

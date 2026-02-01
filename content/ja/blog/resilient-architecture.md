@@ -1,8 +1,14 @@
 ---
 title: "レジリエントアーキテクチャの構築：実践ガイド"
 description: "障害を優雅に乗り越え、迅速に回復するシステムを構築するための実践的パターン"
-image: "/img/blog/resilience.png"
 date: 2025-10-15
+image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800"
+minRead: 7
+author:
+  name: Zafar
+  avatar:
+    src: https://r2.zafar.dev/img/profile.jpg
+    alt: Zafar
 tags:
   - レジリエンス
   - 信頼性

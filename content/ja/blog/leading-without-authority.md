@@ -1,8 +1,14 @@
 ---
 title: "権威なきリーダーシップ：エンジニアリングリーダーシップの教訓"
 description: "上司でないときに技術的イニシアチブを推進し、意思決定に影響を与える方法"
-image: "/img/blog/leadership.png"
 date: 2025-09-20
+image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800"
+minRead: 7
+author:
+  name: Zafar
+  avatar:
+    src: https://r2.zafar.dev/img/profile.jpg
+    alt: Zafar
 tags:
   - リーダーシップ
   - チームワーク

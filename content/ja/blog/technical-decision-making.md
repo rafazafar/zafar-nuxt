@@ -1,8 +1,14 @@
 ---
 title: "技術的意思決定の芸術"
 description: "シニアエンジニアがトレードオフを評価し、時間の試練に耐える意思決定を行う方法"
-image: "/img/blog/decision-making.png"
 date: 2025-11-28
+image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800"
+minRead: 6
+author:
+  name: Zafar
+  avatar:
+    src: https://r2.zafar.dev/img/profile.jpg
+    alt: Zafar
 tags:
   - リーダーシップ
   - 意思決定

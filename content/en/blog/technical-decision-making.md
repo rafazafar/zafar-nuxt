@@ -1,8 +1,14 @@
 ---
 title: "The Art of Technical Decision Making"
 description: "How senior engineers evaluate trade-offs and make decisions that stand the test of time."
-image: "/img/blog/decision-making.png"
 date: 2025-11-28
+image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800"
+minRead: 6
+author:
+  name: Zafar
+  avatar:
+    src: https://r2.zafar.dev/img/profile.jpg
+    alt: Zafar
 tags:
   - Leadership
   - Decision Making
