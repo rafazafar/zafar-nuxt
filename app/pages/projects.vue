@@ -1,9 +1,6 @@
 <script setup lang="ts">
-const { locale } = useI18n()
-
-const { data: page } = await useAsyncData(`projects-page-${locale.value}`, async () => {
-  const collection = locale.value === 'en' ? 'projects' : `projects_${locale.value}` as keyof Collections
-  return await queryCollection(collection).first()
+const { data: page } = await useAsyncData('projects-page', () => {
+  return queryCollection('pages').path('/projects').first()
 })
 if (!page.value) {
   throw createError({
@@ -13,9 +10,8 @@ if (!page.value) {
   })
 }
 
-const { data: projects } = await useAsyncData(`projects-${locale.value}`, async () => {
-  const collection = locale.value === 'en' ? 'projects' : `projects_${locale.value}` as keyof Collections
-  return await queryCollection(collection).all().sort((a, b) => new Date(b.date) - new Date(a.date))
+const { data: projects } = await useAsyncData('projects', () => {
+  return queryCollection('projects').all()
 })
 
 const { global } = useAppConfig()
@@ -89,22 +85,15 @@ useSeoMeta({
           </template>
           <template #footer>
             <ULink
-              v-if="project.url"
               :to="project.url"
               class="text-sm text-primary flex items-center"
             >
-              {{ project.alt ?? 'View Project' }}
+              View Project
               <UIcon
                 name="i-lucide-arrow-right"
                 class="size-4 text-primary transition-all opacity-0 group-hover:translate-x-1 group-hover:opacity-100"
               />
             </ULink>
-            <p
-              v-else-if="project.alt"
-              class="text-sm text-muted"
-            >
-              {{ project.alt }}
-            </p>
           </template>
           <img
             :src="project.image"

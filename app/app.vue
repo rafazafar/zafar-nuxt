@@ -18,27 +18,23 @@ useHead({
 })
 
 useSeoMeta({
-  ogImage: 'https://r2.zafar.dev/img/web-og.png',
-  ogDescription: 'My primary focus is on creating useful and impactful products that make a real difference in people\'s lives. Over the course of my career, I gained extensive experience in designing, simplifying, coding and scaling various processes and solutions for startups, which has helped me develop a strong track record of success in achieving clients\' goals and objectives.',
-  titleTemplate: '%s - Zafar Portfolio',
+  titleTemplate: '%s - Nuxt Portfolio Template',
+  ogImage: 'https://ui.nuxt.com/assets/templates/nuxt/portfolio-light.png',
+  twitterImage: 'https://ui.nuxt.com/assets/templates/nuxt/portfolio-light.png',
   twitterCard: 'summary_large_image'
 })
 
-const { locale } = useI18n()
-
 const [{ data: navigation }, { data: files }] = await Promise.all([
-  useAsyncData(`navigation-${locale.value}`, () => {
-    const collection = `content_${locale.value}` as keyof Collections
+  useAsyncData('navigation', () => {
     return Promise.all([
-      queryCollectionNavigation(collection)
+      queryCollectionNavigation('blog')
     ])
   }, {
     transform: data => data.flat()
   }),
-  useLazyAsyncData(`search-${locale.value}`, () => {
-    const collection = `content_${locale.value}` as keyof Collections
+  useLazyAsyncData('search', () => {
     return Promise.all([
-      queryCollectionSearchSections(collection)
+      queryCollectionSearchSections('blog')
     ])
   }, {
     server: false,
@@ -60,7 +56,7 @@ const [{ data: navigation }, { data: files }] = await Promise.all([
         :files="files"
         :navigation="navigation"
         shortcut="meta_k"
-        :links="useNavLinks()"
+        :links="navLinks"
         :fuse="{ resultLimit: 42 }"
       />
     </ClientOnly>

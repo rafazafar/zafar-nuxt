@@ -8,8 +8,6 @@ defineProps({
   }
 })
 
-const { t } = useI18n()
-
 useHead({
   htmlAttrs: {
     lang: 'en'
@@ -17,11 +15,9 @@ useHead({
 })
 
 useSeoMeta({
-  title: t('common.pageNotFound'),
+  title: 'Page not found',
   description: 'We are sorry but this page could not be found.'
 })
-
-const navLinks = useNavLinks()
 
 const [{ data: navigation }, { data: files }] = await Promise.all([
   useAsyncData('navigation', () => {

@@ -18,11 +18,7 @@ defineProps<{
         linkLeadingIcon: 'hidden'
       }"
     >
-      <template #list-leading>
-        <UContentSearchButton size="xs" />
-      </template>
       <template #list-trailing>
-        <LanguageSelector />
         <ColorModeButton />
       </template>
     </UNavigationMenu>

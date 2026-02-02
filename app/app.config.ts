@@ -1,21 +1,19 @@
 export default defineAppConfig({
   global: {
     picture: {
-      dark: 'https://r2.zafar.dev/img/lei.png',
-      light: 'https://r2.zafar.dev/img/profile.jpg',
+      dark: 'https://images.unsplash.com/photo-1701615004837-40d8573b6652?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      light: 'https://images.unsplash.com/photo-1701615004837-40d8573b6652?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
       alt: 'My profile picture'
     },
-    meetingLink: 'https://cal.com/zafar',
-    email: 'hello@zafar.dev',
+    meetingLink: 'https://cal.com/',
+    email: 'ui-pro@nuxt.com',
     available: true
   },
   ui: {
     colors: {
-      primary: 'cyan',
+      primary: 'blue',
       neutral: 'neutral'
-    }
-  },
-  uiPro: {
+    },
     pageHero: {
       slots: {
         container: 'py-18 sm:py-24 lg:py-32',
@@ -25,25 +23,23 @@ export default defineAppConfig({
     }
   },
   footer: {
-    credits: `Copyright © Zafar`,
+    credits: `Built with Nuxt UI • © ${new Date().getFullYear()}`,
     colorMode: false,
-    links: [
-      {
-        'icon': 'i-simple-icons-linkedin',
-        'to': 'https://linkedin.com/in/rafazafar/',
-        'target': '_blank',
-        'aria-label': 'rafazafar on LinkedIn'
-      },
-      {
-        'icon': 'i-simple-icons-x',
-        'to': 'https://x.com/rafazafar',
-        'target': '_blank',
-        'aria-label': 'rafazafar on X'
-      }, {
-        'icon': 'i-simple-icons-github',
-        'to': 'https://github.com/rafazafar',
-        'target': '_blank',
-        'aria-label': 'rafazafar on GitHub'
-      }]
+    links: [{
+      'icon': 'i-simple-icons-discord',
+      'to': 'https://go.nuxt.com/discord',
+      'target': '_blank',
+      'aria-label': 'Nuxt on Discord'
+    }, {
+      'icon': 'i-simple-icons-x',
+      'to': 'https://go.nuxt.com/x',
+      'target': '_blank',
+      'aria-label': 'Nuxt on X'
+    }, {
+      'icon': 'i-simple-icons-github',
+      'to': 'https://github.com/nuxt/ui',
+      'target': '_blank',
+      'aria-label': 'Nuxt UI on GitHub'
+    }]
   }
 })

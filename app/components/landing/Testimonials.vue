@@ -8,7 +8,6 @@ defineProps<{
 
 <template>
   <UPageSection
-    v-if="page?.testimonials"
     :ui="{
       container: 'px-0 !pt-0'
     }"
@@ -20,7 +19,7 @@ defineProps<{
       loop
       dots
       :ui="{
-        viewport: '-mx-4 sm:-mx-12 lg:-mx-16 bg-elevated/50'
+        viewport: '-mx-4 sm:-mx-12 lg:-mx-16 bg-elevated/50 max-w-(--ui-container)'
       }"
     >
       <UPageCTA

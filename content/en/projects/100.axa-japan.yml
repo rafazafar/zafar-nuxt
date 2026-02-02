@@ -1,7 +1,0 @@
-title: AXA Internal Tools
-description: Designed and developed softare to introspect complex legacy Japanese ETL systems
-image: https://r2.zafar.dev/img/axa/flow-tools.png
-url: "https://axa.co.jp"
-tags: ["Development"]
-techStack: ["React", "Vite", "Springboot", "PySpark"]
-date: "2024"

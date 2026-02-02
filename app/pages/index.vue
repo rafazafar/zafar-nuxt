@@ -1,11 +1,7 @@
 <script setup lang="ts">
-const { locale } = useI18n()
-
-const { data: page } = await useAsyncData(`index-${locale.value}`, async () => {
-  const collection = locale.value === 'en' ? 'content_en' : `content_${locale.value}` as keyof Collections
-  return await queryCollection(collection).first()
+const { data: page } = await useAsyncData('index', () => {
+  return queryCollection('index').first()
 })
-
 if (!page.value) {
   throw createError({
     statusCode: 404,
@@ -15,10 +11,10 @@ if (!page.value) {
 }
 
 useSeoMeta({
-  title: page.value?.seo?.title || page.value?.title,
-  ogTitle: page.value?.seo?.title || page.value?.title,
-  description: page.value?.seo?.description || page.value?.description,
-  ogDescription: page.value?.seo?.description || page.value?.description
+  title: page.value?.seo.title || page.value?.title,
+  ogTitle: page.value?.seo.title || page.value?.title,
+  description: page.value?.seo.description || page.value?.description,
+  ogDescription: page.value?.seo.description || page.value?.description
 })
 </script>
 
