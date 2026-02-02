@@ -34,156 +34,98 @@ const createTestimonialSchema = () => z.object({
   author: createAuthorSchema()
 })
 
-const commonSchema = z.union([
-  // Index page schema
-  z.object({
-    hero: z.object({
-      links: z.array(createButtonSchema()),
-      images: z.array(createImageSchema())
-    }),
-    about: createBaseSchema(),
-    experience: createBaseSchema().extend({
-      items: z.array(z.object({
-        date: z.date(),
-        position: z.string(),
-        company: z.object({
-          name: z.string(),
-          url: z.string(),
-          logo: z.string().editor({ input: 'icon' }),
-          color: z.string()
-        })
-      }))
-    }),
-    testimonials: z.array(createTestimonialSchema()),
-    blog: createBaseSchema(),
-    faq: createBaseSchema().extend({
-      categories: z.array(
-        z.object({
-          title: z.string().nonempty(),
-          questions: z.array(
-            z.object({
-              label: z.string().nonempty(),
-              content: z.string().nonempty()
-            })
-          )
-        }))
-    })
-  }),
-  // Blog post schema
-  z.object({
-    minRead: z.number(),
-    date: z.date(),
-    image: z.string().nonempty().editor({ input: 'media' }),
-    author: createAuthorSchema()
-  }),
-  // Project schema
-  z.object({
-    title: z.string().nonempty(),
-    description: z.string().nonempty(),
-    image: z.string().nonempty().editor({ input: 'media' }),
-    url: z.string().nonempty(),
-    tags: z.array(z.string()),
-    date: z.date(),
-    alt: z.string().optional()
-  }),
-  // Page schema
-  z.object({
-    links: z.array(createButtonSchema())
-  }),
-  // Speaking schema
-  z.object({
-    links: z.array(createButtonSchema()),
-    events: z.array(z.object({
-      category: z.enum(['Live talk', 'Podcast', 'Conference']),
-      title: z.string(),
-      date: z.date(),
-      location: z.string(),
-      url: z.string().optional()
-    }))
-  }),
-  // About schema
-  z.object({
-    content: z.object({}),
-    images: z.array(createImageSchema())
-  })
-])
-
 export default defineContentConfig({
   collections: {
-    blog: defineCollection({
+    index: defineCollection({
       type: 'page',
-      source: { include: 'en/blog/**', prefix: '/blog' },
-      schema: commonSchema
-    }),
-    blog_de: defineCollection({
-      type: 'page',
-      source: { include: 'de/blog/**', prefix: '/blog' },
-      schema: commonSchema
-    }),
-    blog_ja: defineCollection({
-      type: 'page',
-      source: { include: 'ja/blog/**', prefix: '/blog' },
-      schema: commonSchema
+      source: 'index.yml',
+      schema: z.object({
+        hero: z.object({
+          links: z.array(createButtonSchema()),
+          images: z.array(createImageSchema())
+        }),
+        about: createBaseSchema(),
+        experience: createBaseSchema().extend({
+          items: z.array(z.object({
+            date: z.date(),
+            position: z.string(),
+            company: z.object({
+              name: z.string(),
+              url: z.string(),
+              logo: z.string().editor({ input: 'icon' }),
+              color: z.string()
+            })
+          }))
+        }),
+        testimonials: z.array(createTestimonialSchema()),
+        blog: createBaseSchema(),
+        faq: createBaseSchema().extend({
+          categories: z.array(
+            z.object({
+              title: z.string().nonempty(),
+              questions: z.array(
+                z.object({
+                  label: z.string().nonempty(),
+                  content: z.string().nonempty()
+                })
+              )
+            }))
+        })
+      })
     }),
     projects: defineCollection({
-      type: 'page',
-      source: { include: 'en/projects/**', prefix: '/projects' },
-      schema: commonSchema
+      type: 'data',
+      source: 'projects/*.yml',
+      schema: z.object({
+        title: z.string().nonempty(),
+        description: z.string().nonempty(),
+        image: z.string().nonempty().editor({ input: 'media' }),
+        url: z.string().nonempty(),
+        tags: z.array(z.string()),
+        date: z.date()
+      })
     }),
-    projects_de: defineCollection({
+    blog: defineCollection({
       type: 'page',
-      source: { include: 'de/projects/**', prefix: '/projects' },
-      schema: commonSchema
+      source: 'blog/*.md',
+      schema: z.object({
+        minRead: z.number(),
+        date: z.date(),
+        image: z.string().nonempty().editor({ input: 'media' }),
+        author: createAuthorSchema()
+      })
     }),
-    projects_ja: defineCollection({
+    pages: defineCollection({
       type: 'page',
-      source: { include: 'ja/projects/**', prefix: '/projects' },
-      schema: commonSchema
+      source: [
+        { include: 'projects.yml' },
+        { include: 'blog.yml' }
+      ],
+      schema: z.object({
+        links: z.array(createButtonSchema())
+      })
     }),
     speaking: defineCollection({
       type: 'page',
-      source: { include: 'en/speaking/**', prefix: '/speaking' },
-      schema: commonSchema
-    }),
-    speaking_de: defineCollection({
-      type: 'page',
-      source: { include: 'de/speaking/**', prefix: '/speaking' },
-      schema: commonSchema
-    }),
-    speaking_ja: defineCollection({
-      type: 'page',
-      source: { include: 'ja/speaking/**', prefix: '/speaking' },
-      schema: commonSchema
+      source: 'speaking.yml',
+      schema: z.object({
+        links: z.array(createButtonSchema()),
+        events: z.array(z.object({
+          category: z.enum(['Live talk', 'Podcast', 'Conference']),
+          title: z.string(),
+          date: z.date(),
+          location: z.string(),
+          url: z.string().optional()
+        }))
+      })
     }),
     about: defineCollection({
       type: 'page',
-      source: { include: 'en/about/**', prefix: '/about' },
-      schema: commonSchema
-    }),
-    about_de: defineCollection({
-      type: 'page',
-      source: { include: 'de/about/**', prefix: '/about' },
-      schema: commonSchema
-    }),
-    about_ja: defineCollection({
-      type: 'page',
-      source: { include: 'ja/about/**', prefix: '/about' },
-      schema: commonSchema
-    }),
-    content_en: defineCollection({
-      type: 'page',
-      source: { include: 'en/index.yml', prefix: '' },
-      schema: commonSchema
-    }),
-    content_de: defineCollection({
-      type: 'page',
-      source: { include: 'de/index.yml', prefix: '' },
-      schema: commonSchema
-    }),
-    content_ja: defineCollection({
-      type: 'page',
-      source: { include: 'ja/index.yml', prefix: '' },
-      schema: commonSchema
+      source: 'about.yml',
+      schema: z.object({
+        content: z.object({}),
+        images: z.array(createImageSchema())
+      })
     })
   }
 })

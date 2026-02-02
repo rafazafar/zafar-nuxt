@@ -8,7 +8,6 @@ defineProps<{
 
 <template>
   <UPageSection
-    v-if="page?.about"
     :title="page.about.title"
     :description="page.about.description"
     :ui="{

@@ -1,9 +1,6 @@
 <script setup lang="ts">
-const { locale } = useI18n()
-
-const { data: page } = await useAsyncData(`about-${locale.value}`, async () => {
-  const collection = `content_${locale.value}` as keyof Collections
-  return await queryCollection(collection).path('/about').first()
+const { data: page } = await useAsyncData('about', () => {
+  return queryCollection('about').first()
 })
 if (!page.value) {
   throw createError({
@@ -41,7 +38,6 @@ useSeoMeta({
         :light="global.picture?.light!"
         :dark="global.picture?.dark!"
         :alt="global.picture?.alt!"
-        size="2xl"
       />
     </UPageHero>
     <UPageSection

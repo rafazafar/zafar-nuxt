@@ -1,26 +1,24 @@
 <script setup lang="ts">
 import type { ContentNavigationItem } from '@nuxt/content'
-import { findPageBreadcrumb, mapContentNavigation } from '#ui-pro/utils/content'
+import { mapContentNavigation } from '@nuxt/ui/utils/content'
+import { findPageBreadcrumb } from '@nuxt/content/utils'
 
 const route = useRoute()
-const { locale } = useI18n()
 
-const { data: page } = await useAsyncData(`${route.path}-${locale.value}`, async () => {
-  const collection = `content_${locale.value}` as keyof Collections
-  return await queryCollection(collection).path(route.path).first()
-})
+const { data: page } = await useAsyncData(route.path, () =>
+  queryCollection('blog').path(route.path).first()
+)
 if (!page.value) throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
-const { data: surround } = await useAsyncData(`${route.path}-surround-${locale.value}`, async () => {
-  const collection = `content_${locale.value}` as keyof Collections
-  return await queryCollectionItemSurroundings(collection, route.path, {
+const { data: surround } = await useAsyncData(`${route.path}-surround`, () =>
+  queryCollectionItemSurroundings('blog', route.path, {
     fields: ['description']
   })
-})
+)
 
 const navigation = inject<Ref<ContentNavigationItem[]>>('navigation', ref([]))
 const blogNavigation = computed(() => navigation.value.find(item => item.path === '/blog')?.children || [])
 
-const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(blogNavigation?.value, page.value)).map(({ icon, ...link }) => link))
+const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(blogNavigation?.value, page.value?.path)).map(({ icon, ...link }) => link))
 
 if (page.value.image) {
   defineOgImage({ url: page.value.image })
@@ -42,9 +40,9 @@ useSeoMeta({
   ogTitle: title
 })
 
-const articleLink = computed(() => `${window.location}${route.path}`)
+const articleLink = computed(() => `${window?.location}`)
 
-const formatDate = (dateString: Date) => {
+const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',
