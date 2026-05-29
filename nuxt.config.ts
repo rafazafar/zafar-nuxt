@@ -19,6 +19,15 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  vite: {
+    build: {
+      // Saves memory + faster builds on Cloudflare (sourcemaps are rarely needed in prod)
+      sourcemap: false,
+      // You can tune this if you keep getting chunk warnings
+      chunkSizeWarningLimit: 1000
+    }
+  },
+
   compatibilityDate: '2025-04-01',
 
   nitro: {
@@ -36,8 +45,14 @@ export default defineNuxtConfig({
       }
     },
     routeRules: {
-      '/blog/*': { ssr: false, static: true }
-    }
+      '/blog/*': { ssr: false, static: true },
+      // Prevent OOM on Cloudflare Pages: @nuxt/content v3 auto-prerenders massive
+      // full SQLite dumps (/__nuxt_content/*/sql_dump.txt) for every collection.
+      // These are only needed for the optional LLM/llms.txt export feature.
+      '/__nuxt_content/**': { prerender: false, robots: false }
+    },
+    // Reduce memory pressure during the heavy cloudflare-module server bundling
+    minify: true
   },
 
   eslint: {
