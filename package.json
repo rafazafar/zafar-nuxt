@@ -6,7 +6,7 @@
   "scripts": {
     "build": "NODE_OPTIONS='--max-old-space-size=8192' nuxt build",
     "dev": "nuxt dev",
-    "generate": "nuxt generate",
+    "generate": "NODE_OPTIONS='--max-old-space-size=8192' nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
@@ -14,22 +14,24 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.48",
-    "@iconify-json/simple-icons": "^1.2.38",
-    "@nuxt/content": "^3.6.0",
-    "@nuxt/image": "^1.10.0",
+    "@iconify-json/lucide": "^1.2.111",
+    "@iconify-json/simple-icons": "^1.2.85",
+    "@nuxt/content": "^3.14.0",
+    "@nuxt/image": "^2.0.0",
     "@nuxt/ui": "^4.8.2",
     "@nuxtjs/i18n": "^10.0.3",
-    "@vueuse/nuxt": "^13.3.0",
-    "caniuse-lite": "^1.0.30001799",
-    "motion-v": "^1.2.1",
-    "nuxt": "^4.1.0",
-    "nuxt-og-image": "^5.1.6",
-    "tailwindcss": "^4.1.10"
+    "@takumi-rs/core": "^1.7.0",
+    "@vueuse/nuxt": "^14.3.0",
+    "motion-v": "^2.2.1",
+    "nuxt": "^4.4.8",
+    "nuxt-og-image": "^6.5.2",
+    "tailwindcss": "^4.3.0"
   },
   "devDependencies": {
-    "@nuxt/eslint": "^1.4.1",
-    "eslint": "^9.29.0"
+    "@nuxt/eslint": "^1.15.2",
+    "eslint": "^10.4.1",
+    "typescript": "^6.0.3",
+    "vue-tsc": "^3.3.3"
   },
   "packageManager": "bun@1.2.10"
 }

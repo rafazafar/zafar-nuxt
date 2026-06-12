@@ -152,32 +152,32 @@ export default defineContentConfig({
     }),
     speaking: defineCollection({
       type: 'page',
-      source: { include: 'en/speaking/**', prefix: '/speaking' },
+      source: { include: 'en/speaking.yml', prefix: '/speaking' },
       schema: speakingSchema
     }),
     speaking_de: defineCollection({
       type: 'page',
-      source: { include: 'de/speaking/**', prefix: '/speaking' },
+      source: { include: 'de/speaking.yml', prefix: '/speaking' },
       schema: speakingSchema
     }),
     speaking_ja: defineCollection({
       type: 'page',
-      source: { include: 'ja/speaking/**', prefix: '/speaking' },
+      source: { include: 'ja/speaking.yml', prefix: '/speaking' },
       schema: speakingSchema
     }),
     about: defineCollection({
       type: 'page',
-      source: { include: 'en/about/**', prefix: '/about' },
+      source: { include: 'en/about.yml', prefix: '/about' },
       schema: aboutSchema
     }),
     about_de: defineCollection({
       type: 'page',
-      source: { include: 'de/about/**', prefix: '/about' },
+      source: { include: 'de/about.yml', prefix: '/about' },
       schema: aboutSchema
     }),
     about_ja: defineCollection({
       type: 'page',
-      source: { include: 'ja/about/**', prefix: '/about' },
+      source: { include: 'ja/about.yml', prefix: '/about' },
       schema: aboutSchema
     }),
     content_en: defineCollection({

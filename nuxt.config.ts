@@ -1,3 +1,4 @@
+// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
@@ -5,6 +6,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/content',
     '@vueuse/nuxt',
+    'nuxt-og-image',
     'motion-v/nuxt',
     '@nuxtjs/i18n'
   ],
@@ -15,25 +17,23 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  content: {
+    experimental: {
+      sqliteConnector: 'native'
+    }
+  },
+
   compatibilityDate: '2026-05-26',
 
   nitro: {
-    preset: 'cloudflare_module',
+    preset: 'cloudflare-pages',
     sourceMap: false,
-    minify: false,
-    cloudflare: {
-      deployConfig: true,
-      nodeCompat: true,
-      wrangler: {
-        observability: {
-          logs: {
-            enabled: true
-          }
-        }
-      }
+    prerender: {
+      routes: ['/'],
+      crawlLinks: true
     },
     routeRules: {
-      '/blog/*': { ssr: false, static: true },
+      '/blog/**': { prerender: true },
       '/__nuxt_content/**': { prerender: false },
       '/sw.js': { prerender: false }
     }
@@ -53,6 +53,10 @@ export default defineNuxtConfig({
         braceStyle: '1tbs'
       }
     }
+  },
+
+  ogImage: {
+    zeroRuntime: true
   },
 
   i18n: {
