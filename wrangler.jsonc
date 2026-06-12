@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "zafar-nuxt",
+  "name": "rafazafar-zafar-nuxt",
+  "account_id": "e8e4e405b53eee172786886b66ed2e93",
   "compatibility_date": "2026-05-26",
   "main": "./.output/server/index.mjs",
   "assets": {
