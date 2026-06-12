@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   ],
 
   devtools: {
-    enabled: true
+    enabled: process.env.NODE_ENV === 'development'
   },
 
   css: ['~/assets/css/main.css'],
@@ -19,6 +19,7 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'cloudflare_module',
+    sourceMap: false,
     minify: false,
     cloudflare: {
       deployConfig: true,
