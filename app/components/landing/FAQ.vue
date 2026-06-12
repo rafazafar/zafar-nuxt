@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { IndexCollectionItem } from '@nuxt/content'
+import type { ContentEnCollectionItem } from '@nuxt/content'
 
 const props = defineProps<{
-  page: IndexCollectionItem
+  page: ContentEnCollectionItem
 }>()
 
 const items = computed(() => {
-  return props.page.faq?.categories.map((faq) => {
+  return props.page.faq?.categories.map((faq: { title: string, questions: { label: string, content: string }[] }) => {
     return {
       label: faq.title,
       key: faq.title.toLowerCase(),
@@ -52,7 +52,7 @@ const ui = {
         >
           <template #body="{ item: _item }">
             <MDC
-              :value="_item.content"
+              :value="(_item as { content: string }).content"
               unwrap="p"
               class="px-4"
             />

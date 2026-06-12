@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { IndexCollectionItem } from '@nuxt/content'
+import type { ContentEnCollectionItem } from '@nuxt/content'
 
 const { footer, global } = useAppConfig()
 
 defineProps<{
-  page: IndexCollectionItem
+  page: ContentEnCollectionItem
 }>()
 </script>
 

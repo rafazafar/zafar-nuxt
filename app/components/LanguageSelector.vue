@@ -5,14 +5,14 @@ const availableLocales = computed(() => {
   return locales.value.filter(l => l.code !== locale.value)
 })
 
-const switchLanguage = async (code: string) => {
+const switchLanguage = async (code: 'en' | 'ja' | 'de') => {
   await setLocale(code)
 }
 
-const items = computed(() => 
+const items = computed(() =>
   availableLocales.value.map(locale => ({
     label: locale.name,
-    click: () => switchLanguage(locale.code)
+    click: () => switchLanguage(locale.code as 'en' | 'ja' | 'de')
   }))
 )
 </script>

@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { Collections, SpeakingCollectionItem } from '@nuxt/content'
+
 type Event = {
   title: string
-  date: Date
+  date: string
   location: string
   url?: string
   category: 'Conference' | 'Live talk' | 'Podcast'
@@ -10,8 +12,8 @@ type Event = {
 const { locale } = useI18n()
 
 const { data: page } = await useAsyncData(`speaking-${locale.value}`, async () => {
-  const collection = `content_${locale.value}` as keyof Collections
-  return await queryCollection(collection).path('/speaking').first()
+  const collection = (locale.value === 'en' ? 'speaking' : `speaking_${locale.value}`) as keyof Collections
+  return await queryCollection(collection).path('/speaking').first() as SpeakingCollectionItem | null
 })
 if (!page.value) {
   throw createError({
@@ -31,7 +33,7 @@ useSeoMeta({
 const { global } = useAppConfig()
 
 const groupedEvents = computed((): Record<Event['category'], Event[]> => {
-  const events = page.value?.events || []
+  const events = (page.value?.events || []) as Event[]
   const grouped: Record<Event['category'], Event[]> = {
     'Conference': [],
     'Live talk': [],
@@ -43,7 +45,7 @@ const groupedEvents = computed((): Record<Event['category'], Event[]> => {
   return grouped
 })
 
-function formatDate(dateString: Date): string {
+function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
 }
 </script>

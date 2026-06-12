@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import type { ContentNavigationItem } from '@nuxt/content'
+import type { Collections, BlogCollectionItem, ContentNavigationItem } from '@nuxt/content'
 import { findPageBreadcrumb, mapContentNavigation } from '#ui-pro/utils/content'
 
 const route = useRoute()
 const { locale } = useI18n()
 
 const { data: page } = await useAsyncData(`${route.path}-${locale.value}`, async () => {
-  const collection = `content_${locale.value}` as keyof Collections
-  return await queryCollection(collection).path(route.path).first()
+  const collection = (locale.value === 'en' ? 'blog' : `blog_${locale.value}`) as keyof Collections
+  return await queryCollection(collection).path(route.path).first() as BlogCollectionItem | null
 })
 if (!page.value) throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
 const { data: surround } = await useAsyncData(`${route.path}-surround-${locale.value}`, async () => {
-  const collection = `content_${locale.value}` as keyof Collections
+  const collection = (locale.value === 'en' ? 'blog' : `blog_${locale.value}`) as keyof Collections
   return await queryCollectionItemSurroundings(collection, route.path, {
     fields: ['description']
   })
@@ -20,17 +20,7 @@ const { data: surround } = await useAsyncData(`${route.path}-surround-${locale.v
 const navigation = inject<Ref<ContentNavigationItem[]>>('navigation', ref([]))
 const blogNavigation = computed(() => navigation.value.find(item => item.path === '/blog')?.children || [])
 
-const breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(blogNavigation?.value, page.value)).map(({ icon, ...link }) => link))
-
-if (page.value.image) {
-  defineOgImage({ url: page.value.image })
-} else {
-  defineOgImageComponent('Blog', {
-    headline: breadcrumb.value.map(item => item.label).join(' > ')
-  }, {
-    fonts: ['Geist:400', 'Geist:600']
-  })
-}
+const _breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(blogNavigation?.value, page.value)).map(({ icon, ...link }) => link))
 
 const title = page.value?.seo?.title || page.value?.title
 const description = page.value?.seo?.description || page.value?.description
@@ -44,7 +34,7 @@ useSeoMeta({
 
 const articleLink = computed(() => `${window.location}${route.path}`)
 
-const formatDate = (dateString: Date) => {
+const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'short',

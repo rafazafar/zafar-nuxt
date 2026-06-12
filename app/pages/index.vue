@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import type { Collections, ContentEnCollectionItem } from '@nuxt/content'
+
 const { locale } = useI18n()
 
 const { data: page } = await useAsyncData(`index-${locale.value}`, async () => {
-  const collection = locale.value === 'en' ? 'content_en' : `content_${locale.value}` as keyof Collections
-  return await queryCollection(collection).first()
+  const collection = `content_${locale.value}` as keyof Collections
+  return await queryCollection(collection).first() as ContentEnCollectionItem | null
 })
 
 if (!page.value) {

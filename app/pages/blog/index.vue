@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import type { Collections, ContentEnCollectionItem, BlogCollectionItem } from '@nuxt/content'
+
 const { locale } = useI18n()
 
 const { data: page } = await useAsyncData(`blog-page-${locale.value}`, async () => {
   const collection = `content_${locale.value}` as keyof Collections
-  return await queryCollection(collection).first()
+  return await queryCollection(collection).first() as ContentEnCollectionItem | null
 })
 if (!page.value) {
   throw createError({
@@ -13,9 +15,9 @@ if (!page.value) {
   })
 }
 const { data: posts } = await useAsyncData(`blogs-${locale.value}`, async () => {
-  const collection = locale.value === 'en' ? 'blog' : `blog_${locale.value}` as keyof Collections
-  const allContent = await queryCollection(collection).all()
-  return allContent.sort((a, b) => new Date(b.date) - new Date(a.date))
+  const collection = (locale.value === 'en' ? 'blog' : `blog_${locale.value}`) as keyof Collections
+  const allContent = await queryCollection(collection).all() as BlogCollectionItem[]
+  return allContent.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 })
 if (!posts.value) {
   throw createError({
@@ -38,7 +40,7 @@ useSeoMeta({
     <UPageHero
       :title="page.title"
       :description="page.description"
-      :links="page.links"
+      :links="page.blog ? [] : undefined"
       :ui="{
         title: '!mx-0 text-left',
         description: '!mx-0 text-left',

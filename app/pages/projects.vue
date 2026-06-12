@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import type { Collections, ProjectsCollectionItem } from '@nuxt/content'
+
 const { locale } = useI18n()
 
 const { data: page } = await useAsyncData(`projects-page-${locale.value}`, async () => {
-  const collection = locale.value === 'en' ? 'projects' : `projects_${locale.value}` as keyof Collections
-  return await queryCollection(collection).first()
+  const collection = (locale.value === 'en' ? 'projects' : `projects_${locale.value}`) as keyof Collections
+  return await queryCollection(collection).first() as ProjectsCollectionItem | null
 })
 if (!page.value) {
   throw createError({
@@ -14,8 +16,9 @@ if (!page.value) {
 }
 
 const { data: projects } = await useAsyncData(`projects-${locale.value}`, async () => {
-  const collection = locale.value === 'en' ? 'projects' : `projects_${locale.value}` as keyof Collections
-  return await queryCollection(collection).all().sort((a, b) => new Date(b.date) - new Date(a.date))
+  const collection = (locale.value === 'en' ? 'projects' : `projects_${locale.value}`) as keyof Collections
+  const allContent = await queryCollection(collection).all() as ProjectsCollectionItem[]
+  return allContent.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 })
 
 const { global } = useAppConfig()
@@ -33,7 +36,6 @@ useSeoMeta({
     <UPageHero
       :title="page.title"
       :description="page.description"
-      :links="page.links"
       :ui="{
         title: '!mx-0 text-left',
         description: '!mx-0 text-left',
@@ -42,17 +44,17 @@ useSeoMeta({
     >
       <template #links>
         <div
-          v-if="page.links"
+          v-if="(page as any).links"
           class="flex items-center gap-2"
         >
           <UButton
-            :label="page.links[0]?.label"
+            :label="(page as any).links[0]?.label"
             :to="global.meetingLink"
-            v-bind="page.links[0]"
+            v-bind="(page as any).links[0]"
           />
           <UButton
             :to="`mailto:${global.email}`"
-            v-bind="page.links[1]"
+            v-bind="(page as any).links[1]"
           />
         </div>
       </template>
