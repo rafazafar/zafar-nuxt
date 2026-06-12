@@ -6,6 +6,7 @@ defineProps<{
 }>()
 
 const { locale } = useI18n()
+const localePath = useLocalePath()
 
 const { data: posts } = await useAsyncData(`index-blogs-${locale.value}`, async () => {
   const collection = (locale.value === 'en' ? 'blog' : `blog_${locale.value}`) as keyof Collections
@@ -13,6 +14,8 @@ const { data: posts } = await useAsyncData(`index-blogs-${locale.value}`, async 
   return allContent
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 3)
+}, {
+  watch: [locale]
 })
 if (!posts.value) {
   throw createError({ statusCode: 404, statusMessage: 'blogs posts not found', fatal: true })
@@ -40,7 +43,7 @@ if (!posts.value) {
         orientation="horizontal"
         variant="naked"
         v-bind="post"
-        :to="post.path"
+        :to="localePath(post.path)"
         :ui="{
           root: 'group relative lg:items-start lg:flex ring-0 hover:ring-0',
           body: '!px-0',

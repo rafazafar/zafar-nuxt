@@ -2,6 +2,7 @@
 import type { ContentEnCollectionItem } from '@nuxt/content'
 
 const { footer, global } = useAppConfig()
+const localePath = useLocalePath()
 
 defineProps<{
   page: ContentEnCollectionItem
@@ -179,7 +180,7 @@ defineProps<{
           delay: index * 0.1
         }"
       >
-        <NuxtLink :to="img.link ?? '#'">
+        <NuxtLink :to="img.link ? localePath(img.link) : '#'">
           <img
             width="234"
             height="234"

@@ -2,18 +2,27 @@
 import type { Collections, BlogCollectionItem } from '@nuxt/content'
 
 const route = useRoute()
-const { locale } = useI18n()
+const { locale, t } = useI18n()
+const localePath = useLocalePath()
+
+const contentPath = computed(() => stripLocaleFromPath(route.path, locale.value))
 
 const { data: page } = await useAsyncData(`${route.path}-${locale.value}`, async () => {
   const collection = (locale.value === 'en' ? 'blog' : `blog_${locale.value}`) as keyof Collections
-  return await queryCollection(collection).path(route.path).first() as BlogCollectionItem | null
+  return await queryCollection(collection).path(contentPath.value).first() as BlogCollectionItem | null
+}, {
+  watch: [locale, contentPath]
 })
+
 if (!page.value) throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
+
 const { data: surround } = await useAsyncData(`${route.path}-surround-${locale.value}`, async () => {
   const collection = (locale.value === 'en' ? 'blog' : `blog_${locale.value}`) as keyof Collections
-  return await queryCollectionItemSurroundings(collection, route.path, {
+  return await queryCollectionItemSurroundings(collection, contentPath.value, {
     fields: ['description']
   })
+}, {
+  watch: [locale, contentPath]
 })
 
 const title = page.value?.seo?.title || page.value?.title
@@ -29,7 +38,7 @@ useSeoMeta({
 const articleLink = computed(() => `${window.location}${route.path}`)
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
+  return new Date(dateString).toLocaleDateString(locale.value, {
     year: 'numeric',
     month: 'short',
     day: 'numeric'
@@ -42,11 +51,11 @@ const formatDate = (dateString: string) => {
     <UContainer class="relative min-h-screen">
       <UPage v-if="page">
         <ULink
-          to="/blog"
+          :to="localePath('/blog')"
           class="text-sm flex items-center gap-1"
         >
           <UIcon name="lucide:chevron-left" />
-          Blog
+          {{ t('nav.blog') }}
         </ULink>
         <div class="flex flex-col gap-3 mt-8">
           <div class="flex text-xs text-muted items-center justify-center gap-2">

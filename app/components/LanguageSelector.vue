@@ -1,12 +1,13 @@
 <script setup lang="ts">
-const { locale, locales, setLocale } = useI18n()
+const { locale, locales } = useI18n()
+const switchLocalePath = useSwitchLocalePath()
 
 const availableLocales = computed(() => {
   return locales.value.filter(l => l.code !== locale.value)
 })
 
-const switchLanguage = async (code: 'en' | 'ja' | 'de') => {
-  await setLocale(code)
+const switchLanguage = (code: 'en' | 'ja' | 'de') => {
+  return navigateTo(switchLocalePath(code))
 }
 
 const items = computed(() =>

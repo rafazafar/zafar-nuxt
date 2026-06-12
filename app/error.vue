@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Collections } from '@nuxt/content'
 import type { NuxtError } from '#app'
 
 defineProps({
@@ -8,11 +9,11 @@ defineProps({
   }
 })
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 useHead({
   htmlAttrs: {
-    lang: 'en'
+    lang: () => locale.value
   }
 })
 
@@ -24,19 +25,23 @@ useSeoMeta({
 const navLinks = useNavLinks()
 
 const [{ data: navigation }, { data: files }] = await Promise.all([
-  useAsyncData('navigation', () => {
+  useAsyncData(`navigation-${locale.value}`, () => {
+    const collection = `content_${locale.value}` as keyof Collections
     return Promise.all([
-      queryCollectionNavigation('blog')
+      queryCollectionNavigation(collection)
     ])
   }, {
+    watch: [locale],
     transform: data => data.flat()
   }),
-  useLazyAsyncData('search', () => {
+  useLazyAsyncData(`search-${locale.value}`, () => {
+    const collection = `content_${locale.value}` as keyof Collections
     return Promise.all([
-      queryCollectionSearchSections('blog')
+      queryCollectionSearchSections(collection)
     ])
   }, {
     server: false,
+    watch: [locale],
     transform: data => data.flat()
   })
 ])

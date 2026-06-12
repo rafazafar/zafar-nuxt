@@ -14,6 +14,8 @@ const { locale } = useI18n()
 const { data: page } = await useAsyncData(`speaking-${locale.value}`, async () => {
   const collection = (locale.value === 'en' ? 'speaking' : `speaking_${locale.value}`) as keyof Collections
   return await queryCollection(collection).first() as SpeakingCollectionItem | null
+}, {
+  watch: [locale]
 })
 if (!page.value) {
   throw createError({

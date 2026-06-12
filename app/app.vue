@@ -15,7 +15,7 @@ useHead({
     { rel: 'icon', href: '/favicon.ico' }
   ],
   htmlAttrs: {
-    lang: 'en'
+    lang: () => locale.value
   }
 })
 
@@ -35,6 +35,7 @@ const [{ data: navigation }, { data: files }] = await Promise.all([
       queryCollectionNavigation(collection)
     ])
   }, {
+    watch: [locale],
     transform: data => data.flat()
   }),
   useLazyAsyncData(`search-${locale.value}`, () => {
@@ -44,6 +45,7 @@ const [{ data: navigation }, { data: files }] = await Promise.all([
     ])
   }, {
     server: false,
+    watch: [locale],
     transform: data => data.flat()
   })
 ])

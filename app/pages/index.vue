@@ -6,6 +6,8 @@ const { locale } = useI18n()
 const { data: page } = await useAsyncData(`index-${locale.value}`, async () => {
   const collection = `content_${locale.value}` as keyof Collections
   return await queryCollection(collection).first() as ContentEnCollectionItem | null
+}, {
+  watch: [locale]
 })
 
 if (!page.value) {

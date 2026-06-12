@@ -6,6 +6,8 @@ const { locale } = useI18n()
 const { data: page } = await useAsyncData(`projects-page-${locale.value}`, async () => {
   const collection = (locale.value === 'en' ? 'projects' : `projects_${locale.value}`) as keyof Collections
   return await queryCollection(collection).first() as ProjectsCollectionItem | null
+}, {
+  watch: [locale]
 })
 if (!page.value) {
   throw createError({
@@ -19,6 +21,8 @@ const { data: projects } = await useAsyncData(`projects-${locale.value}`, async 
   const collection = (locale.value === 'en' ? 'projects' : `projects_${locale.value}`) as keyof Collections
   const allContent = await queryCollection(collection).all() as ProjectsCollectionItem[]
   return allContent.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+}, {
+  watch: [locale]
 })
 
 const { global } = useAppConfig()

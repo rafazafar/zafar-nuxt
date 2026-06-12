@@ -2,10 +2,13 @@
 import type { Collections, ContentEnCollectionItem, BlogCollectionItem } from '@nuxt/content'
 
 const { locale } = useI18n()
+const localePath = useLocalePath()
 
 const { data: page } = await useAsyncData(`blog-page-${locale.value}`, async () => {
   const collection = `content_${locale.value}` as keyof Collections
   return await queryCollection(collection).first() as ContentEnCollectionItem | null
+}, {
+  watch: [locale]
 })
 if (!page.value) {
   throw createError({
@@ -18,6 +21,8 @@ const { data: posts } = await useAsyncData(`blogs-${locale.value}`, async () => 
   const collection = (locale.value === 'en' ? 'blog' : `blog_${locale.value}`) as keyof Collections
   const allContent = await queryCollection(collection).all() as BlogCollectionItem[]
   return allContent.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+}, {
+  watch: [locale]
 })
 if (!posts.value) {
   throw createError({
@@ -64,7 +69,7 @@ useSeoMeta({
           <UBlogPost
             variant="naked"
             orientation="horizontal"
-            :to="post.path"
+            :to="localePath(post.path)"
             v-bind="post"
             :ui="{
               root: 'md:grid md:grid-cols-2 group overflow-visible transition-all duration-300',
