@@ -18,8 +18,8 @@ const items = computed(() =>
 </script>
 
 <template>
-  <UDropdown
-    :items="[items]"
+  <UDropdownMenu
+    :items="items"
   >
     <UButton
       :icon="'i-lucide-globe'"
@@ -28,5 +28,5 @@ const items = computed(() =>
       variant="ghost"
       :aria-label="$t('ui.selectLanguage')"
     />
-  </UDropdown>
+  </UDropdownMenu>
 </template>

@@ -2,7 +2,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxt/image',
-    '@nuxt/ui-pro',
+    '@nuxt/ui',
     '@nuxt/content',
     '@vueuse/nuxt',
     'motion-v/nuxt',
@@ -15,7 +15,28 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
-  compatibilityDate: '2025-04-01',
+  compatibilityDate: '2026-05-26',
+
+  nitro: {
+    preset: 'cloudflare_module',
+    cloudflare: {
+      deployConfig: true,
+      nodeCompat: true,
+      wrangler: {
+        observability: {
+          logs: {
+            enabled: true
+          }
+        }
+      }
+    },
+    routeRules: {
+      '/blog/*': { ssr: false, static: true },
+      '/__nuxt_content/**': { prerender: false },
+      '/sw.js': { prerender: false }
+    },
+    minify: true
+  },
 
   vite: {
     build: {

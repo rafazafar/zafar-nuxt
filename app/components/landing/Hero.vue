@@ -157,7 +157,7 @@ defineProps<{
       </div>
     </template>
 
-    <UPageMarquee
+    <UMarquee
       pause-on-hover
       class="py-2 -mx-4 sm:-mx-6 lg:-mx-8 [--duration:40s]"
     >
@@ -189,6 +189,6 @@ defineProps<{
           >
         </NuxtLink>
       </Motion>
-    </UPageMarquee>
+    </UMarquee>
   </UPageHero>
 </template>

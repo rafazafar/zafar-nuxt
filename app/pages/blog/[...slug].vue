@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import type { Collections, BlogCollectionItem, ContentNavigationItem } from '@nuxt/content'
-import { findPageBreadcrumb, mapContentNavigation } from '#ui-pro/utils/content'
+import type { Collections, BlogCollectionItem } from '@nuxt/content'
 
 const route = useRoute()
 const { locale } = useI18n()
@@ -16,11 +15,6 @@ const { data: surround } = await useAsyncData(`${route.path}-surround-${locale.v
     fields: ['description']
   })
 })
-
-const navigation = inject<Ref<ContentNavigationItem[]>>('navigation', ref([]))
-const blogNavigation = computed(() => navigation.value.find(item => item.path === '/blog')?.children || [])
-
-const _breadcrumb = computed(() => mapContentNavigation(findPageBreadcrumb(blogNavigation?.value, page.value)).map(({ icon, ...link }) => link))
 
 const title = page.value?.seo?.title || page.value?.title
 const description = page.value?.seo?.description || page.value?.description
