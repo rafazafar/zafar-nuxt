@@ -35,6 +35,16 @@ useSeoMeta({
   ogTitle: title
 })
 
+const localizedSurround = computed(() => {
+  if (!surround.value) {
+    return surround.value
+  }
+
+  return surround.value.map(item => item
+    ? { ...item, path: localePath(item.path) }
+    : item)
+})
+
 const articleLink = computed(() => `${window.location}${route.path}`)
 
 const formatDate = (dateString: string) => {
@@ -105,7 +115,7 @@ const formatDate = (dateString: string) => {
               @click="copyToClipboard(articleLink, 'Article link copied to clipboard')"
             />
           </div>
-          <UContentSurround :surround />
+          <UContentSurround :surround="localizedSurround" />
         </UPageBody>
       </UPage>
     </UContainer>
