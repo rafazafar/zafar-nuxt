@@ -19,6 +19,7 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'cloudflare_module',
+    minify: false,
     cloudflare: {
       deployConfig: true,
       nodeCompat: true,
@@ -34,8 +35,7 @@ export default defineNuxtConfig({
       '/blog/*': { ssr: false, static: true },
       '/__nuxt_content/**': { prerender: false },
       '/sw.js': { prerender: false }
-    },
-    minify: true
+    }
   },
 
   vite: {
