@@ -22,7 +22,7 @@
     "@nuxtjs/i18n": "^10.0.3",
     "@vueuse/nuxt": "^13.3.0",
     "caniuse-lite": "^1.0.30001799",
-    "motion-v": "^1.2.1",
+    "motion-v": "^2.3.0",
     "nuxt": "^4.1.0",
     "nuxt-og-image": "^5.1.6",
     "tailwindcss": "^4.1.10"
