@@ -2,6 +2,7 @@
 import type { Collections } from '@nuxt/content'
 
 const colorMode = useColorMode()
+const { locale } = useI18n()
 
 const color = computed(() => colorMode.value === 'dark' ? '#020618' : 'white')
 
@@ -25,8 +26,6 @@ useSeoMeta({
   titleTemplate: '%s - Zafar Portfolio',
   twitterCard: 'summary_large_image'
 })
-
-const { locale } = useI18n()
 
 const [{ data: navigation }, { data: files }] = await Promise.all([
   useAsyncData(`navigation-${locale.value}`, () => {
