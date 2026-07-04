@@ -27,6 +27,13 @@ const { data: projects } = await useAsyncData(`projects-${locale.value}`, async 
 
 const { global } = useAppConfig()
 
+const ctaProject = computed(() =>
+  (projects.value ?? []).find(p => p.url === global.meetingLink) ?? null
+)
+const restProjects = computed(() =>
+  (projects.value ?? []).filter(p => p.url !== global.meetingLink)
+)
+
 useSeoMeta({
   title: page.value?.seo?.title || page.value?.title,
   ogTitle: page.value?.seo?.title || page.value?.title,
@@ -69,7 +76,55 @@ useSeoMeta({
       }"
     >
       <Motion
-        v-for="(project, index) in projects"
+        v-if="ctaProject"
+        :initial="{ opacity: 0, transform: 'translateY(10px)' }"
+        :while-in-view="{ opacity: 1, transform: 'translateY(0)' }"
+        :transition="{ delay: 0 }"
+        :in-view-options="{ once: true }"
+      >
+        <UPageCard
+          :title="ctaProject.title"
+          :description="ctaProject.description"
+          :to="ctaProject.url"
+          orientation="horizontal"
+          variant="outline"
+          class="group ring-2 ring-primary/50 ring-offset-2 ring-offset-default mb-10 bg-primary/5"
+          :ui="{
+            wrapper: 'max-sm:order-last',
+            title: 'text-primary'
+          }"
+        >
+          <template #leading>
+            <span class="inline-flex items-center gap-1.5 text-sm font-medium text-primary">
+              <UIcon
+                name="i-lucide-sparkles"
+                class="size-4"
+              />
+              {{ ctaProject.alt }}
+            </span>
+          </template>
+          <template #footer>
+            <ULink
+              v-if="ctaProject.url"
+              :to="ctaProject.url"
+              class="text-sm text-primary flex items-center font-medium"
+            >
+              {{ ctaProject.alt ?? 'View Project' }}
+              <UIcon
+                name="i-lucide-arrow-right"
+                class="size-4 text-primary transition-all opacity-0 group-hover:translate-x-1 group-hover:opacity-100"
+              />
+            </ULink>
+          </template>
+          <img
+            :src="ctaProject.image"
+            :alt="ctaProject.title"
+            class="object-cover w-full h-48 rounded-lg"
+          >
+        </UPageCard>
+      </Motion>
+      <Motion
+        v-for="(project, index) in restProjects"
         :key="project.title"
         :initial="{ opacity: 0, transform: 'translateY(10px)' }"
         :while-in-view="{ opacity: 1, transform: 'translateY(0)' }"
