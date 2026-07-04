@@ -1,0 +1,8 @@
+title: Realtime Wearable Monitoring Platform
+description: Architected the Flutter, BLE, and MQTT5 realtime layer for a health-adjacent monitoring platform, including background reconnect strategy, soak-test infrastructure, and deployment profiles that tolerate local infrastructure going offline.
+image: https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1200&auto=format&fit=crop
+url: "/blog/realtime-telemetry-unreliable-local-infrastructure"
+tags: ["Flutter", "Dart", "BLE", "MQTT", "Realtime Systems", "Wearables"]
+techStack: ["Flutter", "Dart", "BLE", "MQTT5", "iOS", "Android"]
+date: "2026"
+alt: "Realtime monitoring architecture case study"
