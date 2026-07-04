@@ -1,7 +1,7 @@
 export default defineAppConfig({
   global: {
     picture: {
-      dark: 'https://r2.zafar.dev/img/lei.png',
+      dark: 'https://r2.zafar.dev/img/profile.jpg',
       light: 'https://r2.zafar.dev/img/profile.jpg',
       alt: 'My profile picture'
     },
