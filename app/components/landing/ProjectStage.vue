@@ -1,3 +1,8 @@
+<script lang="ts">
+/** Survives component remounts during the same page load. */
+let stageEntryScheduled = false
+</script>
+
 <script setup lang="ts">
 export type StageImage = {
   src: string
@@ -16,7 +21,9 @@ const active = ref<number | null>(null)
 const mobileActive = ref(0)
 const settlingIndex = ref<number | null>(null)
 const reduceMotion = ref(false)
-const entryEnabled = ref(false)
+/** pending = CSS-hidden first paint; animating = stagger in; rest = settled.
+ *  Init from module flag so SPA remounts don’t flash pending. */
+const entryState = ref<'pending' | 'animating' | 'rest'>(stageEntryScheduled ? 'rest' : 'pending')
 const mobileTrack = ref<HTMLElement | null>(null)
 
 let mobileObserver: IntersectionObserver | undefined
@@ -29,8 +36,6 @@ const rotations = [-8, -4, 0, 4, 8]
 const driftClass = ['stage-drift-a', 'stage-drift-b', 'stage-drift-c', 'stage-drift-a', 'stage-drift-b']
 const driftPhases = [0, -2.2, -4.8, -1.8, -5.6]
 const stageEntryKey = 'zafar-stage-entered'
-/** Survives remount in the same page load so sessionStorage isn't eaten early. */
-let stageEntryScheduled = false
 
 const activeCaption = computed(() => {
   if (active.value === null) {
@@ -155,30 +160,47 @@ function onMobileScroll() {
   scrollTimer = window.setTimeout(syncMobileActive, 120)
 }
 
+function entryClassFor(_index: number) {
+  if (entryState.value === 'pending') {
+    return 'stage-entry-pending'
+  }
+  if (entryState.value === 'animating') {
+    return 'stage-entry-animating'
+  }
+  return ''
+}
+
 onMounted(() => {
   reduceMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  // SSR paints rest state (no stage-entry). On first session visit, schedule
-  // entry after paint so the CSS animation actually runs (hydration-safe).
-  if (!reduceMotion.value && !stageEntryScheduled) {
-    let firstStageVisit = true
+  // CSS default = pending (opacity 0 / translateY 28px). After mount, either
+  // settle immediately or double-rAF into the stagger animation.
+  // sessionStorage stores performance.timeOrigin so SPA remounts skip, but a
+  // hard reload (new timeOrigin) re-runs once for this document load.
+  if (reduceMotion.value) {
+    entryState.value = 'rest'
+  } else {
+    const loadId = String(performance.timeOrigin)
+    let alreadyThisLoad = stageEntryScheduled
     try {
-      firstStageVisit = !window.sessionStorage.getItem(stageEntryKey)
+      alreadyThisLoad = alreadyThisLoad || window.sessionStorage.getItem(stageEntryKey) === loadId
     } catch {
-      firstStageVisit = true
+      // ignore
     }
 
-    if (firstStageVisit) {
+    if (alreadyThisLoad) {
+      entryState.value = 'rest'
+    } else {
       stageEntryScheduled = true
+      try {
+        window.sessionStorage.setItem(stageEntryKey, loadId)
+      } catch {
+        // ignore quota / private mode
+      }
       nextTick(() => {
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            entryEnabled.value = true
-            try {
-              window.sessionStorage.setItem(stageEntryKey, '1')
-            } catch {
-              // ignore quota / private mode
-            }
+            entryState.value = 'animating'
           })
         })
       })
@@ -249,10 +271,10 @@ onBeforeUnmount(() => {
             :to="img.link ? localePath(img.link) : localePath('/projects')"
             class="stage-card group relative block w-[11.5rem] rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-(--ui-bg) lg:w-[13rem]"
             :class="[
-              entryEnabled ? 'stage-entry' : '',
+              entryClassFor(index),
               index === Math.floor((stageImages.length - 1) / 2) ? 'is-center' : ''
             ]"
-            :style="{ '--stage-entry-delay': `${index * 40}ms` }"
+            :style="{ '--stage-entry-delay': `${index * 70}ms` }"
             :aria-label="img.caption || img.alt"
             @mouseenter="setActive(index)"
             @mousemove="onPointerMove"
@@ -291,11 +313,11 @@ onBeforeUnmount(() => {
           :to="img.link ? localePath(img.link) : localePath('/projects')"
           class="stage-mobile-card w-[min(72vw,16rem)] shrink-0 snap-center rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           :class="[
-            entryEnabled ? 'stage-entry' : '',
+            entryClassFor(index),
             mobileActive === index ? 'is-mobile-active' : '',
             settlingIndex === index ? 'is-settling' : ''
           ]"
-          :style="{ '--stage-entry-delay': `${index * 40}ms` }"
+          :style="{ '--stage-entry-delay': `${index * 70}ms` }"
           :aria-label="img.caption || img.alt"
           @focus="onFocus(index)"
           @blur="onBlur"
@@ -441,12 +463,22 @@ onBeforeUnmount(() => {
     0 15px 28px -8px rgb(0 0 0 / 0.26);
 }
 
-.stage-entry {
-  animation: stage-entry-opacity 420ms cubic-bezier(0.2, 0.75, 0.2, 1) var(--stage-entry-delay, 0ms) both;
+/* Pending defaults also live in main.css for first paint / no flash */
+.stage-entry-pending {
+  opacity: 0;
+  pointer-events: none;
 }
 
-.stage-entry .stage-entry-content {
-  animation: stage-entry-rise 420ms cubic-bezier(0.2, 0.75, 0.2, 1) var(--stage-entry-delay, 0ms) both;
+.stage-entry-pending .stage-entry-content {
+  transform: translateY(28px);
+}
+
+.stage-entry-animating {
+  animation: stage-entry-opacity 560ms cubic-bezier(0.2, 0.75, 0.2, 1) var(--stage-entry-delay, 0ms) both;
+}
+
+.stage-entry-animating .stage-entry-content {
+  animation: stage-entry-rise 560ms cubic-bezier(0.2, 0.75, 0.2, 1) var(--stage-entry-delay, 0ms) both;
 }
 
 @keyframes stage-entry-opacity {
@@ -455,7 +487,7 @@ onBeforeUnmount(() => {
 }
 
 @keyframes stage-entry-rise {
-  from { transform: translateY(16px); }
+  from { transform: translateY(28px); }
   to { transform: translateY(0); }
 }
 
@@ -530,11 +562,24 @@ onBeforeUnmount(() => {
     transition: none;
   }
 
-  .stage-entry,
-  .stage-entry .stage-entry-content {
-    animation: none;
+  .stage-entry-pending,
+  .stage-entry-animating,
+  .stage-entry-pending .stage-entry-content,
+  .stage-entry-animating .stage-entry-content {
+    animation: none !important;
     opacity: 1;
     transform: none;
+    pointer-events: auto;
+  }
+
+  .stage-mobile-card.stage-entry-pending,
+  .stage-mobile-card.stage-entry-animating {
+    opacity: 0.88;
+  }
+
+  .stage-mobile-card.is-mobile-active.stage-entry-pending,
+  .stage-mobile-card.is-mobile-active.stage-entry-animating {
+    opacity: 1;
   }
 
   .stage-mobile-card.is-settling {

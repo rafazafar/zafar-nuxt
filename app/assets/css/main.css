@@ -118,29 +118,29 @@ html.home-lock-x body {
   }
 }
 
-/* Project stage idle drift — unmistakable ±10–12px / ±2.5°, ~10–12s */
+/* Project stage idle — outer wrapper only; ±14–18px / ±3°, 10s alternate */
 @keyframes stage-drift-a {
-  0%, 100% { transform: translate(0, 0) rotate(var(--stage-rot, -3deg)); }
-  50% { transform: translate(11px, -12px) rotate(calc(var(--stage-rot, -3deg) + 2.5deg)); }
+  from { transform: translate(0, 0) rotate(var(--stage-rot, -3deg)); }
+  to { transform: translate(16px, -17px) rotate(calc(var(--stage-rot, -3deg) + 3deg)); }
 }
 @keyframes stage-drift-b {
-  0%, 100% { transform: translate(0, 0) rotate(var(--stage-rot, 2deg)); }
-  50% { transform: translate(-12px, 10px) rotate(calc(var(--stage-rot, 2deg) - 2.5deg)); }
+  from { transform: translate(0, 0) rotate(var(--stage-rot, 2deg)); }
+  to { transform: translate(-18px, 14px) rotate(calc(var(--stage-rot, 2deg) - 3deg)); }
 }
 @keyframes stage-drift-c {
-  0%, 100% { transform: translate(0, 0) rotate(var(--stage-rot, -1deg)); }
-  50% { transform: translate(10px, 11px) rotate(calc(var(--stage-rot, -1deg) + 2.4deg)); }
+  from { transform: translate(0, 0) rotate(var(--stage-rot, -1deg)); }
+  to { transform: translate(15px, 16px) rotate(calc(var(--stage-rot, -1deg) + 3deg)); }
 }
 .stage-drift-a {
-  animation: stage-drift-a 11s ease-in-out infinite;
+  animation: stage-drift-a 10s ease-in-out alternate infinite;
   animation-delay: var(--stage-phase, 0s);
 }
 .stage-drift-b {
-  animation: stage-drift-b 12s ease-in-out infinite;
+  animation: stage-drift-b 10s ease-in-out alternate infinite;
   animation-delay: var(--stage-phase, 0s);
 }
 .stage-drift-c {
-  animation: stage-drift-c 10s ease-in-out infinite;
+  animation: stage-drift-c 10s ease-in-out alternate infinite;
   animation-delay: var(--stage-phase, 0s);
 }
 @media (prefers-reduced-motion: reduce) {
@@ -148,5 +148,31 @@ html.home-lock-x body {
   .stage-drift-b,
   .stage-drift-c {
     animation: none;
+  }
+}
+
+/* Entry: CSS default pending so first paint is hidden (no hydration flash) */
+.stage-card.stage-entry-pending,
+.stage-mobile-card.stage-entry-pending {
+  opacity: 0;
+}
+.stage-card.stage-entry-pending .stage-entry-content,
+.stage-mobile-card.stage-entry-pending .stage-entry-content {
+  transform: translateY(28px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .stage-card.stage-entry-pending,
+  .stage-mobile-card.stage-entry-pending {
+    opacity: 1;
+  }
+  .stage-mobile-card.stage-entry-pending {
+    opacity: 0.88;
+  }
+  .stage-mobile-card.stage-entry-pending.is-mobile-active {
+    opacity: 1;
+  }
+  .stage-card.stage-entry-pending .stage-entry-content,
+  .stage-mobile-card.stage-entry-pending .stage-entry-content {
+    transform: none;
   }
 }
