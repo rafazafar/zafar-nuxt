@@ -51,7 +51,7 @@ const [{ data: navigation }, { data: files }] = await Promise.all([
 </script>
 
 <template>
-  <!-- Codex smoke test -->
+  <!-- Codex box smoke test 2026-09-21 -->
   <UApp>
     <NuxtLayout>
       <UMain class="relative">
