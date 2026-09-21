@@ -34,7 +34,7 @@ useSeoMeta({
       :description="page.description"
       orientation="horizontal"
       :ui="{
-        container: 'lg:flex sm:flex-row items-center',
+        container: 'py-12 sm:py-16 lg:py-20 lg:flex sm:flex-row items-center',
         title: '!mx-0 text-left',
         description: '!mx-0 text-left',
         links: 'justify-start'
@@ -50,14 +50,17 @@ useSeoMeta({
     </UPageHero>
     <UPageSection
       :ui="{
-        container: '!pt-0'
+        container: '!pt-0 !pb-8'
       }"
     >
       <MDC
         :value="page.content"
         unwrap="p"
       />
-      <div class="flex flex-row justify-center items-center py-10 space-x-[-2rem]">
+      <div
+        v-if="page.images?.length"
+        class="flex flex-row justify-center items-center py-10 space-x-[-2rem]"
+      >
         <PolaroidItem
           v-for="(image, index) in page.images"
           :key="index"
@@ -66,5 +69,6 @@ useSeoMeta({
         />
       </div>
     </UPageSection>
+    <LandingCtaBand title="Ready to scope something real?" />
   </UPage>
 </template>

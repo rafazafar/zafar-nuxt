@@ -2,8 +2,8 @@ seo:
   title: "Projects | Zafar"
   description: "Product and systems work across startups and enterprise."
 title: Solving Problems, Building Experiences.
-description: I've worked on a variety of projects, focusing on creating intuitive digital experiences where thoughtful design meets clean scalable code. Here are some highlights I'm proud of, showcasing my process from concept to execution.
+description: Product and systems work across startups and enterprise — from zero-to-one to legacy cleanup. Same digital factory as /services/ai-systems and /services/product-craft.
 links:
-  - label: "Let's talk"
-    color: "neutral"
-  - label: 'Email me'
+  - label: "Book a scoping call"
+    color: "primary"
+  - label: "hello@zafar.dev"

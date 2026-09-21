@@ -70,24 +70,6 @@ experience:
         url: "https://halal-navi.com"
         color: "#4CAF50"
 testimonials:
-  - quote: "あなたほど献身的な人を見つけるのは難しいです。本当に助かりました。"
-    author:
-      name: '鈴木 優也'
-      description: 'ディレクター - JSA | KLWing'
-      avatar:
-        src: 'https://r2.zafar.dev/img/suzuki.jpg'
-  - quote: "困難な時期でも、私たちの成長を助けてくれてありがとう。"
-    author:
-      name: '上田 修作'
-      description: 'ディレクター - Seekers'
-      avatar:
-        src: 'https://r2.zafar.dev/img/ueda.jpg'
-  - quote: "執拗な仕事ぶり。仕事をやり遂げます。"
-    author:
-      name: 'ヒダヤット'
-      description: 'Fronyx Gmbh'
-      avatar:
-        src: 'https://r2.zafar.dev/img/py.jpg'
 blog:
   title: "最新記事"
   description: "テクノロジーとビジネスに関する考察"

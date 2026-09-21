@@ -29,6 +29,8 @@ useSeoMeta({
 <template>
   <UPage v-if="page">
     <LandingHero :page />
+    <LandingServiceCards />
+    <LandingProofChips />
     <UPageSection
       :ui="{
         container: '!pt-0 lg:grid lg:grid-cols-2 lg:gap-8'
@@ -40,5 +42,6 @@ useSeoMeta({
     <LandingBlog :page />
     <LandingTestimonials :page />
     <LandingFAQ :page />
+    <LandingCtaBand />
   </UPage>
 </template>

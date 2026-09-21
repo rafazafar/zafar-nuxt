@@ -1,8 +1,8 @@
 seo:
   title: "Zafar.dev | Don't Stop Building"
   description: "My primary focus is on creating useful and impactful products that make a real difference in people's lives. Over the course of my career, I gained extensive experience in designing, simplifying, coding and scaling various processes and solutions for startups, which has helped me develop a strong track record of success in achieving clients' goals and objectives."
-title: "Hey, I'm Zafar"
-description: "Senior Software Engineer & Product Builder. What are we building next?"
+title: "Tokyo-based Tech Lead — I ship products and production AI with real controls."
+description: "English-first. Startups and enterprise. Edge, mobile/BLE, and AI systems you can audit."
 hero:
   links:
     - label: "Le Resume"
@@ -35,9 +35,9 @@ hero:
 about:
   title: "About Me"
   description: |
-    I'm in love with creating useful and impactful products that brings people together. Experienced in multiple industries designing, simplifying, building and scaling solutions for startups and the enterprise. Using first-principle thinking.
+    I'm in love with creating useful and impactful products that bring people together. Experienced in multiple industries designing, simplifying, building and scaling solutions for startups and the enterprise. Using first-principle thinking.
 
-    My approach is simple: Iterate fast, iterate often, and dont stop iterating. And never say no, just dwell on it for a good moment.
+    My approach is simple: Iterate fast, iterate often, and don't stop iterating. And never say no, just dwell on it for a good moment.
 experience:
   title: Work Experience
   items:
@@ -82,50 +82,27 @@ testimonials:
       description: 'Director - Seekers'
       avatar:
         src: 'https://r2.zafar.dev/img/ueda.jpg'
-  - quote: "Relentless work. Gets the job done."
-    author:
-      name: 'Hidayat'
-      description: 'Fronyx Gmbh'
-      avatar:
-        src: 'https://r2.zafar.dev/img/py.jpg'
 blog:
   title: "Latest Articles"
   description: "Thoughts on technology and business"
 faq:
   title: Frequently Asked Questions
-  description: Answers to common questions about my process and services.
+  description: Straight answers about how engagements work.
   categories:
-    - title: Services & Process
+    - title: General
       questions:
-        - label: What services do you offer?
+        - label: What do you offer?
           content: |
-            I specialize in full-stack development and product management. This includes designing, simplifying, building and scaling solutions for startups using first-principle thinking. My expertise spans multiple industries, and I focus on creating useful and impactful products that make a real difference in people's lives.
-        - label: What is your development process like?
+            One-stop digital factory — AI systems with real production controls (gates, allowlists, audit trails) + product craft (UI, interaction, shippable design). See [AI systems](/services/ai-systems) and [Product craft](/services/product-craft).
+        - label: How do you work?
           content: |
-            My process is collaborative and iterative, typically involving a strong customer-developer feedback loop and focus on delivering value quickly. Communication is key, and there is no room for ego in the pursuit of excellence.
+            Collaborative, iterative, ego-free, ship in slices. AI: controls from sprint one. Craft: iterate in product, not endless decks.
         - label: Do you work with startups?
           content: |
-            Absolutely! I love working with startups to help shape their product vision and create solutions from the ground up. I've been involved in multiple zero-to-one startups and have experience taking ideas to MVP in as little as 1 week, and to product launch in as little as 2 weeks.
-    - title: Technical Skills
-      questions:
-        - label: What programming languages do you work with?
+            Yes. Focused slices can move in weeks when scope is honest. Enterprise AI control work scoped separately — no "1–2 week MVP" for production AI with real guards.
+        - label: Only AI or only design?
           content: |
-            I work with Typescript, Python, Dart, Go, Java, and I'm currently learning Rust. I'm comfortable with both frontend and backend development.
-        - label: What frameworks and technologies do you use?
+            Both. Same factory.
+        - label: How do I start?
           content: |
-            For frontend: VueJS/Nuxt, React/Nextjs, Vite, Svelte
-            For backend: Nitro, Springboot, Directus, Laravel
-            For mobile: Flutter, Ionic
-            For DevOps: Nginx, Kubernetes, Pipeline/Actions, CircleCI, Serverless/CDK
-            For Cloud: AWS, Cloudflare, CodeMagic CI/CD, Actions, Cloudinary
-        - label: Do you have experience with AI/ML?
-          content: |
-            Yes, I work with CF Workers AI, Qdrant, and Vectorize. I also have experience with search technologies like Elasticsearch, Meilisearch, and Algolia.
-    - title: About Me
-      questions:
-        - label: What do you enjoy most about your work?
-          content: |
-            I love creating useful and impactful products that make a real difference in people's lives. It's incredibly rewarding to see people interact with something I've built and find it genuinely useful. I enjoy the challenge of solving complex problems and the constant learning that comes with working in technology.
-        - label: Where are you based?
-          content: |
-            I'm currently based in Tokyo, Japan. However, I work remotely with clients from around the world.
+            [Book a scoping call](https://cal.com/zafar) or email [hello@zafar.dev](mailto:hello@zafar.dev). First call: use case, constraints, out of scope, bounded next step.
