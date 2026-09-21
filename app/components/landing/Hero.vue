@@ -7,7 +7,7 @@ defineProps<{
   page: ContentEnCollectionItem
 }>()
 
-const motto = "Don't Stop Building"
+const motto = 'Don\'t Stop Building'
 </script>
 
 <template>
@@ -19,7 +19,7 @@ const motto = "Don't Stop Building"
       headline: 'flex items-center justify-center',
       title: 'text-shadow-md max-w-lg mx-auto tracking-tight text-[clamp(2.25rem,5vw,3.25rem)]',
       description: 'mt-3 text-[1.05rem] leading-relaxed mx-auto max-w-2xl text-pretty text-muted',
-      links: 'mt-5 flex-col justify-center items-center'
+      links: 'mt-5 flex w-full min-w-0 flex-col items-center justify-center'
     }"
   >
     <template #headline>
@@ -64,62 +64,66 @@ const motto = "Don't Stop Building"
     </template>
 
     <template #links>
-      <Motion
-        :initial="{ opacity: 0, y: 8 }"
-        :animate="{ opacity: 1, y: 0 }"
-        :transition="{ duration: 0.5, delay: 0.38 }"
-      >
-        <div
-          v-if="page.hero.links"
-          class="flex flex-wrap items-center justify-center gap-3"
-        >
-          <UButton
-            v-bind="page.hero.links[0]"
-            color="neutral"
-            class="resume-tactile min-h-11 px-5"
-          />
-          <UButton
-            :color="global.available ? 'primary' : 'error'"
-            variant="ghost"
-            class="gap-2 min-h-11"
-            :to="global.available ? `mailto:${global.email || 'hello@zafar.dev'}` : undefined"
-            :label="global.available ? $t('common.availableForProjects') : $t('common.notAvailableAtMoment')"
+      <div class="flex w-full min-w-0 flex-col items-center gap-8 md:gap-10">
+        <div class="flex flex-col items-center gap-4">
+          <Motion
+            :initial="{ opacity: 0, y: 8 }"
+            :animate="{ opacity: 1, y: 0 }"
+            :transition="{ duration: 0.5, delay: 0.38 }"
           >
-            <template #leading>
-              <span class="relative flex size-2">
-                <span
-                  class="absolute inline-flex size-full rounded-full"
-                  :class="global.available ? 'bg-primary avail-pulse' : 'bg-error'"
-                />
-                <span
-                  class="relative inline-flex size-2 scale-90 rounded-full"
-                  :class="global.available ? 'bg-primary' : 'bg-error'"
-                />
-              </span>
-            </template>
-          </UButton>
+            <div
+              v-if="page.hero.links"
+              class="flex flex-wrap items-center justify-center gap-3"
+            >
+              <UButton
+                v-bind="page.hero.links[0]"
+                color="neutral"
+                class="resume-tactile min-h-11 px-5"
+              />
+              <UButton
+                :color="global.available ? 'primary' : 'error'"
+                variant="ghost"
+                class="min-h-11 gap-2"
+                :to="global.available ? `mailto:${global.email || 'hello@zafar.dev'}` : undefined"
+                :label="global.available ? $t('common.availableForProjects') : $t('common.notAvailableAtMoment')"
+              >
+                <template #leading>
+                  <span class="relative flex size-2">
+                    <span
+                      class="absolute inline-flex size-full rounded-full"
+                      :class="global.available ? 'bg-primary avail-pulse' : 'bg-error'"
+                    />
+                    <span
+                      class="relative inline-flex size-2 scale-90 rounded-full"
+                      :class="global.available ? 'bg-primary' : 'bg-error'"
+                    />
+                  </span>
+                </template>
+              </UButton>
+            </div>
+          </Motion>
+
+          <div class="inline-flex gap-x-3">
+            <Motion
+              v-for="(link, index) of footer?.links"
+              :key="index"
+              :initial="{ opacity: 0, y: 6 }"
+              :animate="{ opacity: 1, y: 0 }"
+              :transition="{ duration: 0.45, delay: 0.48 + index * 0.08 }"
+            >
+              <UButton
+                v-bind="{ size: 'md', color: 'neutral', variant: 'ghost', ...link }"
+                class="min-h-11 min-w-11"
+              />
+            </Motion>
+          </div>
         </div>
-      </Motion>
 
-      <div class="gap-x-3 inline-flex mt-4">
-        <Motion
-          v-for="(link, index) of footer?.links"
-          :key="index"
-          :initial="{ opacity: 0, y: 6 }"
-          :animate="{ opacity: 1, y: 0 }"
-          :transition="{ duration: 0.45, delay: 0.48 + index * 0.08 }"
-        >
-          <UButton
-            v-bind="{ size: 'md', color: 'neutral', variant: 'ghost', ...link }"
-            class="min-h-11 min-w-11"
-          />
-        </Motion>
+        <LandingProjectStage
+          v-if="page.hero.images?.length"
+          :images="page.hero.images"
+        />
       </div>
-
-      <LandingProjectStage
-        v-if="page.hero.images?.length"
-        :images="page.hero.images"
-      />
     </template>
   </UPageHero>
 </template>

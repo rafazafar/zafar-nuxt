@@ -3,6 +3,12 @@ import type { Collections, ContentEnCollectionItem } from '@nuxt/content'
 
 const { locale } = useI18n()
 
+useHead({
+  htmlAttrs: {
+    class: 'home-lock-x'
+  }
+})
+
 const { data: page } = await useAsyncData(`index-${locale.value}`, async () => {
   const collection = `content_${locale.value}` as keyof Collections
   return await queryCollection(collection).first() as ContentEnCollectionItem | null
@@ -27,7 +33,10 @@ useSeoMeta({
 </script>
 
 <template>
-  <UPage v-if="page">
+  <UPage
+    v-if="page"
+    class="home-page min-w-0 overflow-x-hidden"
+  >
     <LandingHero :page />
     <UPageSection
       :ui="{

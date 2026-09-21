@@ -18,6 +18,11 @@
   }
 }
 
+html.home-lock-x,
+html.home-lock-x body {
+  overflow-x: hidden;
+}
+
 .dark {
   ::selection {
     color: #ffffff;
@@ -98,15 +103,15 @@
 /* Project stage idle drift */
 @keyframes stage-drift-a {
   0%, 100% { transform: translate(0, 0) rotate(var(--stage-rot, -3deg)); }
-  50% { transform: translate(2px, -2px) rotate(calc(var(--stage-rot, -3deg) + 0.5deg)); }
+  50% { transform: translate(3.5px, -3.5px) rotate(calc(var(--stage-rot, -3deg) + 0.8deg)); }
 }
 @keyframes stage-drift-b {
   0%, 100% { transform: translate(0, 0) rotate(var(--stage-rot, 2deg)); }
-  50% { transform: translate(-2px, 1px) rotate(calc(var(--stage-rot, 2deg) - 0.5deg)); }
+  50% { transform: translate(-3.5px, 2.5px) rotate(calc(var(--stage-rot, 2deg) - 0.8deg)); }
 }
 @keyframes stage-drift-c {
   0%, 100% { transform: translate(0, 0) rotate(var(--stage-rot, -1deg)); }
-  50% { transform: translate(1px, 2px) rotate(calc(var(--stage-rot, -1deg) + 0.4deg)); }
+  50% { transform: translate(2.5px, 3.5px) rotate(calc(var(--stage-rot, -1deg) + 0.7deg)); }
 }
 .stage-drift-a { animation: stage-drift-a 10s ease-in-out infinite; }
 .stage-drift-b { animation: stage-drift-b 12s ease-in-out infinite; }

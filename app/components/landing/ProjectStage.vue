@@ -52,11 +52,11 @@ function onBlur(event: FocusEvent) {
 <template>
   <div
     data-stage-root
-    class="w-full mt-10 sm:mt-14"
+    class="stage-root relative z-0 mt-0 w-full min-w-0 max-w-full overflow-hidden"
   >
     <!-- Desktop / md+: layered fan -->
     <div
-      class="relative hidden md:block mx-auto max-w-[68rem] h-[17.5rem] lg:h-[19rem]"
+      class="stage-desktop relative z-0 mx-auto hidden h-[19rem] w-full max-w-[68rem] overflow-hidden p-5 md:block lg:h-[20rem]"
       @mouseleave="setActive(null)"
     >
       <div
@@ -97,44 +97,49 @@ function onBlur(event: FocusEvent) {
     </div>
 
     <!-- Mobile: snap carousel with peek -->
-    <div
-      class="md:hidden -mx-4 px-4 flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 scroll-px-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-    >
-      <NuxtLink
-        v-for="(img, index) in stageImages"
-        :key="'m-' + img.src + index"
-        :to="img.link ? localePath(img.link) : localePath('/projects')"
-        class="snap-start shrink-0 w-[72vw] max-w-[16rem] rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-transform active:scale-[0.98]"
-        :aria-label="img.caption || img.alt"
-        @focus="onFocus(index)"
-        @blur="onBlur"
-        @click="setActive(index)"
+    <div class="w-full min-w-0 max-w-full overflow-x-hidden md:hidden">
+      <div
+        class="flex w-full min-w-0 max-w-full snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        <span class="stage-frame block overflow-hidden rounded-xl border border-black/10 bg-white dark:border-white/15 dark:bg-neutral-900">
-          <img
-            :src="img.src"
-            :alt="img.alt"
-            width="280"
-            height="210"
-            class="aspect-[4/3] w-full object-cover"
-            loading="lazy"
-          >
-        </span>
-        <p class="mt-2 text-xs text-muted truncate px-0.5">
-          {{ img.caption || img.alt }}
-        </p>
-      </NuxtLink>
+        <NuxtLink
+          v-for="(img, index) in stageImages"
+          :key="'m-' + img.src + index"
+          :to="img.link ? localePath(img.link) : localePath('/projects')"
+          class="w-[min(72vw,16rem)] shrink-0 snap-start rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-transform active:scale-[0.98]"
+          :aria-label="img.caption || img.alt"
+          @focus="onFocus(index)"
+          @blur="onBlur"
+          @click="setActive(index)"
+        >
+          <span class="stage-frame block overflow-hidden rounded-xl border border-black/10 bg-white dark:border-white/15 dark:bg-neutral-900">
+            <img
+              :src="img.src"
+              :alt="img.alt"
+              width="280"
+              height="210"
+              class="aspect-[4/3] w-full object-cover"
+              loading="lazy"
+            >
+          </span>
+          <p class="stage-caption mt-2 truncate px-0.5 text-xs text-neutral-600 dark:text-neutral-300">
+            {{ img.caption || img.alt }}
+          </p>
+        </NuxtLink>
+      </div>
     </div>
 
     <p
-      class="hidden md:block mt-5 min-h-5 text-center text-sm text-muted"
+      class="stage-caption mt-5 hidden min-h-5 text-center text-sm text-neutral-600 dark:text-neutral-300 md:block"
       aria-live="polite"
     >
       <Transition
         name="caption"
         mode="out-in"
       >
-        <span :key="activeCaption" class="inline-block">
+        <span
+          :key="activeCaption"
+          class="inline-block"
+        >
           {{ activeCaption }}
         </span>
       </Transition>
@@ -143,6 +148,11 @@ function onBlur(event: FocusEvent) {
 </template>
 
 <style scoped>
+.stage-root {
+  isolation: isolate;
+  contain: paint;
+}
+
 .stage-frame {
   box-shadow:
     0 1px 1px rgb(0 0 0 / 0.04),
@@ -153,6 +163,7 @@ function onBlur(event: FocusEvent) {
 .stage-card {
   transform: rotate(var(--stage-rot, 0deg));
   transform-origin: center center;
+  will-change: transform;
 }
 
 .stage-card.is-dim {
