@@ -29,6 +29,7 @@ const mobileTrack = ref<HTMLElement | null>(null)
 let mobileObserver: IntersectionObserver | undefined
 let settleTimer: number | undefined
 let scrollTimer: number | undefined
+let entryCleanupTimer: number | undefined
 
 const stageImages = computed(() => (props.images || []).slice(0, 5))
 
@@ -170,6 +171,45 @@ function entryClassFor(_index: number) {
   return ''
 }
 
+function finishEntryAnimation() {
+  if (entryState.value === 'animating') {
+    entryState.value = 'rest'
+  }
+  if (entryCleanupTimer) {
+    window.clearTimeout(entryCleanupTimer)
+    entryCleanupTimer = undefined
+  }
+}
+
+function scheduleEntryCleanup() {
+  const count = stageImages.value.length
+  const staggerMs = Math.max(0, count - 1) * 70
+  if (entryCleanupTimer) {
+    window.clearTimeout(entryCleanupTimer)
+  }
+  entryCleanupTimer = window.setTimeout(finishEntryAnimation, staggerMs + 560 + 80)
+}
+
+function onEntryAnimationEnd(event: AnimationEvent) {
+  if (entryState.value !== 'animating') {
+    return
+  }
+  if (!String(event.animationName).includes('stage-enter')) {
+    return
+  }
+  // Delay var lives on the card; content inherits it for computed style.
+  const target = event.target as HTMLElement | null
+  if (!target) {
+    return
+  }
+  const delayRaw = getComputedStyle(target).getPropertyValue('--stage-entry-delay').trim()
+  const delayMs = Number.parseFloat(delayRaw) || 0
+  const lastDelay = Math.max(0, stageImages.value.length - 1) * 70
+  if (delayMs >= lastDelay) {
+    finishEntryAnimation()
+  }
+}
+
 onMounted(() => {
   reduceMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -200,7 +240,9 @@ onMounted(() => {
       nextTick(() => {
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
+            // pending → animating (do not only remove pending — that snaps)
             entryState.value = 'animating'
+            scheduleEntryCleanup()
           })
         })
       })
@@ -233,6 +275,9 @@ onBeforeUnmount(() => {
   if (scrollTimer) {
     window.clearTimeout(scrollTimer)
   }
+  if (entryCleanupTimer) {
+    window.clearTimeout(entryCleanupTimer)
+  }
 })
 </script>
 
@@ -243,7 +288,7 @@ onBeforeUnmount(() => {
   >
     <!-- Desktop / md+: layered fan -->
     <div
-      class="stage-desktop relative z-0 mx-auto hidden h-[19rem] w-full max-w-[68rem] overflow-hidden p-5 md:block lg:h-[20rem]"
+      class="stage-desktop relative z-0 mx-auto hidden h-[19rem] w-full max-w-[68rem] overflow-hidden p-8 md:block lg:h-[21rem]"
       @mouseleave="onDesktopLeave"
     >
       <div
@@ -282,7 +327,10 @@ onBeforeUnmount(() => {
             @focus="onFocus(index)"
             @blur="onBlur"
           >
-            <span class="stage-entry-content block">
+            <span
+              class="stage-entry-content block"
+              @animationend="onEntryAnimationEnd"
+            >
               <span class="stage-frame block overflow-hidden rounded-xl bg-white dark:bg-neutral-900">
                 <img
                   :src="img.src"
@@ -322,7 +370,10 @@ onBeforeUnmount(() => {
           @focus="onFocus(index)"
           @blur="onBlur"
         >
-          <span class="stage-entry-content block">
+          <span
+            class="stage-entry-content block"
+            @animationend="onEntryAnimationEnd"
+          >
             <span class="stage-frame block overflow-hidden rounded-xl bg-white dark:bg-neutral-900">
               <img
                 :src="img.src"
@@ -463,32 +514,27 @@ onBeforeUnmount(() => {
     0 15px 28px -8px rgb(0 0 0 / 0.26);
 }
 
-/* Pending defaults also live in main.css for first paint / no flash */
+/* Pending / animating also in main.css (global first paint + stage-enter keyframes) */
 .stage-entry-pending {
   opacity: 0;
   pointer-events: none;
 }
 
 .stage-entry-pending .stage-entry-content {
+  opacity: 0;
   transform: translateY(28px);
 }
 
 .stage-entry-animating {
-  animation: stage-entry-opacity 560ms cubic-bezier(0.2, 0.75, 0.2, 1) var(--stage-entry-delay, 0ms) both;
+  opacity: 1;
+  pointer-events: none;
+  /* Avoid card opacity transition fighting content stage-enter */
+  transition: none;
 }
 
 .stage-entry-animating .stage-entry-content {
-  animation: stage-entry-rise 560ms cubic-bezier(0.2, 0.75, 0.2, 1) var(--stage-entry-delay, 0ms) both;
-}
-
-@keyframes stage-entry-opacity {
-  from { opacity: 0; }
-  to { opacity: var(--stage-entry-opacity, 1); }
-}
-
-@keyframes stage-entry-rise {
-  from { transform: translateY(28px); }
-  to { transform: translateY(0); }
+  animation: stage-enter 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--stage-entry-delay, 0ms);
 }
 
 .stage-mobile-track {
@@ -563,13 +609,16 @@ onBeforeUnmount(() => {
   }
 
   .stage-entry-pending,
-  .stage-entry-animating,
+  .stage-entry-animating {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   .stage-entry-pending .stage-entry-content,
   .stage-entry-animating .stage-entry-content {
     animation: none !important;
     opacity: 1;
     transform: none;
-    pointer-events: auto;
   }
 
   .stage-mobile-card.stage-entry-pending,
