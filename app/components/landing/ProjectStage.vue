@@ -12,9 +12,9 @@ let entryHoldTimer: number | undefined
 let entryCleanupTimer: number | undefined
 const entryPhaseListeners = new Set<(phase: StageEntryPhase) => void>()
 
-const ENTRY_HOLD_MS = 250
-const ENTRY_DURATION_MS = 1000
-const ENTRY_STAGGER_MS = 80
+const ENTRY_HOLD_MS = 700
+const ENTRY_DURATION_MS = 1200
+const ENTRY_STAGGER_MS = 100
 
 function setSharedEntryPhase(phase: StageEntryPhase) {
   sharedEntryPhase = phase
@@ -42,12 +42,14 @@ const settlingIndex = ref<number | null>(null)
 const reduceMotion = ref(false)
 /** pending → (hold) → animating → rest. Synced to module phase across remounts. */
 const entryState = ref<StageEntryPhase>(sharedEntryPhase)
+const stageRoot = ref<HTMLElement | null>(null)
 const mobileTrack = ref<HTMLElement | null>(null)
 
 function syncEntryPhase(phase: StageEntryPhase) {
   entryState.value = phase
 }
 
+let entryObserver: IntersectionObserver | undefined
 let mobileObserver: IntersectionObserver | undefined
 let settleTimer: number | undefined
 let scrollTimer: number | undefined
@@ -56,7 +58,7 @@ const stageImages = computed(() => (props.images || []).slice(0, 5))
 
 const rotations = [-8, -4, 0, 4, 8]
 const driftClass = ['stage-drift-a', 'stage-drift-b', 'stage-drift-c', 'stage-drift-a', 'stage-drift-b']
-const driftPhases = [0, -2.2, -4.8, -1.8, -5.6]
+const driftPhases = [0, -1.7, -3.3, -0.9, -4.1]
 const stageEntryKey = 'zafar-stage-entered'
 
 const activeCaption = computed(() => {
@@ -241,15 +243,31 @@ function onEntryAnimationEnd(event: AnimationEvent) {
   }
 }
 
+function beginEntrySequence() {
+  // Module guard: once per document. Shared phase + listeners survive remounts.
+  if (entryStarted) {
+    entryState.value = sharedEntryPhase
+    return
+  }
+  entryStarted = true
+  setSharedEntryPhase('pending')
+  if (entryHoldTimer) {
+    window.clearTimeout(entryHoldTimer)
+  }
+  // Obvious blank beat, then rise.
+  entryHoldTimer = window.setTimeout(() => {
+    setSharedEntryPhase('animating')
+    scheduleEntryCleanup()
+  }, ENTRY_HOLD_MS)
+}
+
 onMounted(() => {
   entryPhaseListeners.add(syncEntryPhase)
   entryState.value = sharedEntryPhase
 
   reduceMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  // pending → hold 250ms → animating → animationend/timeout → rest.
-  // Module guard: if already started this JS realm, do not re-kick (shared
-  // phase + listeners keep mid-flight animation across remounts). Hard refresh resets.
+  // prefers-reduced-motion → skip to rest (no IO dance).
   if (reduceMotion.value) {
     entryStarted = true
     setSharedEntryPhase('rest')
@@ -268,15 +286,24 @@ onMounted(() => {
       entryStarted = true
       setSharedEntryPhase('rest')
     } else {
-      entryStarted = true
+      // Stay pending until .stage-root intersects (threshold 0.35). Do NOT start on mount alone.
       setSharedEntryPhase('pending')
-      if (entryHoldTimer) {
-        window.clearTimeout(entryHoldTimer)
+      const rootEl = stageRoot.value
+      if (rootEl && typeof IntersectionObserver !== 'undefined') {
+        entryObserver = new IntersectionObserver((entries) => {
+          const hit = entries.some((e) => e.isIntersecting)
+          if (!hit) {
+            return
+          }
+          entryObserver?.disconnect()
+          entryObserver = undefined
+          beginEntrySequence()
+        }, { threshold: 0.35 })
+        entryObserver.observe(rootEl)
+      } else {
+        // No IO support — fall back to hold then animate.
+        beginEntrySequence()
       }
-      entryHoldTimer = window.setTimeout(() => {
-        setSharedEntryPhase('animating')
-        scheduleEntryCleanup()
-      }, ENTRY_HOLD_MS)
     }
   }
 
@@ -300,6 +327,8 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   entryPhaseListeners.delete(syncEntryPhase)
+  entryObserver?.disconnect()
+  entryObserver = undefined
   mobileObserver?.disconnect()
   if (settleTimer) {
     window.clearTimeout(settleTimer)
@@ -314,12 +343,13 @@ onBeforeUnmount(() => {
 
 <template>
   <div
+    ref="stageRoot"
     data-stage-root
     class="stage-root relative z-0 mt-0 w-full min-w-0 max-w-full overflow-hidden"
   >
     <!-- Desktop / md+: layered fan -->
     <div
-      class="stage-desktop relative z-0 mx-auto hidden h-[19rem] w-full max-w-[68rem] overflow-hidden p-8 md:block lg:h-[21rem]"
+      class="stage-desktop relative z-0 mx-auto hidden h-[19rem] min-h-[19rem] w-full max-w-[68rem] overflow-hidden p-8 md:block lg:h-[21rem] lg:min-h-[21rem]"
       @mouseleave="onDesktopLeave"
     >
       <div
@@ -379,7 +409,7 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Mobile: snap carousel with peek -->
-    <div class="stage-mobile-viewport w-full min-w-0 max-w-full overflow-x-hidden md:hidden">
+    <div class="stage-mobile-viewport w-full min-h-[14rem] min-w-0 max-w-full overflow-x-hidden md:hidden">
       <div
         ref="mobileTrack"
         class="stage-mobile-track flex w-full min-w-0 max-w-full snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -459,6 +489,20 @@ onBeforeUnmount(() => {
 .stage-root {
   isolation: isolate;
   contain: paint;
+  /* Reserve space so pending blank does not collapse layout */
+  min-height: 14rem;
+}
+
+@media (min-width: 768px) {
+  .stage-root {
+    min-height: 19rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .stage-root {
+    min-height: 21rem;
+  }
 }
 
 .stage-card-layer {
@@ -553,7 +597,7 @@ onBeforeUnmount(() => {
 
 .stage-entry-pending .stage-entry-content {
   opacity: 0;
-  transform: translateY(44px);
+  transform: translateY(56px);
 }
 
 .stage-entry-animating {
@@ -564,7 +608,7 @@ onBeforeUnmount(() => {
 }
 
 .stage-entry-animating .stage-entry-content {
-  animation: stage-enter 1000ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: stage-enter 1200ms cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: var(--stage-entry-delay, 0ms);
 }
 
