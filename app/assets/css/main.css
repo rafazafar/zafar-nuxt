@@ -151,6 +151,22 @@ html.home-lock-x body {
   }
 }
 
+
+/* Whole-stage blank keyed by SSR data-entry (survives late chunk; inline style is primary FOUC kill) */
+.stage-root[data-entry='pending'] .stage-surfaces,
+.stage-root[data-entry='pending'] .stage-desktop,
+.stage-root[data-entry='pending'] .stage-mobile-viewport,
+.stage-root[data-entry='pending'] .stage-dots,
+.stage-root[data-entry='pending'] > .stage-surfaces > .stage-caption {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: none !important;
+}
+.stage-root[data-entry='pending'] .stage-surfaces,
+.stage-root[data-entry='animating'] .stage-surfaces {
+  transition: none !important;
+}
 /* Entry: CSS default pending so first paint is hidden (no hydration flash) */
 .stage-card.stage-entry-pending,
 .stage-mobile-card.stage-entry-pending {
@@ -187,6 +203,15 @@ html.home-lock-x body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .stage-root[data-entry='pending'] .stage-surfaces,
+  .stage-root[data-entry='pending'] .stage-desktop,
+  .stage-root[data-entry='pending'] .stage-mobile-viewport,
+  .stage-root[data-entry='pending'] .stage-dots,
+  .stage-root[data-entry='pending'] > .stage-surfaces > .stage-caption {
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
   .stage-card.stage-entry-pending,
   .stage-mobile-card.stage-entry-pending,
   .stage-card.stage-entry-animating,

@@ -12,7 +12,7 @@ let entryHoldTimer: number | undefined
 let entryCleanupTimer: number | undefined
 const entryPhaseListeners = new Set<(phase: StageEntryPhase) => void>()
 
-const ENTRY_HOLD_MS = 700
+const ENTRY_HOLD_MS = 800
 const ENTRY_DURATION_MS = 1200
 const ENTRY_STAGGER_MS = 100
 
@@ -67,6 +67,17 @@ const activeCaption = computed(() => {
   }
   const img = stageImages.value[active.value]
   return img?.caption || img?.alt || ''
+})
+
+/** Inline FOUC kill: applies before stylesheet — hide surfaces while pending only. */
+const surfacesHideStyle = computed(() => {
+  if (entryState.value !== 'pending') {
+    return undefined
+  }
+  return {
+    opacity: '0',
+    visibility: 'hidden' as const
+  }
 })
 
 function setActive(index: number | null) {
@@ -346,7 +357,13 @@ onBeforeUnmount(() => {
     ref="stageRoot"
     data-stage-root
     class="stage-root relative z-0 mt-0 w-full min-w-0 max-w-full overflow-hidden"
+    :data-entry="entryState"
   >
+    <!-- Inline hide on surfaces while pending (SSR first paint before CSS). Outer keeps min-height. -->
+    <div
+      class="stage-surfaces"
+      :style="surfacesHideStyle"
+    >
     <!-- Desktop / md+: layered fan -->
     <div
       class="stage-desktop relative z-0 mx-auto hidden h-[19rem] min-h-[19rem] w-full max-w-[68rem] overflow-hidden p-8 md:block lg:h-[21rem] lg:min-h-[21rem]"
@@ -482,6 +499,7 @@ onBeforeUnmount(() => {
         </span>
       </Transition>
     </p>
+    </div>
   </div>
 </template>
 
@@ -716,3 +734,37 @@ onBeforeUnmount(() => {
   }
 }
 </style>
+
+<style>
+/* Unscoped: data-entry rules win over Tailwind/order */
+/* Whole-surface blank while pending — not per-card opacity alone */
+.stage-root[data-entry='pending'] .stage-surfaces,
+.stage-root[data-entry='pending'] .stage-desktop,
+.stage-root[data-entry='pending'] .stage-mobile-viewport,
+.stage-root[data-entry='pending'] .stage-dots,
+.stage-root[data-entry='pending'] > .stage-surfaces > .stage-caption {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: none !important;
+}
+
+/* No opacity transition on wrapper during pending→animating handoff */
+.stage-root[data-entry='pending'] .stage-surfaces,
+.stage-root[data-entry='animating'] .stage-surfaces {
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-root[data-entry='pending'] .stage-surfaces,
+  .stage-root[data-entry='pending'] .stage-desktop,
+  .stage-root[data-entry='pending'] .stage-mobile-viewport,
+  .stage-root[data-entry='pending'] .stage-dots,
+  .stage-root[data-entry='pending'] > .stage-surfaces > .stage-caption {
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+}
+</style>
+
