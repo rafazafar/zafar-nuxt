@@ -13,16 +13,22 @@ const props = defineProps<{
 const localePath = useLocalePath()
 
 const active = ref<number | null>(null)
+const mobileActive = ref(0)
+const settlingIndex = ref<number | null>(null)
 const reduceMotion = ref(false)
+const entryEnabled = ref(false)
+const mobileTrack = ref<HTMLElement | null>(null)
 
-onMounted(() => {
-  reduceMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-})
+let mobileObserver: IntersectionObserver | undefined
+let settleTimer: number | undefined
+let scrollTimer: number | undefined
 
 const stageImages = computed(() => (props.images || []).slice(0, 5))
 
-const rotations = [-3, 2.2, -1.4, 1.6, -2]
+const rotations = [-8, -4, 0, 4, 8]
 const driftClass = ['stage-drift-a', 'stage-drift-b', 'stage-drift-c', 'stage-drift-a', 'stage-drift-b']
+const driftPhases = [0, -2.2, -4.8, -1.8, -5.6]
+const stageEntryKey = 'zafar-stage-entered'
 
 const activeCaption = computed(() => {
   if (active.value === null) {
@@ -38,6 +44,7 @@ function setActive(index: number | null) {
 
 function onFocus(index: number) {
   setActive(index)
+  mobileActive.value = index
 }
 
 function onBlur(event: FocusEvent) {
@@ -47,6 +54,143 @@ function onBlur(event: FocusEvent) {
     setActive(null)
   }
 }
+
+function resetMagnetic(element: HTMLElement) {
+  element.style.setProperty('--magnetic-x', '0px')
+  element.style.setProperty('--magnetic-y', '0px')
+}
+
+function onPointerMove(event: MouseEvent) {
+  const element = event.currentTarget as HTMLElement
+  if (reduceMotion.value) {
+    resetMagnetic(element)
+    return
+  }
+
+  const bounds = element.getBoundingClientRect()
+  const x = Math.max(-8, Math.min(8, (event.clientX - (bounds.left + bounds.width / 2)) * 0.08))
+  const y = Math.max(-8, Math.min(8, (event.clientY - (bounds.top + bounds.height / 2)) * 0.08))
+  element.style.setProperty('--magnetic-x', `${x}px`)
+  element.style.setProperty('--magnetic-y', `${y}px`)
+}
+
+function onPointerLeave(event: MouseEvent) {
+  const element = event.currentTarget as HTMLElement
+  resetMagnetic(element)
+  if (document.activeElement !== element) {
+    const root = element.closest('[data-stage-root]')
+    if (!root?.querySelector(':focus-visible')) {
+      setActive(null)
+    }
+  }
+}
+
+function onDesktopLeave(event: MouseEvent) {
+  const root = event.currentTarget as HTMLElement
+  if (!root.querySelector(':focus-visible')) {
+    setActive(null)
+  }
+}
+
+function pulseMobileCard(index: number) {
+  if (reduceMotion.value) {
+    return
+  }
+
+  settlingIndex.value = index
+  if (settleTimer) {
+    window.clearTimeout(settleTimer)
+  }
+  settleTimer = window.setTimeout(() => {
+    if (settlingIndex.value === index) {
+      settlingIndex.value = null
+    }
+  }, 100)
+}
+
+function setMobileActive(index: number) {
+  if (mobileActive.value === index) {
+    return
+  }
+  mobileActive.value = index
+  pulseMobileCard(index)
+}
+
+function syncMobileActive() {
+  const track = mobileTrack.value
+  if (!track) {
+    return
+  }
+
+  const trackBounds = track.getBoundingClientRect()
+  const trackCenter = trackBounds.left + trackBounds.width / 2
+  let closestIndex: number | null = null
+  let closestDistance = Number.POSITIVE_INFINITY
+
+  track.querySelectorAll<HTMLElement>('[data-stage-index]').forEach((element) => {
+    const bounds = element.getBoundingClientRect()
+    const visibleWidth = Math.min(bounds.right, trackBounds.right) - Math.max(bounds.left, trackBounds.left)
+    if (visibleWidth <= 0) {
+      return
+    }
+
+    const distance = Math.abs((bounds.left + bounds.width / 2) - trackCenter)
+    if (distance < closestDistance) {
+      closestDistance = distance
+      closestIndex = Number(element.dataset.stageIndex)
+    }
+  })
+
+  if (closestIndex !== null) {
+    setMobileActive(closestIndex)
+  }
+}
+
+function onMobileScroll() {
+  if (scrollTimer) {
+    window.clearTimeout(scrollTimer)
+  }
+  scrollTimer = window.setTimeout(syncMobileActive, 120)
+}
+
+onMounted(() => {
+  reduceMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  try {
+    const firstStageVisit = !window.sessionStorage.getItem(stageEntryKey)
+    window.sessionStorage.setItem(stageEntryKey, '1')
+    entryEnabled.value = firstStageVisit && !reduceMotion.value
+  } catch {
+    entryEnabled.value = !reduceMotion.value
+  }
+
+  const track = mobileTrack.value
+  if (track) {
+    mobileObserver = new IntersectionObserver((entries) => {
+      if (entries.length) {
+        syncMobileActive()
+      }
+    }, {
+      root: track,
+      threshold: [0, 0.5, 0.75, 1]
+    })
+
+    track.querySelectorAll<HTMLElement>('[data-stage-index]').forEach((element) => {
+      mobileObserver?.observe(element)
+    })
+    syncMobileActive()
+  }
+})
+
+onBeforeUnmount(() => {
+  mobileObserver?.disconnect()
+  if (settleTimer) {
+    window.clearTimeout(settleTimer)
+  }
+  if (scrollTimer) {
+    window.clearTimeout(scrollTimer)
+  }
+})
 </script>
 
 <template>
@@ -57,7 +201,7 @@ function onBlur(event: FocusEvent) {
     <!-- Desktop / md+: layered fan -->
     <div
       class="stage-desktop relative z-0 mx-auto hidden h-[19rem] w-full max-w-[68rem] overflow-hidden p-5 md:block lg:h-[20rem]"
-      @mouseleave="setActive(null)"
+      @mouseleave="onDesktopLeave"
     >
       <div
         v-for="(img, index) in stageImages"
@@ -68,68 +212,107 @@ function onBlur(event: FocusEvent) {
           zIndex: active === index ? 40 : 10 + index
         }"
       >
-        <NuxtLink
-          :to="img.link ? localePath(img.link) : localePath('/projects')"
-          class="stage-card group relative block w-[11.5rem] lg:w-[13rem] rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-(--ui-bg) transition-opacity duration-300 ease-out"
+        <div
+          class="stage-card-layer"
           :class="[
-            !reduceMotion && active !== index ? driftClass[index % driftClass.length] : '',
+            !reduceMotion ? driftClass[index % driftClass.length] : '',
             active !== null && active !== index ? 'is-dim' : '',
             active === index ? 'is-active' : ''
           ]"
-          :style="{ '--stage-rot': `${rotations[index % rotations.length]}deg` }"
-          :aria-label="img.caption || img.alt"
-          @mouseenter="setActive(index)"
-          @focus="onFocus(index)"
-          @blur="onBlur"
+          :style="{
+            '--stage-rot': `${rotations[index % rotations.length]}deg`,
+            '--stage-phase': `${driftPhases[index % driftPhases.length]}s`
+          }"
         >
-          <span class="stage-frame block overflow-hidden rounded-xl border border-black/10 bg-white dark:border-white/15 dark:bg-neutral-900">
-            <img
-              :src="img.src"
-              :alt="img.alt"
-              width="240"
-              height="180"
-              class="aspect-[4/3] w-full object-cover"
-              loading="lazy"
-            >
-          </span>
-        </NuxtLink>
+          <NuxtLink
+            :to="img.link ? localePath(img.link) : localePath('/projects')"
+            class="stage-card group relative block w-[11.5rem] rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-(--ui-bg) lg:w-[13rem]"
+            :class="[
+              entryEnabled ? 'stage-entry' : '',
+              index === Math.floor((stageImages.length - 1) / 2) ? 'is-center' : ''
+            ]"
+            :style="{ '--stage-entry-delay': `${index * 40}ms` }"
+            :aria-label="img.caption || img.alt"
+            @mouseenter="setActive(index)"
+            @mousemove="onPointerMove"
+            @mouseleave="onPointerLeave"
+            @focus="onFocus(index)"
+            @blur="onBlur"
+          >
+            <span class="stage-entry-content block">
+              <span class="stage-frame block overflow-hidden rounded-xl bg-white dark:bg-neutral-900">
+                <img
+                  :src="img.src"
+                  :alt="img.alt"
+                  width="240"
+                  height="180"
+                  class="aspect-[4/3] w-full object-cover"
+                  loading="lazy"
+                >
+              </span>
+            </span>
+          </NuxtLink>
+        </div>
       </div>
     </div>
 
     <!-- Mobile: snap carousel with peek -->
-    <div class="w-full min-w-0 max-w-full overflow-x-hidden md:hidden">
+    <div class="stage-mobile-viewport w-full min-w-0 max-w-full overflow-x-hidden md:hidden">
       <div
-        class="flex w-full min-w-0 max-w-full snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        ref="mobileTrack"
+        class="stage-mobile-track flex w-full min-w-0 max-w-full snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        @scroll.passive="onMobileScroll"
       >
         <NuxtLink
           v-for="(img, index) in stageImages"
           :key="'m-' + img.src + index"
+          :data-stage-index="index"
           :to="img.link ? localePath(img.link) : localePath('/projects')"
-          class="w-[min(72vw,16rem)] shrink-0 snap-start rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-transform active:scale-[0.98]"
+          class="stage-mobile-card w-[min(72vw,16rem)] shrink-0 snap-center rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          :class="[
+            entryEnabled ? 'stage-entry' : '',
+            mobileActive === index ? 'is-mobile-active' : '',
+            settlingIndex === index ? 'is-settling' : ''
+          ]"
+          :style="{ '--stage-entry-delay': `${index * 40}ms` }"
           :aria-label="img.caption || img.alt"
           @focus="onFocus(index)"
           @blur="onBlur"
-          @click="setActive(index)"
         >
-          <span class="stage-frame block overflow-hidden rounded-xl border border-black/10 bg-white dark:border-white/15 dark:bg-neutral-900">
-            <img
-              :src="img.src"
-              :alt="img.alt"
-              width="280"
-              height="210"
-              class="aspect-[4/3] w-full object-cover"
-              loading="lazy"
-            >
+          <span class="stage-entry-content block">
+            <span class="stage-frame block overflow-hidden rounded-xl bg-white dark:bg-neutral-900">
+              <img
+                :src="img.src"
+                :alt="img.alt"
+                width="280"
+                height="210"
+                class="aspect-[4/3] w-full object-cover"
+                loading="lazy"
+              >
+            </span>
+            <p class="stage-caption mt-2 truncate px-0.5 text-xs">
+              {{ img.caption || img.alt }}
+            </p>
           </span>
-          <p class="stage-caption mt-2 truncate px-0.5 text-xs text-neutral-600 dark:text-neutral-300">
-            {{ img.caption || img.alt }}
-          </p>
         </NuxtLink>
       </div>
     </div>
 
+    <div
+      v-if="stageImages.length > 1"
+      class="stage-dots mt-3 flex justify-center gap-1.5 md:hidden"
+      aria-hidden="true"
+    >
+      <span
+        v-for="(_, index) in stageImages"
+        :key="`dash-${index}`"
+        class="stage-dot"
+        :class="{ 'is-active': mobileActive === index }"
+      />
+    </div>
+
     <p
-      class="stage-caption mt-5 hidden min-h-5 text-center text-sm text-neutral-600 dark:text-neutral-300 md:block"
+      class="stage-caption mt-5 hidden min-h-5 text-center text-sm md:block"
       aria-live="polite"
     >
       <Transition
@@ -153,47 +336,190 @@ function onBlur(event: FocusEvent) {
   contain: paint;
 }
 
-.stage-frame {
-  box-shadow:
-    0 1px 1px rgb(0 0 0 / 0.04),
-    0 8px 24px rgb(0 0 0 / 0.10),
-    0 20px 40px rgb(0 0 0 / 0.06);
-}
-
-.stage-card {
+.stage-card-layer {
   transform: rotate(var(--stage-rot, 0deg));
   transform-origin: center center;
   will-change: transform;
 }
 
-.stage-card.is-dim {
-  opacity: 0.7;
+.stage-card-layer.is-dim {
+  opacity: 0.76;
+}
+
+.stage-card-layer.is-active,
+.stage-card-layer:has(.stage-card:hover),
+.stage-card-layer:has(.stage-card:focus-visible) {
+  animation: none !important;
+  transform: rotate(var(--stage-rot, 0deg));
+  opacity: 1;
+}
+
+.stage-card,
+.stage-mobile-card {
+  --magnetic-x: 0px;
+  --magnetic-y: 0px;
+  --stage-entry-opacity: 1;
+  transform: translate3d(var(--magnetic-x), var(--magnetic-y), 0) scale(var(--stage-scale, 1));
+  transform-origin: center center;
+  transition: transform 180ms cubic-bezier(0.2, 0.75, 0.2, 1), opacity 180ms ease, filter 180ms ease;
+  will-change: transform;
+}
+
+.stage-card.is-center {
+  --stage-scale: 1.02;
 }
 
 .stage-card.is-active,
 .stage-card:hover,
 .stage-card:focus-visible {
-  animation: none !important;
+  --stage-scale: 1.06;
   opacity: 1;
-  transform: scale(1.06) rotate(var(--stage-rot, 0deg));
-  z-index: 40;
+}
+
+.stage-frame {
+  position: relative;
+  border: 1px solid rgb(0 0 0 / 0.06);
+  /* A tight contact shadow plus a wider ambient desk shadow. */
+  box-shadow:
+    0 2px 3px -1px rgb(0 0 0 / 0.18),
+    0 12px 22px -8px rgb(0 0 0 / 0.08);
+}
+
+.stage-frame::before {
+  position: absolute;
+  z-index: 1;
+  inset: 0 0 auto;
+  height: 1px;
+  pointer-events: none;
+  content: '';
+  background: linear-gradient(90deg, rgb(255 255 255 / 0), rgb(255 255 255 / 0.9) 50%, rgb(255 255 255 / 0));
+}
+
+.dark .stage-frame {
+  border-color: rgb(255 255 255 / 0.14);
+  box-shadow:
+    0 2px 3px -1px rgb(0 0 0 / 0.3),
+    0 12px 22px -8px rgb(0 0 0 / 0.18);
+}
+
+.stage-card.is-active .stage-frame,
+.stage-card:hover .stage-frame,
+.stage-card:focus-visible .stage-frame,
+.stage-mobile-card.is-mobile-active .stage-frame {
+  box-shadow:
+    0 3px 4px -1px rgb(0 0 0 / 0.22),
+    0 15px 28px -8px rgb(0 0 0 / 0.14);
+}
+
+.dark .stage-card.is-active .stage-frame,
+.dark .stage-card:hover .stage-frame,
+.dark .stage-card:focus-visible .stage-frame,
+.dark .stage-mobile-card.is-mobile-active .stage-frame {
+  box-shadow:
+    0 3px 4px -1px rgb(0 0 0 / 0.4),
+    0 15px 28px -8px rgb(0 0 0 / 0.26);
+}
+
+.stage-entry {
+  animation: stage-entry-opacity 420ms cubic-bezier(0.2, 0.75, 0.2, 1) var(--stage-entry-delay, 0ms) both;
+}
+
+.stage-entry .stage-entry-content {
+  animation: stage-entry-rise 420ms cubic-bezier(0.2, 0.75, 0.2, 1) var(--stage-entry-delay, 0ms) both;
+}
+
+@keyframes stage-entry-opacity {
+  from { opacity: 0; }
+  to { opacity: var(--stage-entry-opacity, 1); }
+}
+
+@keyframes stage-entry-rise {
+  from { transform: translateY(16px); }
+  to { transform: translateY(0); }
+}
+
+.stage-mobile-track {
+  padding-inline: max(1rem, calc((100% - min(72vw, 16rem)) / 2));
+  scroll-padding-inline: max(1rem, calc((100% - min(72vw, 16rem)) / 2));
+}
+
+.stage-mobile-card {
+  --stage-scale: 1;
+  --stage-entry-opacity: 0.88;
+  opacity: 0.88;
+}
+
+.stage-mobile-card.is-mobile-active {
+  --stage-scale: 1.04;
+  --stage-entry-opacity: 1;
+  opacity: 1;
+}
+
+.stage-mobile-card.is-settling {
+  animation: stage-settle 100ms ease-out;
+}
+
+@keyframes stage-settle {
+  0% { transform: scale(1.04); }
+  45% { transform: scale(1.075); }
+  100% { transform: scale(1.04); }
+}
+
+.stage-caption {
+  color: #52525b;
+}
+
+.dark .stage-caption {
+  color: rgb(212 212 216);
+}
+
+.stage-dot {
+  width: 0.75rem;
+  height: 2px;
+  background: rgb(82 82 91 / 0.35);
+  transition: width 180ms ease, background-color 180ms ease;
+}
+
+.stage-dot.is-active {
+  width: 1.5rem;
+  background: rgb(82 82 91 / 0.85);
 }
 
 .caption-enter-active,
 .caption-leave-active {
-  transition: opacity 220ms ease;
+  transition: opacity 180ms ease;
 }
+
 .caption-enter-from,
 .caption-leave-to {
   opacity: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stage-card.is-active,
-  .stage-card:hover,
-  .stage-card:focus-visible {
-    transform: rotate(var(--stage-rot, 0deg));
+  .stage-card-layer,
+  .stage-card-layer.is-active,
+  .stage-card-layer:has(.stage-card:hover),
+  .stage-card-layer:has(.stage-card:focus-visible) {
+    animation: none !important;
   }
+
+  .stage-card,
+  .stage-mobile-card,
+  .stage-dot {
+    transition: none;
+  }
+
+  .stage-entry,
+  .stage-entry .stage-entry-content {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .stage-mobile-card.is-settling {
+    animation: none;
+  }
+
   .caption-enter-active,
   .caption-leave-active {
     transition: none;

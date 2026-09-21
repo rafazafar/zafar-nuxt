@@ -8,6 +8,19 @@ defineProps<{
 }>()
 
 const motto = 'Don\'t Stop Building'
+const mottoBreathe = ref(false)
+const mottoSessionKey = 'zafar-motto-breathed'
+
+onMounted(() => {
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  try {
+    const firstMottoVisit = !window.sessionStorage.getItem(mottoSessionKey)
+    window.sessionStorage.setItem(mottoSessionKey, '1')
+    mottoBreathe.value = firstMottoVisit && !reduced
+  } catch {
+    mottoBreathe.value = !reduced
+  }
+})
 </script>
 
 <template>
@@ -54,7 +67,10 @@ const motto = 'Don\'t Stop Building'
         :transition="{ duration: 0.5, delay: 0.22 }"
         class="flex flex-col items-center gap-3"
       >
-        <p class="motto-breathe text-sm sm:text-[0.95rem] font-medium text-highlighted uppercase">
+        <p
+          class="motto-copy text-sm sm:text-[0.95rem] font-medium text-highlighted uppercase"
+          :class="{ 'motto-breathe': mottoBreathe }"
+        >
           {{ motto }}
         </p>
         <p class="text-[1.05rem] leading-relaxed text-muted max-w-2xl text-pretty">
@@ -78,7 +94,7 @@ const motto = 'Don\'t Stop Building'
               <UButton
                 v-bind="page.hero.links[0]"
                 color="neutral"
-                class="resume-tactile min-h-11 px-5"
+                class="resume-tactile min-h-11 px-5 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-(--ui-bg)"
               />
               <UButton
                 :color="global.available ? 'primary' : 'error'"

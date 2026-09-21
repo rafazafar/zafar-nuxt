@@ -31,7 +31,7 @@ html.home-lock-x body {
 }
 
 
-/* Workshop light — subtle paper grain (≈2.5%) */
+/* Workshop light — visible paper grain (≈4%) */
 .paper-grain {
   position: relative;
 }
@@ -41,23 +41,37 @@ html.home-lock-x body {
   inset: 0;
   pointer-events: none;
   z-index: 1;
-  opacity: 0.025;
+  opacity: 0.04;
   mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 180px 180px;
 }
 .dark .paper-grain::before {
   mix-blend-mode: soft-light;
-  opacity: 0.035;
+  opacity: 0.045;
+}
+.paper-grain::after {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  content: '';
+  background: radial-gradient(ellipse at center, transparent 68%, rgb(0 0 0 / 0.022) 100%);
+}
+.dark .paper-grain::after {
+  background: radial-gradient(ellipse at center, transparent 68%, rgb(0 0 0 / 0.03) 100%);
 }
 
-/* Motto breathe — letter-spacing 0.12em → target */
+/* Motto breathe — letter-spacing 0.14em → target, once per session */
 @keyframes motto-breathe {
-  from { letter-spacing: 0.12em; opacity: 0.55; }
+  from { letter-spacing: 0.14em; opacity: 0.55; }
   to { letter-spacing: 0.06em; opacity: 1; }
 }
+.motto-copy {
+  letter-spacing: 0.06em;
+}
 .motto-breathe {
-  animation: motto-breathe 600ms ease-out forwards;
+  animation: motto-breathe 700ms ease-out forwards;
 }
 @media (prefers-reduced-motion: reduce) {
   .motto-breathe {
@@ -85,12 +99,16 @@ html.home-lock-x body {
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.12), 0 4px 12px rgb(0 0 0 / 0.08);
 }
 .resume-tactile:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgb(0 0 0 / 0.14), 0 8px 18px rgb(0 0 0 / 0.12);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 5px rgb(0 0 0 / 0.16), 0 10px 22px rgb(0 0 0 / 0.14);
 }
 .resume-tactile:active {
   transform: translateY(1px);
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.16);
+}
+.resume-tactile:focus-visible {
+  outline: 2px solid var(--ui-primary);
+  outline-offset: 2px;
 }
 @media (prefers-reduced-motion: reduce) {
   .resume-tactile,
@@ -103,19 +121,28 @@ html.home-lock-x body {
 /* Project stage idle drift */
 @keyframes stage-drift-a {
   0%, 100% { transform: translate(0, 0) rotate(var(--stage-rot, -3deg)); }
-  50% { transform: translate(3.5px, -3.5px) rotate(calc(var(--stage-rot, -3deg) + 0.8deg)); }
+  50% { transform: translate(7px, -7px) rotate(calc(var(--stage-rot, -3deg) + 1.8deg)); }
 }
 @keyframes stage-drift-b {
   0%, 100% { transform: translate(0, 0) rotate(var(--stage-rot, 2deg)); }
-  50% { transform: translate(-3.5px, 2.5px) rotate(calc(var(--stage-rot, 2deg) - 0.8deg)); }
+  50% { transform: translate(-7px, 6px) rotate(calc(var(--stage-rot, 2deg) - 1.7deg)); }
 }
 @keyframes stage-drift-c {
   0%, 100% { transform: translate(0, 0) rotate(var(--stage-rot, -1deg)); }
-  50% { transform: translate(2.5px, 3.5px) rotate(calc(var(--stage-rot, -1deg) + 0.7deg)); }
+  50% { transform: translate(6px, 7px) rotate(calc(var(--stage-rot, -1deg) + 1.6deg)); }
 }
-.stage-drift-a { animation: stage-drift-a 10s ease-in-out infinite; }
-.stage-drift-b { animation: stage-drift-b 12s ease-in-out infinite; }
-.stage-drift-c { animation: stage-drift-c 9s ease-in-out infinite; }
+.stage-drift-a {
+  animation: stage-drift-a 10.5s ease-in-out infinite;
+  animation-delay: var(--stage-phase, 0s);
+}
+.stage-drift-b {
+  animation: stage-drift-b 11.5s ease-in-out infinite;
+  animation-delay: var(--stage-phase, 0s);
+}
+.stage-drift-c {
+  animation: stage-drift-c 9.5s ease-in-out infinite;
+  animation-delay: var(--stage-phase, 0s);
+}
 @media (prefers-reduced-motion: reduce) {
   .stage-drift-a,
   .stage-drift-b,
