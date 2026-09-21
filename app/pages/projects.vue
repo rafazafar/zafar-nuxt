@@ -184,9 +184,5 @@ useSeoMeta({
         </UPageCard>
       </Motion>
     </UPageSection>
-    <LandingCtaBand
-      title="This could be next."
-      description="Let's map the problem and the first honest slice."
-    />
   </UPage>
 </template>

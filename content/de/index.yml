@@ -70,6 +70,24 @@ experience:
         url: "https://halal-navi.com"
         color: "#4CAF50"
 testimonials:
+  - quote: "Es ist schwierig, jemanden zu finden, der so engagiert ist wie Sie. Sie haben uns sehr geholfen."
+    author:
+      name: 'Yuya Suzuki'
+      description: 'Direktor - JSA | KLWing'
+      avatar:
+        src: 'https://r2.zafar.dev/img/suzuki.jpg'
+  - quote: "Danke, dass Sie uns geholfen haben zu wachsen. Auch in den schwierigen Zeiten."
+    author:
+      name: 'Shusaku Ueda'
+      description: 'Direktor - Seekers'
+      avatar:
+        src: 'https://r2.zafar.dev/img/ueda.jpg'
+  - quote: "Unerbittliche Arbeit. Erledigt die Arbeit."
+    author:
+      name: 'Hidayat'
+      description: 'Fronyx Gmbh'
+      avatar:
+        src: 'https://r2.zafar.dev/img/py.jpg'
 blog:
   title: "Neueste Artikel"
   description: "Gedanken zu Technologie und Wirtschaft"

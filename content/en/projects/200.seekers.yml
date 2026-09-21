@@ -1,7 +1,7 @@
 title: Seekers
-description: "Role: Led founding team. Led the founding team to create a multi-tenant, multi-role, crowdsourced recruitment agency — a new way to seek opportunities and connect with talent."
+description: Led founding team to created a multi-tenant, multi-role, crowdsourced recreuitment agency. A new way to seek Oppertunities and connect with Talents
 image: https://r2.zafar.dev/img/seekers/1.png
 url: "https://seekers.my"
-tags: ["Development", "Business"]
+tags: ["Developement", "Business"]
 techStack: ["Nuxt", "React Native", "PHP"]
 date: "2021"
