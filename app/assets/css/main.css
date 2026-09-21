@@ -24,3 +24,97 @@
     background-color: #474747;
   }
 }
+
+
+/* Workshop light — subtle paper grain (≈2.5%) */
+.paper-grain {
+  position: relative;
+}
+.paper-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.025;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+.dark .paper-grain::before {
+  mix-blend-mode: soft-light;
+  opacity: 0.035;
+}
+
+/* Motto breathe — letter-spacing 0.12em → target */
+@keyframes motto-breathe {
+  from { letter-spacing: 0.12em; opacity: 0.55; }
+  to { letter-spacing: 0.06em; opacity: 1; }
+}
+.motto-breathe {
+  animation: motto-breathe 600ms ease-out forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .motto-breathe {
+    animation: none;
+    letter-spacing: 0.06em;
+    opacity: 1;
+  }
+}
+
+/* Cyan availability pulse 2s */
+@keyframes avail-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+.avail-pulse {
+  animation: avail-pulse 2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .avail-pulse { animation: none; opacity: 1; }
+}
+
+/* Tactile black resume */
+.resume-tactile {
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.12), 0 4px 12px rgb(0 0 0 / 0.08);
+}
+.resume-tactile:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.14), 0 8px 18px rgb(0 0 0 / 0.12);
+}
+.resume-tactile:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.16);
+}
+@media (prefers-reduced-motion: reduce) {
+  .resume-tactile,
+  .resume-tactile:hover,
+  .resume-tactile:active {
+    transform: none;
+  }
+}
+
+/* Project stage idle drift */
+@keyframes stage-drift-a {
+  0%, 100% { transform: translate(0, 0) rotate(var(--stage-rot, -3deg)); }
+  50% { transform: translate(2px, -2px) rotate(calc(var(--stage-rot, -3deg) + 0.5deg)); }
+}
+@keyframes stage-drift-b {
+  0%, 100% { transform: translate(0, 0) rotate(var(--stage-rot, 2deg)); }
+  50% { transform: translate(-2px, 1px) rotate(calc(var(--stage-rot, 2deg) - 0.5deg)); }
+}
+@keyframes stage-drift-c {
+  0%, 100% { transform: translate(0, 0) rotate(var(--stage-rot, -1deg)); }
+  50% { transform: translate(1px, 2px) rotate(calc(var(--stage-rot, -1deg) + 0.4deg)); }
+}
+.stage-drift-a { animation: stage-drift-a 10s ease-in-out infinite; }
+.stage-drift-b { animation: stage-drift-b 12s ease-in-out infinite; }
+.stage-drift-c { animation: stage-drift-c 9s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .stage-drift-a,
+  .stage-drift-b,
+  .stage-drift-c {
+    animation: none;
+  }
+}

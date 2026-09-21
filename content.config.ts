@@ -13,7 +13,8 @@ const buttonSchema = z.object({
 const imageSchema = z.object({
   src: z.string().editor({ input: 'media' }),
   alt: z.string(),
-  link: z.string().optional()
+  link: z.string().optional(),
+  caption: z.string().optional()
 })
 
 const authorSchema = z.object({
@@ -46,7 +47,7 @@ const indexSchema = z.object({
   }),
   experience: z.object({
     title: z.string(),
-    description: z.string(),
+    description: z.string().optional(),
     items: z.array(z.object({
       date: z.string(),
       position: z.string(),

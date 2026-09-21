@@ -8,36 +8,30 @@ defineProps<{
 
 <template>
   <UPageSection
-    v-if="page?.testimonials"
+    v-if="page?.testimonials?.length"
+    :title="$t('home.notesFromPeople')"
     :ui="{
-      container: 'px-0 !pt-0'
+      container: 'px-0 !pt-2 gap-6 sm:gap-8',
+      title: 'text-left text-xl sm:text-xl lg:text-2xl font-medium',
+      description: 'text-left'
     }"
   >
-    <UCarousel
-      v-slot="{ item }"
-      :items="page.testimonials"
-      :autoplay="{ delay: 4000 }"
-      loop
-      dots
-      :ui="{
-        viewport: '-mx-4 sm:-mx-12 lg:-mx-16 bg-elevated/50'
-      }"
-    >
-      <UPageCTA
-        :description="item.quote"
-        variant="naked"
-        class="rounded-none"
-        :ui="{
-          container: 'sm:py-12 lg:py-12 sm:gap-8',
-          description: '!text-base text-balance before:content-[open-quote] before:text-5xl lg:before:text-7xl before:inline-block before:text-dimmed before:absolute before:-ml-6 lg:before:-ml-10 before:-mt-2 lg:before:-mt-4 after:content-[close-quote] after:text-5xl lg:after:text-7xl after:inline-block after:text-dimmed after:absolute after:mt-1 lg:after:mt-0 after:ml-1 lg:after:ml-2'
-        }"
+    <div class="grid gap-6 sm:gap-8 md:grid-cols-2">
+      <figure
+        v-for="(item, index) in page.testimonials"
+        :key="index"
+        class="relative rounded-2xl border border-default/60 bg-elevated/30 px-5 py-6 sm:px-6"
       >
-        <UUser
-          v-bind="item.author"
-          size="xl"
-          class="justify-center"
-        />
-      </UPageCTA>
-    </UCarousel>
+        <blockquote class="text-base sm:text-lg leading-relaxed text-highlighted italic text-pretty">
+          “{{ item.quote }}”
+        </blockquote>
+        <figcaption class="mt-5 flex items-center gap-3">
+          <UUser
+            v-bind="item.author"
+            size="md"
+          />
+        </figcaption>
+      </figure>
+    </div>
   </UPageSection>
 </template>

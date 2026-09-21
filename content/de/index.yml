@@ -1,8 +1,8 @@
 seo:
   title: "Zafar.dev | Hör nicht auf zu bauen"
-  description: "Mein Hauptaugenmerk liegt auf der Schaffung nützlicher und wirkungsvoller Produkte, die einen echten Unterschied im Leben der Menschen machen. Im Laufe meiner Karriere habe ich umfangreiche Erfahrungen im Entwerfen, Vereinfachen, Codieren und Skalieren verschiedener Prozesse und Lösungen für Start-ups gesammelt, was mir geholfen hat, eine starke Erfolgsbilanz bei der Erreichung der Ziele und Vorgaben meiner Kunden zu entwickeln."
+  description: "Ich entwerfe und shippe Produkte, die in der echten Welt funktionieren müssen — Tokio, Startups und Enterprise, von BLE am Edge bis zu KI, der man vertrauen kann."
 title: "Hallo, ich bin Zafar"
-description: "Senior Software Engineer & Produkt-Builder. Was bauen wir als nächstes?"
+description: "Ich entwerfe und shippe Produkte, die in der echten Welt funktionieren müssen — Tokio, Startups und Enterprise, von BLE am Edge bis zu KI, der man vertrauen kann."
 hero:
   links:
     - label: "Lebenslauf"
@@ -11,27 +11,26 @@ hero:
     - label: "Kontaktieren Sie mich"
       to: "#contact"
   images:
-    - src: "https://r2.zafar.dev/img/digi/digi-cybersafe.png"
-      link: "/projects"
-      alt: "Digi"
-    - src: "https://r2.zafar.dev/img/others/taberuuu-logo-min.png"
+    - src: "https://r2.zafar.dev/img/halalnavi/1.png"
       link: "/projects"
       alt: "Halal Navi"
+      caption: "Halal Navi"
+    - src: "https://r2.zafar.dev/img/seekers/1.png"
+      link: "/projects"
+      alt: "Seekers"
+      caption: "Seekers"
     - src: "https://r2.zafar.dev/img/axa/logo.png"
       link: "/projects"
       alt: "AXA"
-    - src: "https://r2.zafar.dev/img/halalnavi/1.png"
+      caption: "AXA"
+    - src: "https://r2.zafar.dev/img/digi/digi-cybersafe.png"
       link: "/projects"
-      alt: "Taberuuu"
-    - src: "https://r2.zafar.dev/img/seekers/1.png"
-      link: "/projects"
-      alt: "Taberuuu"
+      alt: "Digi CyberSafe"
+      caption: "Digi CyberSafe"
     - src: "https://r2.zafar.dev/img/building-blocks.png"
       link: "/projects"
-      alt: "Bausteine"
-    - src: "https://cover.sli.dev"
-      link: "/projects"
-      alt: "Zufällig"
+      alt: "Building Blocks"
+      caption: "Building Blocks"
 about:
   title: "Über mich"
   description: |
@@ -68,7 +67,7 @@ experience:
         name: Halal Navi
         logo: ""
         url: "https://halal-navi.com"
-        color: "#4CAF50"
+        color: "#2E7D32"
 testimonials:
   - quote: "Es ist schwierig, jemanden zu finden, der so engagiert ist wie Sie. Sie haben uns sehr geholfen."
     author:
@@ -86,40 +85,17 @@ blog:
   title: "Neueste Artikel"
   description: "Gedanken zu Technologie und Wirtschaft"
 faq:
-  title: Häufig gestellte Fragen
-  description: Antworten auf häufige Fragen zu meinem Prozess und meinen Dienstleistungen.
+  title: "Ein paar Fragen"
+  description: "Kurze Antworten. Mehr Tiefe auf den Service-Seiten."
   categories:
-    - title: Dienstleistungen & Prozess
+    - title: Zusammenarbeit
       questions:
-        - label: Welche Dienstleistungen bieten Sie an?
+        - label: Wonach suchst du gerade?
           content: |
-            Ich bin spezialisiert auf Full-Stack-Entwicklung und Produktmanagement. Dies umfasst das Entwerfen, Vereinfachen, Bauen und Skalieren von Lösungen für Start-ups unter Verwendung des First-Principle-Thinking. Meine Expertise erstreckt sich über mehrere Branchen, und ich konzentriere mich auf die Schaffung nützlicher und wirkungsvoller Produkte, die einen echten Unterschied im Leben der Menschen machen.
-        - label: Wie sieht Ihr Entwicklungsprozess aus?
+            Teams, die jemanden brauchen, der entwirft und shippt — Edge, Legacy oder KI mit echten Controls. Keine endlosen Decks.
+        - label: Wie starten Engagements meistens?
           content: |
-            Mein Prozess ist kollaborativ und iterativ und beinhaltet in der Regel eine starke Feedbackschleife zwischen Kunde und Entwickler und den Fokus auf eine schnelle Wertschöpfung. Kommunikation ist der Schlüssel, und es gibt keinen Platz für Ego im Streben nach Exzellenz.
-        - label: Arbeiten Sie mit Start-ups zusammen?
+            Kurzes Scoping per Mail oder Call. Problem, Constraints, nächster Schritt. [hello@zafar.dev](mailto:hello@zafar.dev).
+        - label: Wo gibt es mehr zu den Services?
           content: |
-            Absolut! Ich liebe es, mit Start-ups zusammenzuarbeiten, um ihre Produktvision zu gestalten und Lösungen von Grund auf zu entwickeln. Ich war an mehreren Null-zu-Eins-Start-ups beteiligt und habe Erfahrung darin, Ideen in nur einer Woche zum MVP und in nur zwei Wochen zum Produktstart zu bringen.
-    - title: Technische Fähigkeiten
-      questions:
-        - label: Mit welchen Programmiersprachen arbeiten Sie?
-          content: |
-            Ich arbeite mit Typescript, Python, Dart, Go, Java und lerne derzeit Rust. Ich bin sowohl mit der Frontend- als auch mit der Backend-Entwicklung vertraut.
-        - label: Welche Frameworks und Technologien verwenden Sie?
-          content: |
-            Für Frontend: VueJS/Nuxt, React/Nextjs, Vite, Svelte
-            Für Backend: Nitro, Springboot, Directus, Laravel
-            Für Mobilgeräte: Flutter, Ionic
-            Für DevOps: Nginx, Kubernetes, Pipeline/Actions, CircleCI, Serverless/CDK
-            Für Cloud: AWS, Cloudflare, CodeMagic CI/CD, Actions, Cloudinary
-        - label: Haben Sie Erfahrung mit KI/ML?
-          content: |
-            Ja, ich arbeite mit CF Workers AI, Qdrant und Vectorize. Ich habe auch Erfahrung mit Suchtechnologien wie Elasticsearch, Meilisearch und Algolia.
-    - title: Über mich
-      questions:
-        - label: Was gefällt Ihnen an Ihrer Arbeit am besten?
-          content: |
-            Ich liebe es, nützliche und wirkungsvolle Produkte zu schaffen, die einen echten Unterschied im Leben der Menschen machen. Es ist unglaublich lohnend zu sehen, wie Menschen mit etwas interagieren, das ich gebaut habe, und es wirklich nützlich finden. Ich genieße die Herausforderung, komplexe Probleme zu lösen, und das ständige Lernen, das mit der Arbeit in der Technologie einhergeht.
-        - label: Wo sind Sie ansässig?
-          content: |
-            Ich lebe derzeit in Tokio, Japan. Ich arbeite jedoch remote mit Kunden aus der ganzen Welt zusammen.
+            [AI systems](/services/ai-systems) und [Product craft](/services/product-craft). Die Home bleibt persönlich.

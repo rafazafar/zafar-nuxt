@@ -1,8 +1,8 @@
 seo:
   title: "Zafar.dev | Don't Stop Building"
-  description: "My primary focus is on creating useful and impactful products that make a real difference in people's lives. Over the course of my career, I gained extensive experience in designing, simplifying, coding and scaling various processes and solutions for startups, which has helped me develop a strong track record of success in achieving clients' goals and objectives."
+  description: "I design and ship products that have to work in the real world — Tokyo, startups and enterprise, from BLE at the edge to AI you can actually trust."
 title: "Hey, I'm Zafar"
-description: "Senior Software Engineer & Product Builder. What are we building next?"
+description: "I design and ship products that have to work in the real world — Tokyo, startups and enterprise, from BLE at the edge to AI you can actually trust."
 hero:
   links:
     - label: "Le Resume"
@@ -11,27 +11,26 @@ hero:
     - label: "Contact Me"
       to: "#contact"
   images:
-    - src: "https://r2.zafar.dev/img/digi/digi-cybersafe.png"
-      link: "/projects"
-      alt: "Digi"
-    - src: "https://r2.zafar.dev/img/others/taberuuu-logo-min.png"
+    - src: "https://r2.zafar.dev/img/halalnavi/1.png"
       link: "/projects"
       alt: "Halal Navi"
+      caption: "Halal Navi — product from zero"
+    - src: "https://r2.zafar.dev/img/seekers/1.png"
+      link: "/projects"
+      alt: "Seekers"
+      caption: "Seekers — multi-tenant from the founding team"
     - src: "https://r2.zafar.dev/img/axa/logo.png"
       link: "/projects"
       alt: "AXA"
-    - src: "https://r2.zafar.dev/img/halalnavi/1.png"
+      caption: "AXA — tools inside legacy ETL"
+    - src: "https://r2.zafar.dev/img/digi/digi-cybersafe.png"
       link: "/projects"
-      alt: "Taberuuu"
-    - src: "https://r2.zafar.dev/img/seekers/1.png"
-      link: "/projects"
-      alt: "Taberuuu"
+      alt: "Digi CyberSafe"
+      caption: "Digi CyberSafe — safety product craft"
     - src: "https://r2.zafar.dev/img/building-blocks.png"
       link: "/projects"
       alt: "Building Blocks"
-    - src: "https://cover.sli.dev"
-      link: "/projects"
-      alt: "Random"
+      caption: "Building blocks — systems that stack"
 about:
   title: "About Me"
   description: |
@@ -68,7 +67,7 @@ experience:
         name: Halal Navi
         logo: ""
         url: "https://halal-navi.com"
-        color: "#4CAF50"
+        color: "#2E7D32"
 testimonials:
   - quote: "Its difficult to find someone who is as dedicated as you are. You helped us out a lot."
     author:
@@ -86,40 +85,17 @@ blog:
   title: "Latest Articles"
   description: "Thoughts on technology and business"
 faq:
-  title: Frequently Asked Questions
-  description: Answers to common questions about my process and services.
+  title: "A few questions"
+  description: "Short answers. More on the services pages if you need depth."
   categories:
-    - title: Services & Process
+    - title: Working together
       questions:
-        - label: What services do you offer?
+        - label: What are you looking for right now?
           content: |
-            I specialize in full-stack development and product management. This includes designing, simplifying, building and scaling solutions for startups using first-principle thinking. My expertise spans multiple industries, and I focus on creating useful and impactful products that make a real difference in people's lives.
-        - label: What is your development process like?
+            Teams who need someone to design and ship — products that have to work at the edge, messy legacy, or AI with real controls. Not endless decks.
+        - label: How do engagements usually start?
           content: |
-            My process is collaborative and iterative, typically involving a strong customer-developer feedback loop and focus on delivering value quickly. Communication is key, and there is no room for ego in the pursuit of excellence.
-        - label: Do you work with startups?
+            A short scoping note or call. We align on the problem, constraints, and a bounded next step. Email [hello@zafar.dev](mailto:hello@zafar.dev).
+        - label: Where can I read more about services?
           content: |
-            Absolutely! I love working with startups to help shape their product vision and create solutions from the ground up. I've been involved in multiple zero-to-one startups and have experience taking ideas to MVP in as little as 1 week, and to product launch in as little as 2 weeks.
-    - title: Technical Skills
-      questions:
-        - label: What programming languages do you work with?
-          content: |
-            I work with Typescript, Python, Dart, Go, Java, and I'm currently learning Rust. I'm comfortable with both frontend and backend development.
-        - label: What frameworks and technologies do you use?
-          content: |
-            For frontend: VueJS/Nuxt, React/Nextjs, Vite, Svelte
-            For backend: Nitro, Springboot, Directus, Laravel
-            For mobile: Flutter, Ionic
-            For DevOps: Nginx, Kubernetes, Pipeline/Actions, CircleCI, Serverless/CDK
-            For Cloud: AWS, Cloudflare, CodeMagic CI/CD, Actions, Cloudinary
-        - label: Do you have experience with AI/ML?
-          content: |
-            Yes, I work with CF Workers AI, Qdrant, and Vectorize. I also have experience with search technologies like Elasticsearch, Meilisearch, and Algolia.
-    - title: About Me
-      questions:
-        - label: What do you enjoy most about your work?
-          content: |
-            I love creating useful and impactful products that make a real difference in people's lives. It's incredibly rewarding to see people interact with something I've built and find it genuinely useful. I enjoy the challenge of solving complex problems and the constant learning that comes with working in technology.
-        - label: Where are you based?
-          content: |
-            I'm currently based in Tokyo, Japan. However, I work remotely with clients from around the world.
+            [AI systems](/services/ai-systems) and [Product craft](/services/product-craft) — those pages carry the depth. Home stays personal.

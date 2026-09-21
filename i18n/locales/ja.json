@@ -74,5 +74,8 @@
   },
   "ui": {
     "selectLanguage": "言語を選択"
+  },
+  "home": {
+    "notesFromPeople": "もらった言葉"
   }
 }

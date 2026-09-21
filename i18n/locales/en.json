@@ -74,5 +74,8 @@
   },
   "ui": {
     "selectLanguage": "Select Language"
+  },
+  "home": {
+    "notesFromPeople": "Notes from people"
   }
 }

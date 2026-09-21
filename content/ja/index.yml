@@ -1,8 +1,8 @@
 seo:
   title: "Zafar.dev | ビルディングを止めない"
-  description: "私の主な焦点は、人々の生活に真の違いをもたらす、有用でインパクトのある製品を作ることです。私のキャリアを通じて、スタートアップ向けのさまざまなプロセスとソリューションの設計、簡素化、コーディング、スケーリングにおいて豊富な経験を積んできました。これにより、クライアントの目標と目的を達成する上で、成功の実績を積み重ねることができました。"
+  description: "現実の世界でちゃんと動くプロダクトを設計し、出荷しています。東京、スタートアップとエンタープライズ。エッジのBLEから、信頼できるAIまで。"
 title: "こんにちは、ザファーです"
-description: "シニアソフトウェアエンジニア兼プロダクトビルダー。次に何を構築しますか？"
+description: "現実の世界でちゃんと動くプロダクトを設計し、出荷しています。東京、スタートアップとエンタープライズ。エッジのBLEから、信頼できるAIまで。"
 hero:
   links:
     - label: "履歴書"
@@ -11,27 +11,26 @@ hero:
     - label: "お問い合わせ"
       to: "#contact"
   images:
-    - src: "https://r2.zafar.dev/img/digi/digi-cybersafe.png"
-      link: "/projects"
-      alt: "Digi"
-    - src: "https://r2.zafar.dev/img/others/taberuuu-logo-min.png"
+    - src: "https://r2.zafar.dev/img/halalnavi/1.png"
       link: "/projects"
       alt: "Halal Navi"
+      caption: "Halal Navi"
+    - src: "https://r2.zafar.dev/img/seekers/1.png"
+      link: "/projects"
+      alt: "Seekers"
+      caption: "Seekers"
     - src: "https://r2.zafar.dev/img/axa/logo.png"
       link: "/projects"
       alt: "AXA"
-    - src: "https://r2.zafar.dev/img/halalnavi/1.png"
+      caption: "AXA"
+    - src: "https://r2.zafar.dev/img/digi/digi-cybersafe.png"
       link: "/projects"
-      alt: "Taberuuu"
-    - src: "https://r2.zafar.dev/img/seekers/1.png"
-      link: "/projects"
-      alt: "Taberuuu"
+      alt: "Digi CyberSafe"
+      caption: "Digi CyberSafe"
     - src: "https://r2.zafar.dev/img/building-blocks.png"
       link: "/projects"
-      alt: "ビルディングブロック"
-    - src: "https://cover.sli.dev"
-      link: "/projects"
-      alt: "ランダム"
+      alt: "Building Blocks"
+      caption: "Building Blocks"
 about:
   title: "私について"
   description: |
@@ -68,7 +67,7 @@ experience:
         name: Halal Navi
         logo: ""
         url: "https://halal-navi.com"
-        color: "#4CAF50"
+        color: "#2E7D32"
 testimonials:
   - quote: "あなたほど献身的な人を見つけるのは難しいです。本当に助かりました。"
     author:
@@ -86,40 +85,17 @@ blog:
   title: "最新記事"
   description: "テクノロジーとビジネスに関する考察"
 faq:
-  title: よくある質問
-  description: 私のプロセスとサービスに関する一般的な質問への回答。
+  title: "よくある質問（短め）"
+  description: "くわしくはサービスページへ。"
   categories:
-    - title: サービスとプロセス
+    - title: いっしょに働くこと
       questions:
-        - label: どのようなサービスを提供していますか？
+        - label: 今、どんな仕事を探していますか？
           content: |
-            私はフルスタック開発とプロダクトマネジメントを専門としています。これには、第一原理思考を用いたスタートアップ向けのソリューションの設計、簡素化、構築、スケーリングが含まれます。私の専門知識は複数の業界に及び、人々の生活に真の違いをもたらす、有用でインパクトのある製品を作ることに重点を置いています。
-        - label: あなたの開発プロセスはどのようなものですか？
+            現場で動くプロダクトを設計・出荷したいチーム向けです。エッジ、レガシー、信頼できるAI。長い資料だけの仕事はしません。
+        - label: どう始めますか？
           content: |
-            私のプロセスは協調的かつ反復的であり、通常、強力な顧客と開発者のフィードバックループと、迅速な価値提供に重点を置いています。コミュニケーションが鍵であり、卓越性を追求する上でエゴの入る余地はありません。
-        - label: スタートアップと協力しますか？
+            短いスコープのメールか通話から。課題・制約・次の一歩を揃えます。[hello@zafar.dev](mailto:hello@zafar.dev)。
+        - label: サービスについてもっと知りたい
           content: |
-            もちろんです！私はスタートアップと協力して、彼らの製品ビジョンを形作り、ゼロからソリューションを構築するのが大好きです。私は複数のゼロから1へのスタートアップに関与しており、わずか1週間でアイデアをMVPに、わずか2週間で製品を発売した経験があります。
-    - title: 技術スキル
-      questions:
-        - label: どのようなプログラミング言語を使用していますか？
-          content: |
-            私はTypescript、Python、Dart、Go、Javaを使用しており、現在Rustを学習中です。フロントエンドとバックエンドの両方の開発に精通しています。
-        - label: どのようなフレームワークやテクノロジーを使用していますか？
-          content: |
-            フロントエンド：VueJS/Nuxt、React/Nextjs、Vite、Svelte
-            バックエンド：Nitro、Springboot、Directus、Laravel
-            モバイル：Flutter、Ionic
-            DevOps：Nginx、Kubernetes、Pipeline/Actions、CircleCI、Serverless/CDK
-            クラウド：AWS、Cloudflare、CodeMagic CI/CD、Actions、Cloudinary
-        - label: AI/MLの経験はありますか？
-          content: |
-            はい、CF Workers AI、Qdrant、Vectorizeを使用しています。また、Elasticsearch、Meilisearch、Algoliaなどの検索テクノロジーの経験もあります。
-    - title: 私について
-      questions:
-        - label: あなたの仕事で最も楽しいことは何ですか？
-          content: |
-            私は、人々の生活に真の違いをもたらす、有用でインパクトのある製品を作るのが大好きです。私が作ったものと人々が対話し、本当に役立つと感じてもらえるのを見るのは、信じられないほどやりがいがあります。複雑な問題を解決するという挑戦と、テクノロジー業界で働くことで得られる絶え間ない学習を楽しんでいます。
-        - label: どこを拠点に活動していますか？
-          content: |
-            私は現在、日本の東京を拠点としています。ただし、世界中のクライアントとリモートで仕事をしています。
+            [AI systems](/services/ai-systems) と [Product craft](/services/product-craft)。ホームはパーソナルなままです。
