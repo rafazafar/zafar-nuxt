@@ -1,6 +1,25 @@
 <script lang="ts">
-/** Survives component remounts during the same page load. */
-let stageEntryScheduled = false
+/**
+ * Per-document entry runtime (module scope survives Vue remounts in this JS realm;
+ * hard refresh resets the module and plays again).
+ * Plain values only here — no Vue refs (SSR-safe / auto-import safe).
+ */
+type StageEntryPhase = 'pending' | 'animating' | 'rest'
+
+let entryStarted = false
+let sharedEntryPhase: StageEntryPhase = 'pending'
+let entryHoldTimer: number | undefined
+let entryCleanupTimer: number | undefined
+const entryPhaseListeners = new Set<(phase: StageEntryPhase) => void>()
+
+const ENTRY_HOLD_MS = 250
+const ENTRY_DURATION_MS = 1000
+const ENTRY_STAGGER_MS = 80
+
+function setSharedEntryPhase(phase: StageEntryPhase) {
+  sharedEntryPhase = phase
+  entryPhaseListeners.forEach((listener) => listener(phase))
+}
 </script>
 
 <script setup lang="ts">
@@ -21,15 +40,17 @@ const active = ref<number | null>(null)
 const mobileActive = ref(0)
 const settlingIndex = ref<number | null>(null)
 const reduceMotion = ref(false)
-/** pending = CSS-hidden first paint; animating = stagger in; rest = settled.
- *  Init from module flag so SPA remounts don’t flash pending. */
-const entryState = ref<'pending' | 'animating' | 'rest'>(stageEntryScheduled ? 'rest' : 'pending')
+/** pending → (hold) → animating → rest. Synced to module phase across remounts. */
+const entryState = ref<StageEntryPhase>(sharedEntryPhase)
 const mobileTrack = ref<HTMLElement | null>(null)
+
+function syncEntryPhase(phase: StageEntryPhase) {
+  entryState.value = phase
+}
 
 let mobileObserver: IntersectionObserver | undefined
 let settleTimer: number | undefined
 let scrollTimer: number | undefined
-let entryCleanupTimer: number | undefined
 
 const stageImages = computed(() => (props.images || []).slice(0, 5))
 
@@ -171,10 +192,20 @@ function entryClassFor(_index: number) {
   return ''
 }
 
-function finishEntryAnimation() {
-  if (entryState.value === 'animating') {
-    entryState.value = 'rest'
+function markEntryCompleteInSession() {
+  try {
+    window.sessionStorage.setItem(stageEntryKey, String(performance.timeOrigin))
+  } catch {
+    // ignore quota / private mode
   }
+}
+
+function finishEntryAnimation() {
+  if (sharedEntryPhase === 'animating' || entryState.value === 'animating') {
+    setSharedEntryPhase('rest')
+  }
+  // sessionStorage ONLY on complete — never before animating (remount race).
+  markEntryCompleteInSession()
   if (entryCleanupTimer) {
     window.clearTimeout(entryCleanupTimer)
     entryCleanupTimer = undefined
@@ -183,11 +214,11 @@ function finishEntryAnimation() {
 
 function scheduleEntryCleanup() {
   const count = stageImages.value.length
-  const staggerMs = Math.max(0, count - 1) * 70
+  const staggerMs = Math.max(0, count - 1) * ENTRY_STAGGER_MS
   if (entryCleanupTimer) {
     window.clearTimeout(entryCleanupTimer)
   }
-  entryCleanupTimer = window.setTimeout(finishEntryAnimation, staggerMs + 560 + 80)
+  entryCleanupTimer = window.setTimeout(finishEntryAnimation, staggerMs + ENTRY_DURATION_MS + 80)
 }
 
 function onEntryAnimationEnd(event: AnimationEvent) {
@@ -204,48 +235,48 @@ function onEntryAnimationEnd(event: AnimationEvent) {
   }
   const delayRaw = getComputedStyle(target).getPropertyValue('--stage-entry-delay').trim()
   const delayMs = Number.parseFloat(delayRaw) || 0
-  const lastDelay = Math.max(0, stageImages.value.length - 1) * 70
+  const lastDelay = Math.max(0, stageImages.value.length - 1) * ENTRY_STAGGER_MS
   if (delayMs >= lastDelay) {
     finishEntryAnimation()
   }
 }
 
 onMounted(() => {
+  entryPhaseListeners.add(syncEntryPhase)
+  entryState.value = sharedEntryPhase
+
   reduceMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  // CSS default = pending (opacity 0 / translateY 28px). After mount, either
-  // settle immediately or double-rAF into the stagger animation.
-  // sessionStorage stores performance.timeOrigin so SPA remounts skip, but a
-  // hard reload (new timeOrigin) re-runs once for this document load.
+  // pending → hold 250ms → animating → animationend/timeout → rest.
+  // Module guard: if already started this JS realm, do not re-kick (shared
+  // phase + listeners keep mid-flight animation across remounts). Hard refresh resets.
   if (reduceMotion.value) {
-    entryState.value = 'rest'
+    entryStarted = true
+    setSharedEntryPhase('rest')
+  } else if (entryStarted) {
+    // Already kicked — sync to shared phase; do not re-kick or force rest.
+    entryState.value = sharedEntryPhase
   } else {
-    const loadId = String(performance.timeOrigin)
-    let alreadyThisLoad = stageEntryScheduled
+    // Only skip when a prior COMPLETE wrote timeOrigin this load (never pre-anim).
+    let alreadyCompleted = false
     try {
-      alreadyThisLoad = alreadyThisLoad || window.sessionStorage.getItem(stageEntryKey) === loadId
+      alreadyCompleted = window.sessionStorage.getItem(stageEntryKey) === String(performance.timeOrigin)
     } catch {
       // ignore
     }
-
-    if (alreadyThisLoad) {
-      entryState.value = 'rest'
+    if (alreadyCompleted) {
+      entryStarted = true
+      setSharedEntryPhase('rest')
     } else {
-      stageEntryScheduled = true
-      try {
-        window.sessionStorage.setItem(stageEntryKey, loadId)
-      } catch {
-        // ignore quota / private mode
+      entryStarted = true
+      setSharedEntryPhase('pending')
+      if (entryHoldTimer) {
+        window.clearTimeout(entryHoldTimer)
       }
-      nextTick(() => {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            // pending → animating (do not only remove pending — that snaps)
-            entryState.value = 'animating'
-            scheduleEntryCleanup()
-          })
-        })
-      })
+      entryHoldTimer = window.setTimeout(() => {
+        setSharedEntryPhase('animating')
+        scheduleEntryCleanup()
+      }, ENTRY_HOLD_MS)
     }
   }
 
@@ -268,6 +299,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  entryPhaseListeners.delete(syncEntryPhase)
   mobileObserver?.disconnect()
   if (settleTimer) {
     window.clearTimeout(settleTimer)
@@ -275,9 +307,8 @@ onBeforeUnmount(() => {
   if (scrollTimer) {
     window.clearTimeout(scrollTimer)
   }
-  if (entryCleanupTimer) {
-    window.clearTimeout(entryCleanupTimer)
-  }
+  // Do NOT clear entryHoldTimer / entryCleanupTimer — they live at module
+  // scope so a remount mid-entry can keep the shared sequence alive.
 })
 </script>
 
@@ -319,7 +350,7 @@ onBeforeUnmount(() => {
               entryClassFor(index),
               index === Math.floor((stageImages.length - 1) / 2) ? 'is-center' : ''
             ]"
-            :style="{ '--stage-entry-delay': `${index * 70}ms` }"
+            :style="{ '--stage-entry-delay': `${index * ENTRY_STAGGER_MS}ms` }"
             :aria-label="img.caption || img.alt"
             @mouseenter="setActive(index)"
             @mousemove="onPointerMove"
@@ -365,7 +396,7 @@ onBeforeUnmount(() => {
             mobileActive === index ? 'is-mobile-active' : '',
             settlingIndex === index ? 'is-settling' : ''
           ]"
-          :style="{ '--stage-entry-delay': `${index * 70}ms` }"
+          :style="{ '--stage-entry-delay': `${index * ENTRY_STAGGER_MS}ms` }"
           :aria-label="img.caption || img.alt"
           @focus="onFocus(index)"
           @blur="onBlur"
@@ -522,7 +553,7 @@ onBeforeUnmount(() => {
 
 .stage-entry-pending .stage-entry-content {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(44px);
 }
 
 .stage-entry-animating {
@@ -533,7 +564,7 @@ onBeforeUnmount(() => {
 }
 
 .stage-entry-animating .stage-entry-content {
-  animation: stage-enter 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: stage-enter 1000ms cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: var(--stage-entry-delay, 0ms);
 }
 

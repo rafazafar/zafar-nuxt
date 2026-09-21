@@ -118,29 +118,29 @@ html.home-lock-x body {
   }
 }
 
-/* Project stage idle — outer wrapper only; ±22px / ±4°, 8s alternate */
+/* Project stage idle — outer wrapper only; ±28px / ±5°, 6s alternate + slight scale */
 @keyframes stage-drift-a {
-  from { transform: translate(0, 0) rotate(var(--stage-rot, -3deg)); }
-  to { transform: translate(20px, -22px) rotate(calc(var(--stage-rot, -3deg) + 4deg)); }
+  from { transform: translate(0, 0) rotate(var(--stage-rot, -3deg)) scale(1); }
+  to { transform: translate(28px, -28px) rotate(calc(var(--stage-rot, -3deg) + 5deg)) scale(1.03); }
 }
 @keyframes stage-drift-b {
-  from { transform: translate(0, 0) rotate(var(--stage-rot, 2deg)); }
-  to { transform: translate(-22px, 18px) rotate(calc(var(--stage-rot, 2deg) - 4deg)); }
+  from { transform: translate(0, 0) rotate(var(--stage-rot, 2deg)) scale(1); }
+  to { transform: translate(-28px, 26px) rotate(calc(var(--stage-rot, 2deg) - 5deg)) scale(1.03); }
 }
 @keyframes stage-drift-c {
-  from { transform: translate(0, 0) rotate(var(--stage-rot, -1deg)); }
-  to { transform: translate(18px, 20px) rotate(calc(var(--stage-rot, -1deg) + 4deg)); }
+  from { transform: translate(0, 0) rotate(var(--stage-rot, -1deg)) scale(1); }
+  to { transform: translate(26px, 28px) rotate(calc(var(--stage-rot, -1deg) + 5deg)) scale(1.03); }
 }
 .stage-drift-a {
-  animation: stage-drift-a 8s ease-in-out alternate infinite;
+  animation: stage-drift-a 6s ease-in-out alternate infinite;
   animation-delay: var(--stage-phase, 0s);
 }
 .stage-drift-b {
-  animation: stage-drift-b 8s ease-in-out alternate infinite;
+  animation: stage-drift-b 6s ease-in-out alternate infinite;
   animation-delay: var(--stage-phase, 0s);
 }
 .stage-drift-c {
-  animation: stage-drift-c 8s ease-in-out alternate infinite;
+  animation: stage-drift-c 6s ease-in-out alternate infinite;
   animation-delay: var(--stage-phase, 0s);
 }
 @media (prefers-reduced-motion: reduce) {
@@ -160,14 +160,14 @@ html.home-lock-x body {
 .stage-card.stage-entry-pending .stage-entry-content,
 .stage-mobile-card.stage-entry-pending .stage-entry-content {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(44px);
 }
 
 /* Consumes --stage-entry-delay — removing pending alone must not snap-show */
 @keyframes stage-enter {
   from {
     opacity: 0;
-    transform: translateY(28px);
+    transform: translateY(44px);
   }
   to {
     opacity: 1;
@@ -176,7 +176,7 @@ html.home-lock-x body {
 }
 .stage-card.stage-entry-animating .stage-entry-content,
 .stage-mobile-card.stage-entry-animating .stage-entry-content {
-  animation: stage-enter 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: stage-enter 1000ms cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: var(--stage-entry-delay, 0ms);
 }
 .stage-card.stage-entry-animating,
