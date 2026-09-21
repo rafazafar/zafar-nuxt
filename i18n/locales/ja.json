@@ -5,7 +5,9 @@
     "projects": "プロジェクト",
     "blog": "ブログ",
     "speaking": "講演",
-    "services": "サービス"
+    "services": "サービス",
+    "aiSystems": "AIシステム",
+    "productCraft": "プロダクトクラフト"
   },
   "common": {
     "pageNotFound": "ページが見つかりません",

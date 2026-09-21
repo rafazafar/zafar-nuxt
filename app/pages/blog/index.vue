@@ -1,40 +1,42 @@
 <script setup lang="ts">
-import type { Collections, ContentEnCollectionItem, BlogCollectionItem } from '@nuxt/content'
+import type { Collections, BlogCollectionItem } from '@nuxt/content'
 
 const { locale } = useI18n()
 const localePath = useLocalePath()
 
-const { data: page } = await useAsyncData(`blog-page-${locale.value}`, async () => {
-  const collection = `content_${locale.value}` as keyof Collections
-  return await queryCollection(collection).first() as ContentEnCollectionItem | null
-}, {
-  watch: [locale]
-})
+const pageCollection = computed(() =>
+  (locale.value === 'en' ? 'blog_page' : `blog_page_${locale.value}`) as keyof Collections
+)
+const postsCollection = computed(() =>
+  (locale.value === 'en' ? 'blog' : `blog_${locale.value}`) as keyof Collections
+)
+
+const { data: page } = await useAsyncData(
+  () => `blog-hub-${locale.value}`,
+  async () => queryCollection(pageCollection.value).first(),
+  { watch: [locale] }
+)
+
 if (!page.value) {
   throw createError({
     statusCode: 404,
-    statusMessage: 'Page not found',
-    fatal: true
-  })
-}
-const { data: posts } = await useAsyncData(`blogs-${locale.value}`, async () => {
-  const collection = (locale.value === 'en' ? 'blog' : `blog_${locale.value}`) as keyof Collections
-  const allContent = await queryCollection(collection).all() as BlogCollectionItem[]
-  return allContent.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-}, {
-  watch: [locale]
-})
-if (!posts.value) {
-  throw createError({
-    statusCode: 404,
-    statusMessage: 'blogs posts not found',
+    statusMessage: 'Blog page not found',
     fatal: true
   })
 }
 
+const { data: posts } = await useAsyncData(
+  () => `blog-posts-${locale.value}`,
+  async () => {
+    const all = await queryCollection(postsCollection.value).all() as BlogCollectionItem[]
+    return all.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  },
+  { watch: [locale] }
+)
+
 useSeoMeta({
-  title: page.value?.seo?.title || page.value?.title,
-  ogTitle: page.value?.seo?.title || page.value?.title,
+  title: page.value?.seo?.title || page.value?.title || 'Blog',
+  ogTitle: page.value?.seo?.title || page.value?.title || 'Blog',
   description: page.value?.seo?.description || page.value?.description,
   ogDescription: page.value?.seo?.description || page.value?.description
 })
@@ -45,25 +47,27 @@ useSeoMeta({
     <UPageHero
       :title="page.title"
       :description="page.description"
-      :links="page.blog ? [] : undefined"
       :ui="{
+        container: 'py-16 sm:py-20 lg:py-24',
         title: '!mx-0 text-left',
-        description: '!mx-0 text-left',
-        links: 'justify-start'
+        description: '!mx-0 text-left'
       }"
     />
     <UPageSection
       :ui="{
-        container: '!pt-0'
+        container: '!pt-0 !pb-16'
       }"
     >
-      <UBlogPosts orientation="vertical">
+      <UBlogPosts
+        v-if="posts?.length"
+        orientation="vertical"
+      >
         <Motion
           v-for="(post, index) in posts"
-          :key="index"
+          :key="post.path"
           :initial="{ opacity: 0, transform: 'translateY(10px)' }"
           :while-in-view="{ opacity: 1, transform: 'translateY(0)' }"
-          :transition="{ delay: 0.2 * index }"
+          :transition="{ delay: 0.1 * index }"
           :in-view-options="{ once: true }"
         >
           <UBlogPost
@@ -73,16 +77,20 @@ useSeoMeta({
             v-bind="post"
             :ui="{
               root: 'md:grid md:grid-cols-2 group overflow-visible transition-all duration-300',
-              image:
-                'group-hover/blog-post:scale-105 rounded-lg shadow-lg border-4 border-muted ring-2 ring-default',
-              header:
-                index % 2 === 0
-                  ? 'sm:-rotate-1 overflow-visible'
-                  : 'sm:rotate-1 overflow-visible'
+              image: 'group-hover/blog-post:scale-105 rounded-lg shadow-lg border-4 border-muted ring-2 ring-default',
+              header: index % 2 === 0
+                ? 'sm:-rotate-1 overflow-visible'
+                : 'sm:rotate-1 overflow-visible'
             }"
           />
         </Motion>
       </UBlogPosts>
+      <p
+        v-else
+        class="text-muted"
+      >
+        No posts yet.
+      </p>
     </UPageSection>
   </UPage>
 </template>

@@ -118,6 +118,17 @@ const aboutSchema = z.object({
   images: z.array(imageSchema)
 })
 
+
+const pageMetaSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  links: z.array(buttonSchema).optional(),
+  seo: z.object({
+    title: z.string().optional(),
+    description: z.string().optional()
+  }).optional()
+})
+
 export default defineContentConfig({
   collections: {
     blog: defineCollection({
@@ -179,6 +190,36 @@ export default defineContentConfig({
       type: 'page',
       source: { include: 'ja/about.yml', prefix: '/about' },
       schema: aboutSchema
+    }),
+    blog_page: defineCollection({
+      type: 'page',
+      source: { include: 'en/blog.yml', prefix: '/blog' },
+      schema: pageMetaSchema
+    }),
+    blog_page_de: defineCollection({
+      type: 'page',
+      source: { include: 'de/blog.yml', prefix: '/blog' },
+      schema: pageMetaSchema
+    }),
+    blog_page_ja: defineCollection({
+      type: 'page',
+      source: { include: 'ja/blog.yml', prefix: '/blog' },
+      schema: pageMetaSchema
+    }),
+    projects_page: defineCollection({
+      type: 'page',
+      source: { include: 'en/projects.yml', prefix: '/projects' },
+      schema: pageMetaSchema
+    }),
+    projects_page_de: defineCollection({
+      type: 'page',
+      source: { include: 'de/projects.yml', prefix: '/projects' },
+      schema: pageMetaSchema
+    }),
+    projects_page_ja: defineCollection({
+      type: 'page',
+      source: { include: 'ja/projects.yml', prefix: '/projects' },
+      schema: pageMetaSchema
     }),
     content_en: defineCollection({
       type: 'page',

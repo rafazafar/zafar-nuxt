@@ -2,30 +2,37 @@
 import type { Collections, ProjectsCollectionItem } from '@nuxt/content'
 
 const { locale } = useI18n()
+const { global } = useAppConfig()
 
-const { data: page } = await useAsyncData(`projects-page-${locale.value}`, async () => {
-  const collection = (locale.value === 'en' ? 'projects' : `projects_${locale.value}`) as keyof Collections
-  return await queryCollection(collection).first() as ProjectsCollectionItem | null
-}, {
-  watch: [locale]
-})
+const pageCollection = computed(() =>
+  (locale.value === 'en' ? 'projects_page' : `projects_page_${locale.value}`) as keyof Collections
+)
+const listCollection = computed(() =>
+  (locale.value === 'en' ? 'projects' : `projects_${locale.value}`) as keyof Collections
+)
+
+const { data: page } = await useAsyncData(
+  () => `projects-hub-${locale.value}`,
+  async () => queryCollection(pageCollection.value).first(),
+  { watch: [locale] }
+)
+
 if (!page.value) {
   throw createError({
     statusCode: 404,
-    statusMessage: 'Page not found',
+    statusMessage: 'Projects page not found',
     fatal: true
   })
 }
 
-const { data: projects } = await useAsyncData(`projects-${locale.value}`, async () => {
-  const collection = (locale.value === 'en' ? 'projects' : `projects_${locale.value}`) as keyof Collections
-  const allContent = await queryCollection(collection).all() as ProjectsCollectionItem[]
-  return allContent.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-}, {
-  watch: [locale]
-})
-
-const { global } = useAppConfig()
+const { data: projects } = await useAsyncData(
+  () => `projects-list-${locale.value}`,
+  async () => {
+    const all = await queryCollection(listCollection.value).all() as ProjectsCollectionItem[]
+    return all.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  },
+  { watch: [locale] }
+)
 
 const ctaProject = computed(() =>
   (projects.value ?? []).find(p => p.url === global.meetingLink) ?? null
@@ -35,8 +42,8 @@ const restProjects = computed(() =>
 )
 
 useSeoMeta({
-  title: page.value?.seo?.title || page.value?.title,
-  ogTitle: page.value?.seo?.title || page.value?.title,
+  title: page.value?.seo?.title || page.value?.title || 'Projects',
+  ogTitle: page.value?.seo?.title || page.value?.title || 'Projects',
   description: page.value?.seo?.description || page.value?.description,
   ogDescription: page.value?.seo?.description || page.value?.description
 })
@@ -54,18 +61,20 @@ useSeoMeta({
       }"
     >
       <template #links>
-        <div
-          v-if="(page as any).links"
-          class="flex items-center gap-2"
-        >
+        <div class="flex flex-wrap items-center gap-3">
           <UButton
-            :label="(page as any).links[0]?.label"
             :to="global.meetingLink"
-            v-bind="(page as any).links[0]"
+            label="Book a scoping call"
+            color="primary"
+            size="lg"
+            target="_blank"
           />
           <UButton
             :to="`mailto:${global.email}`"
-            v-bind="(page as any).links[1]"
+            :label="global.email"
+            color="neutral"
+            variant="outline"
+            size="lg"
           />
         </div>
       </template>
@@ -125,10 +134,10 @@ useSeoMeta({
       </Motion>
       <Motion
         v-for="(project, index) in restProjects"
-        :key="project.title"
+        :key="project.path || project.title"
         :initial="{ opacity: 0, transform: 'translateY(10px)' }"
         :while-in-view="{ opacity: 1, transform: 'translateY(0)' }"
-        :transition="{ delay: 0.2 * index }"
+        :transition="{ delay: 0.1 * index }"
         :in-view-options="{ once: true }"
       >
         <UPageCard

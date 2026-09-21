@@ -5,7 +5,9 @@
     "projects": "Projects",
     "blog": "Blog",
     "speaking": "Speaking",
-    "services": "Services"
+    "services": "Services",
+    "aiSystems": "AI systems",
+    "productCraft": "Product craft"
   },
   "common": {
     "pageNotFound": "Page not found",
