@@ -35,9 +35,9 @@ hero:
 about:
   title: "About Me"
   description: |
-    I'm in love with creating useful and impactful products that brings people together. Experienced in multiple industries designing, simplifying, building and scaling solutions for startups and the enterprise. Using first-principle thinking.
+    I'm in love with creating useful and impactful products that bring people together. Experienced in multiple industries designing, simplifying, building and scaling solutions for startups and the enterprise. Using first-principle thinking.
 
-    My approach is simple: Iterate fast, iterate often, and dont stop iterating. And never say no, just dwell on it for a good moment.
+    My approach is simple: Iterate fast, iterate often, and don't stop iterating. And never say no, just dwell on it for a good moment.
 experience:
   title: Work Experience
   items:
@@ -82,12 +82,6 @@ testimonials:
       description: 'Director - Seekers'
       avatar:
         src: 'https://r2.zafar.dev/img/ueda.jpg'
-  - quote: "Relentless work. Gets the job done."
-    author:
-      name: 'Hidayat'
-      description: 'Fronyx Gmbh'
-      avatar:
-        src: 'https://r2.zafar.dev/img/py.jpg'
 blog:
   title: "Latest Articles"
   description: "Thoughts on technology and business"

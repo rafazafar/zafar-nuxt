@@ -82,12 +82,6 @@ testimonials:
       description: 'Direktor - Seekers'
       avatar:
         src: 'https://r2.zafar.dev/img/ueda.jpg'
-  - quote: "Unerbittliche Arbeit. Erledigt die Arbeit."
-    author:
-      name: 'Hidayat'
-      description: 'Fronyx Gmbh'
-      avatar:
-        src: 'https://r2.zafar.dev/img/py.jpg'
 blog:
   title: "Neueste Artikel"
   description: "Gedanken zu Technologie und Wirtschaft"
