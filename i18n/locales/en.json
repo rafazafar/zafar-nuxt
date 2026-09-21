@@ -4,7 +4,8 @@
     "about": "About",
     "projects": "Projects",
     "blog": "Blog",
-    "speaking": "Speaking"
+    "speaking": "Speaking",
+    "services": "Services"
   },
   "common": {
     "pageNotFound": "Page not found",

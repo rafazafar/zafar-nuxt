@@ -17,6 +17,10 @@ export const useNavLinks = () => {
     icon: 'i-lucide-file-text',
     to: localePath('/blog')
   }, {
+    label: t('nav.services'),
+    icon: 'i-lucide-sparkles',
+    to: localePath('/services/ai-systems')
+  }, {
     label: t('nav.about'),
     icon: 'i-lucide-user',
     to: localePath('/about')
