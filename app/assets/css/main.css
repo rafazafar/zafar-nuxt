@@ -118,29 +118,29 @@ html.home-lock-x body {
   }
 }
 
-/* Project stage idle drift */
+/* Project stage idle drift — unmistakable ±10–12px / ±2.5°, ~10–12s */
 @keyframes stage-drift-a {
   0%, 100% { transform: translate(0, 0) rotate(var(--stage-rot, -3deg)); }
-  50% { transform: translate(7px, -7px) rotate(calc(var(--stage-rot, -3deg) + 1.8deg)); }
+  50% { transform: translate(11px, -12px) rotate(calc(var(--stage-rot, -3deg) + 2.5deg)); }
 }
 @keyframes stage-drift-b {
   0%, 100% { transform: translate(0, 0) rotate(var(--stage-rot, 2deg)); }
-  50% { transform: translate(-7px, 6px) rotate(calc(var(--stage-rot, 2deg) - 1.7deg)); }
+  50% { transform: translate(-12px, 10px) rotate(calc(var(--stage-rot, 2deg) - 2.5deg)); }
 }
 @keyframes stage-drift-c {
   0%, 100% { transform: translate(0, 0) rotate(var(--stage-rot, -1deg)); }
-  50% { transform: translate(6px, 7px) rotate(calc(var(--stage-rot, -1deg) + 1.6deg)); }
+  50% { transform: translate(10px, 11px) rotate(calc(var(--stage-rot, -1deg) + 2.4deg)); }
 }
 .stage-drift-a {
-  animation: stage-drift-a 10.5s ease-in-out infinite;
+  animation: stage-drift-a 11s ease-in-out infinite;
   animation-delay: var(--stage-phase, 0s);
 }
 .stage-drift-b {
-  animation: stage-drift-b 11.5s ease-in-out infinite;
+  animation: stage-drift-b 12s ease-in-out infinite;
   animation-delay: var(--stage-phase, 0s);
 }
 .stage-drift-c {
-  animation: stage-drift-c 9.5s ease-in-out infinite;
+  animation: stage-drift-c 10s ease-in-out infinite;
   animation-delay: var(--stage-phase, 0s);
 }
 @media (prefers-reduced-motion: reduce) {

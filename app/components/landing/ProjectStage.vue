@@ -29,6 +29,8 @@ const rotations = [-8, -4, 0, 4, 8]
 const driftClass = ['stage-drift-a', 'stage-drift-b', 'stage-drift-c', 'stage-drift-a', 'stage-drift-b']
 const driftPhases = [0, -2.2, -4.8, -1.8, -5.6]
 const stageEntryKey = 'zafar-stage-entered'
+/** Survives remount in the same page load so sessionStorage isn't eaten early. */
+let stageEntryScheduled = false
 
 const activeCaption = computed(() => {
   if (active.value === null) {
@@ -156,12 +158,31 @@ function onMobileScroll() {
 onMounted(() => {
   reduceMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  try {
-    const firstStageVisit = !window.sessionStorage.getItem(stageEntryKey)
-    window.sessionStorage.setItem(stageEntryKey, '1')
-    entryEnabled.value = firstStageVisit && !reduceMotion.value
-  } catch {
-    entryEnabled.value = !reduceMotion.value
+  // SSR paints rest state (no stage-entry). On first session visit, schedule
+  // entry after paint so the CSS animation actually runs (hydration-safe).
+  if (!reduceMotion.value && !stageEntryScheduled) {
+    let firstStageVisit = true
+    try {
+      firstStageVisit = !window.sessionStorage.getItem(stageEntryKey)
+    } catch {
+      firstStageVisit = true
+    }
+
+    if (firstStageVisit) {
+      stageEntryScheduled = true
+      nextTick(() => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            entryEnabled.value = true
+            try {
+              window.sessionStorage.setItem(stageEntryKey, '1')
+            } catch {
+              // ignore quota / private mode
+            }
+          })
+        })
+      })
+    }
   }
 
   const track = mobileTrack.value
