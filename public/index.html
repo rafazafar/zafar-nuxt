@@ -12,7 +12,7 @@
 <meta property="og:image" content="https://zafar.dev/home/profile.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
 <style>
 /* Layout: show, don't tell. A live illustrated desk opens the page, then a pile of real
    photos, a Blender print, a looping Bluetooth drama and a chat. Words are captions only. */
@@ -34,12 +34,13 @@
   --desk-top: #dcb283;
   --laptop: #cdd2da;
   --laptop-edge: #a9b0bb;
+  --blueprint: #1f3f7a; --bp-grid: rgba(207,224,255,.12); --bp-ink: #d7e5ff;
   --bubble: #ffffff;
   --bubble-me: #1c2a4d;
   --bubble-me-ink: #f3f5f1;
   --shadow: 0 1px 1px rgba(28,42,77,.08), 0 10px 24px -10px rgba(28,42,77,.35);
 
-  --f-display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --f-display: "Instrument Sans", "Helvetica Neue", system-ui, sans-serif;
   --f-hand: "Shantell Sans", "Comic Neue", "Chalkboard SE", "Segoe Print", cursive;
   --f-body: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, sans-serif;
   color-scheme: light;
@@ -132,11 +133,10 @@ img { max-width: 100%; }
 
 .hi { margin-top: clamp(48px, 10vh, 110px); display: flex; flex-direction: column; gap: 14px; }
 h1 {
-  font-family: var(--f-display); font-weight: 800; letter-spacing: -.045em;
+  font-family: var(--f-display); font-weight: 600; font-stretch: 92%; letter-spacing: -.04em;
   font-size: clamp(3.6rem, 11vw, 8.4rem); line-height: .88; margin: 0;
   text-shadow: 0 2px 30px rgba(0, 0, 0, .06);
 }
-h1 .wave { display: inline-block; transform-origin: 70% 80%; }
 .sub { font-family: var(--f-hand); font-size: clamp(1.1rem, 2vw, 1.4rem); margin: 0; max-width: 30ch; line-height: 1.35; color: var(--hero-soft); }
 .sub em { font-style: normal; color: var(--hero-ink); background: linear-gradient(transparent 58%, rgba(255, 214, 64, .55) 58%); }
 
@@ -163,8 +163,6 @@ h1 .wave { display: inline-block; transform-origin: 70% 80%; }
 .pinned .note u { text-decoration-color: #d23c2f; text-decoration-thickness: 2px; text-underline-offset: 3px; }
 
 @media (prefers-reduced-motion: no-preference) {
-  h1 .wave { animation: wave 2.4s .6s ease-in-out 2; }
-  @keyframes wave { 0%,60%,100% { transform: rotate(0) } 10%,30% { transform: rotate(14deg) } 20%,40% { transform: rotate(-8deg) } }
   .pinned .me { animation: drop .8s .3s cubic-bezier(.3,1.5,.5,1) both; }
   @keyframes drop { from { transform: translateY(-24px) rotate(-4deg) } to { transform: rotate(5deg) } }
 }
@@ -176,7 +174,7 @@ h1 .wave { display: inline-block; transform-origin: 70% 80%; }
   .pinned .note { width: 92px; font-size: .82rem; bottom: -10px; left: 0; }
 }
 /* section heads: short and handwritten-adjacent */
-h2 { font-family: var(--f-display); font-weight: 800; letter-spacing: -.03em; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--f-display); font-weight: 600; font-stretch: 94%; letter-spacing: -.025em; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1; margin: 0; text-wrap: balance; }
 .label { font-family: var(--f-hand); color: var(--ink-soft); font-size: 1.05rem; display: inline-block; transform: rotate(-2deg); }
 
 /* pile of photos */
@@ -212,33 +210,61 @@ h2 { font-family: var(--f-display); font-weight: 800; letter-spacing: -.03em; fo
 .ph:nth-child(3n+2) .tape { background: var(--tape-b); transform: translateX(-40%) rotate(4deg); }
 .ph:nth-child(3n) .tape { background: var(--tape-c); transform: translateX(-60%) rotate(-6deg); }
 .ph.empty .ph-front { background: transparent; box-shadow: none; border: 2px dashed var(--ink-soft); }
-.ph.empty .blank { display: grid; place-items: center; aspect-ratio: 3/2; font-family: var(--f-display); font-weight: 800; font-size: 3.4rem; color: var(--ink-soft); }
+.ph.empty .blank { display: grid; place-items: center; aspect-ratio: 3/2; font-family: var(--f-display); font-weight: 600; font-size: 3.4rem; color: var(--ink-soft); }
 .pile-hint { position: absolute; font-family: var(--f-hand); color: var(--hanko); font-size: 1.05rem; right: 2%; top: -8px; transform: rotate(3deg); display: flex; align-items: center; gap: 4px; }
 .pile-hint svg { width: 46px; height: 36px; }
 .pile-hint path { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
-/* blender */
-.off { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr); gap: 36px; align-items: center; }
-.off .words { display: flex; flex-direction: column; gap: 14px; }
-.off .words p { font-family: var(--f-hand); font-size: 1.25rem; line-height: 1.35; margin: 0; max-width: 18ch; }
-.print { position: relative; margin: 0; }
-.print .frame { overflow: hidden; background: var(--card); padding: 12px; box-shadow: var(--shadow); transform: rotate(-1.2deg); }
-.print .frame div { overflow: hidden; aspect-ratio: 16/9; }
+/* the bench: what I build these days */
+.bench { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 56px 32px; align-items: center; }
+.bench .words { grid-column: 1 / span 4; display: flex; flex-direction: column; gap: 14px; }
+.bench .words p { font-family: var(--f-hand); font-size: 1.25rem; line-height: 1.35; margin: 0; max-width: 20ch; }
+.print { grid-column: 5 / span 8; position: relative; margin: 0 0 40px; }
+.print .frame { background: var(--card); padding: 12px 12px 0; box-shadow: var(--shadow); transform: rotate(1deg); }
+.print .frame div { overflow: hidden; aspect-ratio: 2 / 1; background: #262626; }
 .print .frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.print .tape { position: absolute; top: -12px; left: 12%; width: 110px; height: 26px; background: var(--tape-b); opacity: .85; transform: rotate(-5deg); z-index: 2; clip-path: polygon(3% 8%, 97% 0, 100% 50%, 96% 100%, 2% 94%, 0 50%); }
-.toast { position: absolute; right: -2%; bottom: -12%; width: 34%; margin: 0; background: var(--card); padding: 8px 8px 0; box-shadow: var(--shadow); transform: rotate(5deg); transition: transform .35s cubic-bezier(.3,1.6,.5,1); }
-.toast:hover { transform: rotate(-2deg) scale(1.06); }
-.toast img { display: block; width: 100%; aspect-ratio: 4/3; object-fit: cover; }
-.toast figcaption { font-family: var(--f-hand); font-size: .9rem; padding: 6px 2px 8px; }
+.print .frame figcaption { font-family: var(--f-hand); font-size: 1.05rem; padding: 10px 4px 14px; text-align: right; }
+.print .tape { position: absolute; top: -12px; right: 14%; width: 110px; height: 26px; background: var(--tape-b); opacity: .85; transform: rotate(6deg); z-index: 2; clip-path: polygon(3% 8%, 97% 0, 100% 50%, 96% 100%, 2% 94%, 0 50%); }
+.oldie { position: absolute; left: -7%; bottom: -46px; width: 30%; margin: 0; background: var(--card); padding: 7px 7px 0; box-shadow: var(--shadow); transform: rotate(-6deg); transition: transform .35s cubic-bezier(.3,1.6,.5,1); z-index: 3; }
+.oldie:hover { transform: rotate(-1deg) scale(1.08); }
+.oldie img { display: block; width: 100%; aspect-ratio: 4/3; object-fit: cover; filter: grayscale(.55) sepia(.2); }
+.oldie figcaption { font-family: var(--f-hand); font-size: .82rem; line-height: 1.25; padding: 6px 2px 8px; color: var(--ink-soft); }
 @media (prefers-reduced-motion: no-preference) {
-  .print .frame img { animation: pan 26s ease-in-out infinite alternate; }
-  @keyframes pan { from { transform: scale(1.12) translateX(3%) } to { transform: scale(1.12) translateX(-3%) } }
+  .print .frame img { animation: pan 22s ease-in-out infinite alternate; }
+  @keyframes pan { from { transform: scale(1.1) translateX(3%) } to { transform: scale(1.1) translateX(-3%) } }
+}
+
+.sketch { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.sketch svg { display: block; width: 100%; height: auto; box-shadow: var(--shadow); }
+.sketch figcaption { font-family: var(--f-hand); font-size: 1.1rem; line-height: 1.3; }
+.sketch.rig { grid-column: 1 / span 6; transform: rotate(-1.2deg); }
+.sketch.untangle { grid-column: 7 / span 6; transform: rotate(.9deg); margin-top: 40px; }
+/* blueprint */
+.bp-bg { fill: var(--blueprint); }
+.bp-grid { stroke: var(--bp-grid); stroke-width: 1; }
+.bp-l { fill: none; stroke: var(--bp-ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.bp-f { fill: var(--bp-ink); }
+.bp-t { fill: var(--bp-ink); font-family: var(--f-hand); font-size: 13px; }
+.bp-go { fill: #ffd66b; }
+.bp-back { fill: #7ef0b8; }
+.bp-led { fill: #7ef0b8; }
+/* index card */
+.ix-bg { fill: var(--card); }
+.ix-rule { stroke: var(--grid); stroke-width: 1; }
+.ix-margin { stroke: var(--hanko); stroke-width: 1.2; opacity: .6; }
+.ix-edge { stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; fill: none; }
+.ix-node rect { fill: var(--card); stroke: var(--ink); stroke-width: 2; }
+.ix-t { fill: var(--ink-soft); font-family: var(--f-hand); font-size: 14px; }
+@media (prefers-reduced-motion: no-preference) {
+  .bp-led { animation: blink 1.4s steps(2, jump-none) infinite; }
+  .bp-wave { animation: scroll 2.4s linear infinite; }
+  @keyframes scroll { to { transform: translateX(-40px) } }
 }
 
 /* bluetooth drama */
 .ble { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 30px; align-items: center; }
 .ble svg { width: 100%; height: auto; display: block; }
-.ble .big { font-family: var(--f-display); font-weight: 800; letter-spacing: -.03em; font-size: clamp(1.9rem, 4.4vw, 3rem); line-height: 1.02; margin: 8px 0 18px; text-wrap: balance; }
+.ble .big { font-family: var(--f-display); font-weight: 600; font-stretch: 94%; letter-spacing: -.025em; font-size: clamp(1.9rem, 4.4vw, 3rem); line-height: 1.02; margin: 8px 0 18px; text-wrap: balance; }
 .ble .count { font-family: var(--f-hand); color: var(--ink-soft); font-variant-numeric: tabular-nums; }
 .ble a.more { font-family: var(--f-hand); font-size: 1.1rem; text-underline-offset: 4px; text-decoration-style: wavy; }
 .b-dev { fill: var(--card); stroke: var(--ink); stroke-width: 3; }
@@ -329,10 +355,12 @@ footer path { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap:
   .pile { aspect-ratio: auto; display: flex; gap: 22px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 24px 6px 30px; margin-inline: -6px; }
   .ph { position: relative; left: auto; top: auto; width: 230px; flex: none; scroll-snap-align: center; }
   .pile-hint { top: -30px; }
-  .off, .ble, .talk { grid-template-columns: minmax(0, 1fr); }
-  .off .words p { max-width: none; }
-  .toast { width: 42%; bottom: -18%; }
-  .off { padding-bottom: 40px; }
+  .ble, .talk { grid-template-columns: minmax(0, 1fr); }
+  .bench { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .bench .words, .print, .sketch.rig, .sketch.untangle { grid-column: 1; }
+  .sketch.untangle { margin-top: 0; }
+  .oldie { left: auto; right: -4px; width: 42%; bottom: -60px; }
+  .print { margin-bottom: 70px; }
 }
 </style>
 </head>
@@ -354,7 +382,7 @@ footer path { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap:
     </header>
 
     <div class="hi">
-      <h1>hi, I'm Zafar <span class="wave" aria-hidden="true">👋</span></h1>
+      <h1>hi, I'm Zafar</h1>
       <p class="sub">I build things for people.<br>This is the sky over Tokyo, <em>right now</em>.</p>
     </div>
 
@@ -453,19 +481,66 @@ footer path { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap:
     </div>
   </section>
 
-  <section class="off" aria-labelledby="off-h">
+  <section class="bench" aria-labelledby="bench-h">
     <div class="words">
-      <span class="label">off the clock</span>
-      <h2 id="off-h">I make rooms in Blender.</h2>
-      <p>and, once, a toaster.</p>
+      <span class="label">lately, at the bench</span>
+      <h2 id="bench-h">I build electronics.</h2>
+      <p>like a PC that lives inside a toaster.</p>
     </div>
     <figure class="print">
       <span class="tape"></span>
-      <div class="frame"><div><img src="/home/room.jpg" alt="A 3D-rendered living room with a white sofa, a bookshelf and big windows onto green fields" loading="lazy"></div></div>
-      <figure class="toast">
-        <img src="/home/toaster.jpg" alt="A red 3D toaster model shown in wireframe" loading="lazy">
-        <figcaption>the toaster</figcaption>
+      <div class="frame">
+        <div><img src="/home/toaster.jpg" alt="The toaster PC: a red Smeg toaster shell with a computer built inside, shown as a 3D wireframe" loading="lazy"></div>
+        <figcaption>the toaster PC</figcaption>
+      </div>
+      <figure class="oldie">
+        <img src="/home/room.jpg" alt="A 3D-rendered living room made in Blender" loading="lazy">
+        <figcaption>I used to make rooms in Blender</figcaption>
       </figure>
+    </figure>
+
+    <figure class="sketch rig">
+      <svg viewBox="0 0 440 230" role="img" aria-label="A circuit board wired to an AI model. Test signals flow to the AI, and results flow back to the board.">
+        <rect class="bp-bg" width="440" height="230" rx="4"/>
+        <g class="bp-grid">
+          <line x1="0" y1="46" x2="440" y2="46"/><line x1="0" y1="92" x2="440" y2="92"/><line x1="0" y1="138" x2="440" y2="138"/><line x1="0" y1="184" x2="440" y2="184"/>
+          <line x1="88" y1="0" x2="88" y2="230"/><line x1="176" y1="0" x2="176" y2="230"/><line x1="264" y1="0" x2="264" y2="230"/><line x1="352" y1="0" x2="352" y2="230"/>
+        </g>
+        <!-- board -->
+        <rect class="bp-l" x="24" y="52" width="150" height="126" rx="8"/>
+        <circle class="bp-l" cx="36" cy="64" r="4"/><circle class="bp-l" cx="162" cy="64" r="4"/><circle class="bp-l" cx="36" cy="166" r="4"/><circle class="bp-l" cx="162" cy="166" r="4"/>
+        <rect class="bp-l" x="66" y="88" width="62" height="54" rx="3"/>
+        <path class="bp-l" d="M66 98 h-10 M66 110 h-10 M66 122 h-10 M66 134 h-10 M128 98 h10 M128 110 h10 M128 122 h10 M128 134 h10 M78 88 v-10 M92 88 v-10 M106 88 v-10 M116 88 v-10"/>
+        <path class="bp-l" d="M58 166 v-8 M70 166 v-8 M82 166 v-8 M94 166 v-8 M106 166 v-8 M118 166 v-8"/>
+        <circle class="bp-led" cx="150" cy="80" r="5"/>
+        <text class="bp-t" x="24" y="200">device</text>
+        <!-- wires -->
+        <path id="wOut" class="bp-l" d="M174 96 C 220 96, 230 78, 290 78"/>
+        <path id="wBack" class="bp-l" d="M290 152 C 230 152, 220 134, 174 134"/>
+        <circle class="bp-go" r="5"><animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#wOut"/></animateMotion></circle>
+        <circle class="bp-go" r="5"><animateMotion dur="1.8s" begin="0.9s" repeatCount="indefinite"><mpath href="#wOut"/></animateMotion></circle>
+        <circle class="bp-back" r="5"><animateMotion dur="1.8s" begin="0.45s" repeatCount="indefinite"><mpath href="#wBack"/></animateMotion></circle>
+        <!-- model -->
+        <rect class="bp-l" x="290" y="52" width="126" height="126" rx="16"/>
+        <path class="bp-f" d="M353 70 l5 13 l13 5 l-13 5 l-5 13 l-5 -13 l-13 -5 l13 -5 z"/>
+        <clipPath id="scope"><rect x="304" y="122" width="98" height="40" rx="4"/></clipPath>
+        <rect class="bp-l" x="304" y="122" width="98" height="40" rx="4"/>
+        <g clip-path="url(#scope)"><path class="bp-l bp-wave" d="M304 142 q 5 -14 10 0 t 10 0 t 10 0 t 10 0 q 5 -18 10 0 t 10 0 t 10 0 t 10 0 q 5 -14 10 0 t 10 0 t 10 0 t 10 0 q 5 -18 10 0 t 10 0 t 10 0"/></g>
+        <text class="bp-t" x="416" y="200" text-anchor="end">model</text>
+      </svg>
+      <figcaption>rigs that let AI poke at real hardware</figcaption>
+    </figure>
+
+    <figure class="sketch untangle">
+      <svg id="untangle" viewBox="0 0 440 230" role="img" aria-label="A tangled system diagram simplifies itself into a few clean connections, then tangles again.">
+        <rect class="ix-bg" width="440" height="230" rx="3"/>
+        <g><line class="ix-rule" x1="0" y1="50" x2="440" y2="50"/><line class="ix-rule" x1="0" y1="80" x2="440" y2="80"/><line class="ix-rule" x1="0" y1="110" x2="440" y2="110"/><line class="ix-rule" x1="0" y1="140" x2="440" y2="140"/><line class="ix-rule" x1="0" y1="170" x2="440" y2="170"/><line class="ix-rule" x1="0" y1="200" x2="440" y2="200"/></g>
+        <line class="ix-margin" x1="0" y1="30" x2="440" y2="30"/>
+        <g id="uEdges"></g>
+        <g id="uNodes"></g>
+        <text class="ix-t" x="424" y="22" text-anchor="end" id="uState">before</text>
+      </svg>
+      <figcaption>making big systems boring again</figcaption>
     </figure>
   </section>
 
@@ -885,6 +960,40 @@ fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, night: f32, t: f
   const sync = () => lamp.setAttribute('aria-pressed', String(isDark()));
   lamp.addEventListener('click', () => { root.dataset.theme = isDark() ? 'light' : 'dark'; sync(); });
   sync();
+
+  // ---------- untangle: a messy architecture simplifies itself, then gets messy again ----------
+  (() => {
+    const svg = document.getElementById('untangle'); if (!svg) return;
+    const NS = 'http://www.w3.org/2000/svg';
+    const N = { // messy position, clean position, merges away when clean
+      A: [[70, 60], [80, 120]], B: [[320, 180], [200, 70]], C: [[160, 196], [200, 170]], D: [[380, 64], [300, 120]], E: [[240, 110], [390, 120]],
+      F: [[96, 160], [80, 120], 1], G: [[330, 124], [300, 120], 1], H: [[200, 50], [200, 70], 1], I: [[48, 112], [200, 170], 1]
+    };
+    const E = [['A','B',1],['A','C',1],['B','D',1],['C','D',1],['D','E',1],['F','B'],['F','D'],['G','A'],['G','C'],['H','E'],['H','C'],['I','D'],['I','B'],['F','G'],['H','I'],['A','E']];
+    const eg = document.getElementById('uEdges'), ng = document.getElementById('uNodes');
+    const lines = E.map(() => { const l = document.createElementNS(NS, 'line'); l.setAttribute('class', 'ix-edge'); eg.appendChild(l); return l; });
+    const nodes = {};
+    for (const k in N) { const g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'ix-node'); const r = document.createElementNS(NS, 'rect'); r.setAttribute('x', -20); r.setAttribute('y', -12); r.setAttribute('width', 40); r.setAttribute('height', 24); r.setAttribute('rx', 6); g.appendChild(r); ng.appendChild(g); nodes[k] = g; }
+    const label = document.getElementById('uState');
+    const ease = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+    const draw = s => {
+      const pos = {};
+      for (const k in N) { const [m, c, merge] = N[k]; pos[k] = [m[0] + (c[0] - m[0]) * s, m[1] + (c[1] - m[1]) * s]; nodes[k].setAttribute('transform', `translate(${pos[k][0]} ${pos[k][1]})`); nodes[k].style.opacity = merge ? 1 - s : 1; }
+      E.forEach(([a, b, keep], i) => { const l = lines[i]; l.setAttribute('x1', pos[a][0]); l.setAttribute('y1', pos[a][1]); l.setAttribute('x2', pos[b][0]); l.setAttribute('y2', pos[b][1]); l.style.opacity = keep ? 1 : 1 - s; });
+      label.textContent = s > .5 ? 'after' : 'before';
+    };
+    const rig = document.querySelector('.sketch.rig svg');
+    if (reduce) { if (rig && rig.pauseAnimations) rig.pauseAnimations(); draw(1); return; }
+    let s = 0, dir = 1, t0 = null, hold = 0;
+    const loop = now => {
+      if (t0 === null) t0 = now;
+      const k = Math.min(1, (now - t0) / 1600);
+      draw(dir > 0 ? ease(k) : 1 - ease(k));
+      if (k >= 1) { if (!hold) hold = now; if (now - hold > (dir > 0 ? 3200 : 1600)) { dir = -dir; t0 = now; hold = 0; } }
+      requestAnimationFrame(loop);
+    };
+    draw(0); requestAnimationFrame(loop);
+  })();
 
   // ---------- bluetooth counter (one reconnect every 8s loop) ----------
   if (!reduce) { let n = 0; const c = document.getElementById('bleCount'); setTimeout(() => setInterval(() => { n++; c.textContent = 'reconnects since you got here: ' + n; }, 8000), 7200); }
