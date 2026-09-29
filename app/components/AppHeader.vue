@@ -81,6 +81,7 @@ watch(() => route.fullPath, () => {
             v-for="link in links"
             :key="String(link.to)"
             :to="link.to"
+            :external="link.external"
             :label="link.label"
             :icon="link.icon"
             color="neutral"

@@ -7,7 +7,9 @@ export const useNavLinks = () => {
   return [{
     label: t('nav.home'),
     icon: 'i-lucide-home',
-    to: localePath('/')
+    to: localePath('/'),
+    // '/' is the static public/index.html, so leave the Nuxt app with a full page load
+    external: localePath('/') === '/'
   }, {
     label: t('nav.projects'),
     icon: 'i-lucide-folder',

@@ -34,10 +34,12 @@ export default defineNuxtConfig({
       nodeCompat: true
     },
     prerender: {
-      routes: ['/'],
+      // The English homepage is the hand-built public/index.html, so start crawling from the blog instead of '/'.
+      routes: ['/blog'],
       crawlLinks: true
     },
     routeRules: {
+      '/': { prerender: false },
       '/blog/**': { prerender: true },
       '/__nuxt_content/**': { prerender: false },
       '/sw.js': { prerender: false }
