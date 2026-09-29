@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zafar's Sky</title>
+<meta name="description" content="Zafar builds things for people, from a desk in Tokyo.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
+<style>
+/* Layout: show, don't tell. A live illustrated desk opens the page, then a pile of real
+   photos, a Blender print, a looping Bluetooth drama and a chat. Words are captions only. */
+:root {
+  --paper: #f3f5f1;
+  --grid: #e1e7ec;
+  --ink: #1c2a4d;
+  --ink-soft: #5b6480;
+  --card: #fffffb;
+  --hanko: #d23c2f;
+  --ok: #2f9e6e;
+  --marker: #ffe36b;
+  --tape-a: #f2a7b8;
+  --tape-b: #94d2c3;
+  --tape-c: #c9b6f0;
+  --wall: #e6ebe4;
+  --frame: #fbfbf7;
+  --desk: #c79a6b;
+  --desk-top: #dcb283;
+  --laptop: #cdd2da;
+  --laptop-edge: #a9b0bb;
+  --bubble: #ffffff;
+  --bubble-me: #1c2a4d;
+  --bubble-me-ink: #f3f5f1;
+  --shadow: 0 1px 1px rgba(28,42,77,.08), 0 10px 24px -10px rgba(28,42,77,.35);
+
+  --f-display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --f-hand: "Shantell Sans", "Comic Neue", "Chalkboard SE", "Segoe Print", cursive;
+  --f-body: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121827; --grid: #192136; --ink: #e8ebf5; --ink-soft: #9ca5c2; --card: #1c2439;
+    --hanko: #ff6b5c; --ok: #4fd49a; --marker: rgba(255,214,64,.3);
+    --tape-a: #b8657a; --tape-b: #3f8f80; --tape-c: #7a64b0;
+    --wall: #1b2336; --frame: #2b3552; --desk: #5e4431; --desk-top: #75563d; --laptop: #7d8697; --laptop-edge: #5d6574;
+    --bubble: #1f2940; --bubble-me: #e8ebf5; --bubble-me-ink: #121827;
+    --shadow: 0 1px 1px rgba(0,0,0,.3), 0 12px 28px -10px rgba(0,0,0,.7);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #121827; --grid: #192136; --ink: #e8ebf5; --ink-soft: #9ca5c2; --card: #1c2439;
+  --hanko: #ff6b5c; --ok: #4fd49a; --marker: rgba(255,214,64,.3);
+  --tape-a: #b8657a; --tape-b: #3f8f80; --tape-c: #7a64b0;
+  --wall: #1b2336; --frame: #2b3552; --desk: #5e4431; --desk-top: #75563d; --laptop: #7d8697; --laptop-edge: #5d6574;
+  --bubble: #1f2940; --bubble-me: #e8ebf5; --bubble-me-ink: #121827;
+  --shadow: 0 1px 1px rgba(0,0,0,.3), 0 12px 28px -10px rgba(0,0,0,.7);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  overflow-x: hidden;
+  transition: background-color .4s, color .4s;
+}
+a { color: inherit; }
+img { max-width: 100%; }
+:focus-visible { outline: 2px dashed var(--hanko); outline-offset: 4px; border-radius: 4px; }
+.hand { font-family: var(--f-hand); }
+
+.page {
+  max-width: 1120px; margin: 0 auto;
+  padding-inline: clamp(16px, 4vw, 40px);
+  padding-block: 150px 60px;
+  display: flex; flex-direction: column; gap: clamp(80px, 12vw, 150px);
+}
+
+/* ---------- hero: a live WebGPU Tokyo that dissolves into the notebook page ---------- */
+.hero {
+  position: relative;
+  height: clamp(600px, 94vh, 980px);
+  --hero-ink: #1c2a4d;
+  --hero-soft: rgba(28, 42, 77, .72);
+  --sky-top: #7ec8f0; --sky-bot: #e3f4ff;
+  color: var(--hero-ink);
+  transition: color 1.2s;
+}
+.hero.is-night { --hero-ink: #f4f1ff; --hero-soft: rgba(244, 241, 255, .75); }
+.hero canvas, .hero .sky-fallback { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero .sky-fallback {
+  display: none;
+  background: linear-gradient(var(--sky-top), var(--sky-bot) 70%);
+  -webkit-mask-image: linear-gradient(to top, transparent 0, #000 24%); mask-image: linear-gradient(to top, transparent 0, #000 24%);
+  transition: background 1.2s;
+}
+.hero.no-gpu canvas { display: none; }
+.hero.no-gpu .sky-fallback { display: block; }
+.hero-inner {
+  position: relative; z-index: 1; height: 100%;
+  max-width: 1120px; margin: 0 auto;
+  padding-inline: clamp(16px, 4vw, 40px);
+  padding-block: 18px 0;
+  display: flex; flex-direction: column;
+  pointer-events: none;
+}
+.hero-inner a, .hero-inner button, .hero-inner .clock { pointer-events: auto; }
+
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-family: var(--f-hand); }
+.sig { text-decoration: none; font-weight: 600; font-size: 1.35rem; display: inline-block; transform: rotate(-4deg); }
+.top-r { display: flex; align-items: center; gap: 18px; }
+.top-r a { text-underline-offset: 4px; }
+.lamp { width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid currentColor; background: none; color: inherit; cursor: pointer; display: grid; place-items: center; padding: 0; }
+.lamp svg { width: 20px; height: 20px; }
+.lamp path { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.lamp:hover { background: rgba(255, 227, 107, .45); }
+
+.hi { margin-top: clamp(48px, 10vh, 110px); display: flex; flex-direction: column; gap: 14px; }
+h1 {
+  font-family: var(--f-display); font-weight: 800; letter-spacing: -.045em;
+  font-size: clamp(3.6rem, 11vw, 8.4rem); line-height: .88; margin: 0;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, .06);
+}
+h1 .wave { display: inline-block; transform-origin: 70% 80%; }
+.sub { font-family: var(--f-hand); font-size: clamp(1.1rem, 2vw, 1.4rem); margin: 0; max-width: 30ch; line-height: 1.35; color: var(--hero-soft); }
+.sub em { font-style: normal; color: var(--hero-ink); background: linear-gradient(transparent 58%, rgba(255, 214, 64, .55) 58%); }
+
+.clock-row { display: flex; align-items: center; gap: 14px; margin-top: 26px; font-family: var(--f-hand); }
+.clock { width: 64px; height: 64px; border-radius: 50%; cursor: pointer; border: 0; padding: 0; background: none; color: inherit; transition: transform .3s cubic-bezier(.3,1.6,.5,1); }
+.clock:hover { transform: rotate(-8deg) scale(1.06); }
+.clock svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.clock .face { fill: rgba(255, 255, 255, .18); stroke: currentColor; stroke-width: 3; }
+.clock line { stroke: currentColor; stroke-linecap: round; }
+.clock .dot { fill: #d23c2f; }
+.clock-row .time { font-size: 1.15rem; font-weight: 600; font-variant-numeric: tabular-nums; display: block; }
+.clock-row .tip { font-size: .92rem; color: var(--hero-soft); }
+
+.pinned { position: absolute; z-index: 2; right: max(16px, calc((100vw - 1120px) / 2 + 30px)); bottom: -90px; width: 300px; height: 300px; }
+.pinned .me, .pinned .print2 { position: absolute; margin: 0; background: var(--card); box-shadow: var(--shadow); padding: 10px 10px 0; transition: transform .4s cubic-bezier(.3,1.6,.5,1); }
+.pinned .me { right: 0; top: 0; width: 200px; transform: rotate(5deg); }
+.pinned .me:hover { transform: rotate(-1deg) scale(1.03); }
+.pinned .me img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+.pinned figcaption { font-family: var(--f-hand); text-align: center; padding: 8px 0 12px; color: var(--ink); }
+.pinned .print2 { left: 0; top: 120px; width: 130px; transform: rotate(-8deg); padding-bottom: 10px; z-index: -1; }
+.pinned .print2 img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+.pinned .tape { position: absolute; top: -12px; left: 50%; width: 80px; height: 24px; background: var(--tape-a); opacity: .85; transform: translateX(-50%) rotate(-5deg); clip-path: polygon(3% 8%, 97% 0, 100% 50%, 96% 100%, 2% 94%, 0 50%); }
+.pinned .note { position: absolute; left: 20px; bottom: -30px; width: 108px; padding: 12px 10px; background: #ffe98a; color: #1c2a4d; font-family: var(--f-hand); font-size: .95rem; line-height: 1.25; transform: rotate(-5deg); box-shadow: 0 10px 14px -8px rgba(0,0,0,.35); }
+.pinned .note u { text-decoration-color: #d23c2f; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  h1 .wave { animation: wave 2.4s .6s ease-in-out 2; }
+  @keyframes wave { 0%,60%,100% { transform: rotate(0) } 10%,30% { transform: rotate(14deg) } 20%,40% { transform: rotate(-8deg) } }
+  .pinned .me { animation: drop .8s .3s cubic-bezier(.3,1.5,.5,1) both; }
+  @keyframes drop { from { transform: translateY(-24px) rotate(-4deg) } to { transform: rotate(5deg) } }
+}
+@media (max-width: 760px) {
+  .hero { height: clamp(620px, 92vh, 820px); }
+  .pinned { width: 210px; height: 210px; bottom: -70px; }
+  .pinned .me { width: 140px; }
+  .pinned .print2 { width: 96px; top: 80px; }
+  .pinned .note { width: 92px; font-size: .82rem; bottom: -10px; left: 0; }
+}
+/* section heads: short and handwritten-adjacent */
+h2 { font-family: var(--f-display); font-weight: 800; letter-spacing: -.03em; font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1; margin: 0; text-wrap: balance; }
+.label { font-family: var(--f-hand); color: var(--ink-soft); font-size: 1.05rem; display: inline-block; transform: rotate(-2deg); }
+
+/* pile of photos */
+.pile-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 20px; margin-bottom: 20px; }
+.pile { position: relative; aspect-ratio: 1000 / 660; }
+.ph {
+  position: absolute; left: var(--x); top: var(--y); width: var(--w);
+  transform: translate(var(--dx, 0px), var(--dy, 0px)) rotate(var(--r));
+  perspective: 1200px; cursor: pointer;
+  touch-action: pan-y; user-select: none; -webkit-user-select: none;
+  outline-offset: 6px;
+}
+.ph:hover { z-index: 20; }
+.ph.dragging { z-index: 30; cursor: grabbing; }
+.ph-in { position: relative; display: block; transform-style: preserve-3d; transition: transform .65s cubic-bezier(.3,1.3,.5,1); }
+.ph.flipped .ph-in { transform: rotateY(180deg); }
+.ph-front, .ph-back {
+  display: block; background: var(--card); padding: 9px 9px 0; box-shadow: var(--shadow);
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+}
+.ph:hover .ph-front { box-shadow: 0 24px 40px -18px rgba(0,0,0,.5); }
+.ph-front img { display: block; width: 100%; aspect-ratio: 3/2; object-fit: cover; }
+.ph-front .cap { display: block; font-family: var(--f-hand); font-size: clamp(.8rem, 1.4vw, 1rem); padding: 8px 2px 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ph-back {
+  position: absolute; inset: 0; transform: rotateY(180deg);
+  padding: 14px 16px; display: flex; flex-direction: column; gap: 6px;
+  font-family: var(--f-hand); font-size: clamp(.85rem, 1.35vw, 1rem); line-height: 1.35;
+  background-image: repeating-linear-gradient(transparent 0 23px, var(--grid) 23px 24px);
+}
+.ph-back b { font-family: var(--f-display); font-weight: 700; font-size: 1.1em; }
+.ph-back a { margin-top: auto; text-underline-offset: 3px; }
+.ph .tape { position: absolute; top: -12px; left: 50%; width: 38%; height: 22px; background: var(--tape-a); opacity: .85; transform: translateX(-50%) rotate(-3deg); z-index: 2; clip-path: polygon(3% 8%, 97% 0, 100% 50%, 96% 100%, 2% 94%, 0 50%); }
+.ph:nth-child(3n+2) .tape { background: var(--tape-b); transform: translateX(-40%) rotate(4deg); }
+.ph:nth-child(3n) .tape { background: var(--tape-c); transform: translateX(-60%) rotate(-6deg); }
+.ph.empty .ph-front { background: transparent; box-shadow: none; border: 2px dashed var(--ink-soft); }
+.ph.empty .blank { display: grid; place-items: center; aspect-ratio: 3/2; font-family: var(--f-display); font-weight: 800; font-size: 3.4rem; color: var(--ink-soft); }
+.pile-hint { position: absolute; font-family: var(--f-hand); color: var(--hanko); font-size: 1.05rem; right: 2%; top: -8px; transform: rotate(3deg); display: flex; align-items: center; gap: 4px; }
+.pile-hint svg { width: 46px; height: 36px; }
+.pile-hint path { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* blender */
+.off { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr); gap: 36px; align-items: center; }
+.off .words { display: flex; flex-direction: column; gap: 14px; }
+.off .words p { font-family: var(--f-hand); font-size: 1.25rem; line-height: 1.35; margin: 0; max-width: 18ch; }
+.print { position: relative; margin: 0; }
+.print .frame { overflow: hidden; background: var(--card); padding: 12px; box-shadow: var(--shadow); transform: rotate(-1.2deg); }
+.print .frame div { overflow: hidden; aspect-ratio: 16/9; }
+.print .frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.print .tape { position: absolute; top: -12px; left: 12%; width: 110px; height: 26px; background: var(--tape-b); opacity: .85; transform: rotate(-5deg); z-index: 2; clip-path: polygon(3% 8%, 97% 0, 100% 50%, 96% 100%, 2% 94%, 0 50%); }
+.toast { position: absolute; right: -2%; bottom: -12%; width: 34%; margin: 0; background: var(--card); padding: 8px 8px 0; box-shadow: var(--shadow); transform: rotate(5deg); transition: transform .35s cubic-bezier(.3,1.6,.5,1); }
+.toast:hover { transform: rotate(-2deg) scale(1.06); }
+.toast img { display: block; width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+.toast figcaption { font-family: var(--f-hand); font-size: .9rem; padding: 6px 2px 8px; }
+@media (prefers-reduced-motion: no-preference) {
+  .print .frame img { animation: pan 26s ease-in-out infinite alternate; }
+  @keyframes pan { from { transform: scale(1.12) translateX(3%) } to { transform: scale(1.12) translateX(-3%) } }
+}
+
+/* bluetooth drama */
+.ble { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 30px; align-items: center; }
+.ble svg { width: 100%; height: auto; display: block; }
+.ble .big { font-family: var(--f-display); font-weight: 800; letter-spacing: -.03em; font-size: clamp(1.9rem, 4.4vw, 3rem); line-height: 1.02; margin: 8px 0 18px; text-wrap: balance; }
+.ble .count { font-family: var(--f-hand); color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.ble a.more { font-family: var(--f-hand); font-size: 1.1rem; text-underline-offset: 4px; text-decoration-style: wavy; }
+.b-dev { fill: var(--card); stroke: var(--ink); stroke-width: 3; }
+.b-ink { fill: var(--ink); }
+.b-link { fill: none; stroke: var(--ok); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 2 12; }
+.b-pulse { fill: var(--ok); }
+.b-cross path { stroke: var(--hanko); stroke-width: 5; stroke-linecap: round; }
+.b-check path { fill: none; stroke: var(--ok); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.b-dots circle { fill: var(--ink-soft); }
+.b-led { fill: #3aa5ff; }
+.b-cross, .b-dots { opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .b-link { animation: link 8s linear infinite, flow 1s linear infinite; }
+  @keyframes link { 0%,54% { stroke: var(--ok); opacity: 1 } 56% { opacity: .2 } 58%,86% { stroke: var(--hanko); opacity: .5 } 90%,100% { stroke: var(--ok); opacity: 1 } }
+  @keyframes flow { to { stroke-dashoffset: -28 } }
+  .b-pulses { animation: pul 8s linear infinite; }
+  @keyframes pul { 0%,54% { opacity: 1 } 55%,88% { opacity: 0 } 90%,100% { opacity: 1 } }
+  .b-pulse { animation: travel 1.6s linear infinite; }
+  .b-pulse:nth-child(2) { animation-delay: .8s; }
+  @keyframes travel { from { transform: translateX(0) } to { transform: translateX(150px) } }
+  .b-cross { animation: cross 8s linear infinite; }
+  @keyframes cross { 0%,56% { opacity: 0; transform: scale(.4) } 58%,86% { opacity: 1; transform: scale(1) } 88%,100% { opacity: 0 } }
+  .b-cross { transform-origin: 212px 120px; transform-box: view-box; }
+  .b-check { animation: pul 8s linear infinite; }
+  .b-dots { animation: cross 8s linear infinite; transform-origin: 85px 120px; transform-box: view-box; }
+  .b-dots circle { animation: dot 1s ease-in-out infinite; }
+  .b-dots circle:nth-child(2) { animation-delay: .15s; }
+  .b-dots circle:nth-child(3) { animation-delay: .3s; }
+  @keyframes dot { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+  .b-watch { animation: shake 8s ease-in-out infinite; transform-origin: 340px 120px; transform-box: view-box; }
+  @keyframes shake { 0%,55%,90%,100% { transform: rotate(0) } 60% { transform: rotate(-6deg) } 64% { transform: rotate(5deg) } 68% { transform: rotate(0) } }
+  .b-led { animation: blink 1.2s steps(2, jump-none) infinite; }
+}
+@media (prefers-reduced-motion: reduce) { .b-check { opacity: 1; } }
+
+/* chat + hello */
+.talk { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 50px; align-items: start; }
+.chat { display: flex; flex-direction: column; gap: 16px; padding: 22px; background: var(--card); box-shadow: var(--shadow); border-radius: 26px 20px 28px 22px; transform: rotate(-.8deg); }
+.chat-top { display: flex; align-items: center; gap: 10px; font-family: var(--f-hand); color: var(--ink-soft); font-size: .95rem; padding-bottom: 10px; border-bottom: 1.5px dashed var(--grid); }
+.chat-top .avs { display: flex; }
+.chat-top .avs img { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--card); margin-left: -8px; object-fit: cover; }
+.chat-top .avs img:first-child { margin-left: 0; }
+.msg { display: flex; gap: 10px; align-items: flex-end; max-width: 92%; }
+.msg img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex: none; }
+.msg .who { font-size: .78rem; color: var(--ink-soft); margin: 0 0 3px 12px; }
+.bub { position: relative; background: var(--paper); padding: 10px 14px 11px; border-radius: 20px 20px 20px 6px; font-size: 1rem; line-height: 1.4; }
+.bub.big { font-family: var(--f-hand); font-size: 1.2rem; }
+.react { position: absolute; right: -8px; bottom: -12px; background: var(--card); border-radius: 999px; padding: 1px 7px; font-size: .8rem; box-shadow: var(--shadow); color: var(--hanko); }
+.msg.you { align-self: flex-end; flex-direction: row-reverse; }
+.msg.you .bub { background: var(--bubble-me); color: var(--bubble-me-ink); border-radius: 20px 20px 6px 20px; display: flex; gap: 5px; padding: 14px 16px; }
+.msg.you .bub i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .6; display: block; }
+.msg.you .who { text-align: right; margin: 0 12px 3px 0; }
+.ghost { width: 40px; height: 40px; border-radius: 50%; border: 2px dashed var(--ink-soft); flex: none; display: grid; place-items: center; font-family: var(--f-hand); color: var(--ink-soft); }
+@media (prefers-reduced-motion: no-preference) {
+  .msg.you .bub i { animation: dot 1s ease-in-out infinite; }
+  .msg.you .bub i:nth-child(2) { animation-delay: .15s; }
+  .msg.you .bub i:nth-child(3) { animation-delay: .3s; }
+}
+
+.hello { position: relative; display: flex; flex-direction: column; gap: 18px; padding-top: 10px; }
+.hello h2 { font-size: clamp(2.4rem, 6vw, 4.2rem); }
+.hello .plane { width: 100%; height: 150px; margin-top: -10px; overflow: visible; }
+.hello .plane .trail { fill: none; stroke: var(--ink-soft); stroke-width: 2; stroke-dasharray: 4 8; stroke-linecap: round; }
+.hello .plane .p { fill: var(--card); stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+@media (prefers-reduced-motion: no-preference) {
+  .hello .plane .flyer { offset-path: path("M10 130 C 90 120, 110 30, 190 50 S 300 140, 380 40"); animation: fly 6s ease-in-out infinite; offset-rotate: auto; }
+  @keyframes fly { 0% { offset-distance: 0%; opacity: 0 } 8% { opacity: 1 } 88% { opacity: 1 } 100% { offset-distance: 100%; opacity: 0 } }
+}
+.btn {
+  align-self: flex-start;
+  font-family: var(--f-display); font-weight: 700; font-size: 1.15rem; text-decoration: none;
+  color: var(--paper); background: var(--ink); padding: 14px 24px 15px;
+  border-radius: 14px 18px 12px 20px / 18px 12px 20px 14px; box-shadow: 4px 5px 0 var(--hanko);
+  transition: transform .15s, box-shadow .15s;
+}
+.btn:hover { transform: translate(-2px,-2px) rotate(-1.5deg); box-shadow: 6px 7px 0 var(--hanko); }
+.hello .small { font-family: var(--f-hand); color: var(--ink-soft); }
+.hello .small a { text-underline-offset: 3px; }
+
+footer { font-family: var(--f-hand); color: var(--ink-soft); font-size: .92rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; }
+footer svg { width: 110px; height: 34px; }
+footer path { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* narrow */
+@media (max-width: 760px) {
+  .pile { aspect-ratio: auto; display: flex; gap: 22px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 24px 6px 30px; margin-inline: -6px; }
+  .ph { position: relative; left: auto; top: auto; width: 230px; flex: none; scroll-snap-align: center; }
+  .pile-hint { top: -30px; }
+  .off, .ble, .talk { grid-template-columns: minmax(0, 1fr); }
+  .off .words p { max-width: none; }
+  .toast { width: 42%; bottom: -18%; }
+  .off { padding-bottom: 40px; }
+}
+</style>
+</head>
+<body>
+<section class="hero" id="top">
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="sky-fallback" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <header class="top">
+      <a class="sig" href="#top">zafar ✎</a>
+      <div class="top-r">
+        <a href="https://docs.google.com/document/d/e/2PACX-1vTqFnfyHNvn48h_-v__nIAxO77b1cJLzTVT_O5cpRvjzDlYLy6bwhQZcagAiF5dXc21eblTIPVgJy6y/pub" target="_blank" rel="noopener">résumé</a>
+        <a href="#hello">say hi</a>
+        <button class="lamp" id="lamp" type="button" aria-label="Switch the lights" aria-pressed="false">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 a5.5 5.5 0 0 1 3 10 v2 h-6 v-2 a5.5 5.5 0 0 1 3 -10 z M8 17 h4"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="hi">
+      <h1>hi, I'm Zafar <span class="wave" aria-hidden="true">👋</span></h1>
+      <p class="sub">I build things for people.<br>This is the sky over Tokyo, <em>right now</em>.</p>
+    </div>
+
+    <div class="clock-row">
+      <button class="clock" id="clock" type="button" aria-label="Skip ahead three hours in Tokyo">
+        <svg viewBox="-34 -34 68 68" aria-hidden="true">
+          <circle class="face" r="30"/>
+          <g id="ticks" stroke-width="2"></g>
+          <line id="hh" x1="0" y1="0" x2="0" y2="-15" stroke-width="4"/>
+          <line id="mh" x1="0" y1="0" x2="0" y2="-23" stroke-width="2.5"/>
+          <circle class="dot" r="3"/>
+        </svg>
+      </button>
+      <span><span class="time" id="timeText">Tokyo · --:--</span><span class="tip" id="tipText">tap the clock to skip ahead</span></span>
+    </div>
+  </div>
+
+  <div class="pinned">
+    <figure class="print2"><img src="img/hisoka.jpg" alt="A print of Hisoka from Hunter x Hunter"></figure>
+    <figure class="me"><span class="tape"></span><img src="img/profile.jpg" alt="Zafar, with short dark hair and round glasses"><figcaption>me</figcaption></figure>
+    <div class="note">don't stop <u>building</u></div>
+  </div>
+</section>
+
+<div class="page">
+
+  <section id="made" aria-labelledby="made-h">
+    <div class="pile-head">
+      <h2 id="made-h">Stuff I've made</h2>
+    </div>
+    <div class="pile" id="pile">
+      <span class="pile-hint" aria-hidden="true">flip one over <svg viewBox="0 0 46 36"><path d="M4 6 C 20 4, 36 12, 40 30 M32 24 L40 31 L44 21"/></svg></span>
+
+      <div class="ph" style="--x:1%;--y:2%;--w:26%;--r:-6deg" role="button" tabindex="0" aria-label="Halal Navi, 2017. Flip for the story.">
+        <span class="tape"></span>
+        <span class="ph-in">
+          <span class="ph-front"><img src="img/halalnavi.jpg" alt="Halal Navi app screens" loading="lazy"><span class="cap">Halal Navi · '17</span></span>
+          <span class="ph-back"><b>Halal Navi</b>Helping Muslim travelers find good food in Japan. My first real product.<a href="https://halal-navi.jp/" target="_blank" rel="noopener">halal-navi.jp ↗</a></span>
+        </span>
+      </div>
+
+      <div class="ph" style="--x:25%;--y:9%;--w:24%;--r:4deg" role="button" tabindex="0" aria-label="Seekers, 2019. Flip for the story.">
+        <span class="tape"></span>
+        <span class="ph-in">
+          <span class="ph-front"><img src="img/seekers.jpg" alt="Seekers mobile app screens" loading="lazy" style="object-position: 50% 30%"><span class="cap">Seekers · '19</span></span>
+          <span class="ph-back"><b>Seekers</b>Founding team. People helping people find work.<a href="https://seekers.my" target="_blank" rel="noopener">seekers.my ↗</a></span>
+        </span>
+      </div>
+
+      <div class="ph" style="--x:48%;--y:1%;--w:26%;--r:-2deg" role="button" tabindex="0" aria-label="DiGi CyberSafe, 2022. Flip for the story.">
+        <span class="tape"></span>
+        <span class="ph-in">
+          <span class="ph-front"><img src="img/cybersafe.jpg" alt="CyberSafe in Schools logo" loading="lazy"><span class="cap">CyberSafe · '22</span></span>
+          <span class="ph-back"><b>DiGi CyberSafe</b>Teaching school kids to stay safe online, with a competition.<a href="https://corporate.celcomdigi.com/sustainability/safe-internet" target="_blank" rel="noopener">visit ↗</a></span>
+        </span>
+      </div>
+
+      <div class="ph" style="--x:73%;--y:8%;--w:25%;--r:6deg" role="button" tabindex="0" aria-label="HantarJapan, 2023. Flip for the story.">
+        <span class="tape"></span>
+        <span class="ph-in">
+          <span class="ph-front"><img src="img/hantarjapan.jpg" alt="HantarJapan logo" loading="lazy" style="object-fit: contain; background:#f22b3a"><span class="cap">HantarJapan · '23</span></span>
+          <span class="ph-back"><b>HantarJapan</b>Parcels from Malaysia to Japan, carried by travelers. My own startup.<span style="color:var(--hanko)">relaunching soon</span></span>
+        </span>
+      </div>
+
+      <div class="ph" style="--x:5%;--y:50%;--w:26%;--r:3deg" role="button" tabindex="0" aria-label="KL Wing, 2020. Flip for the story.">
+        <span class="tape"></span>
+        <span class="ph-in">
+          <span class="ph-front"><img src="img/klwing.jpg" alt="KL Wing job site" loading="lazy"><span class="cap">KL Wing · '20</span></span>
+          <span class="ph-back"><b>KL Wing</b>A job board for Japanese people who want to work in Malaysia.<a href="https://recruit.jobsearch-asia.com/" target="_blank" rel="noopener">visit ↗</a></span>
+        </span>
+      </div>
+
+      <div class="ph" style="--x:30%;--y:55%;--w:28%;--r:-4deg" role="button" tabindex="0" aria-label="AXA internal tools, 2024. Flip for the story.">
+        <span class="tape"></span>
+        <span class="ph-in">
+          <span class="ph-front"><img src="img/axa.jpg" alt="AXA flow tool showing an ETL graph" loading="lazy" style="object-position: 0 0"><span class="cap">AXA tools · '24</span></span>
+          <span class="ph-back"><b>AXA Japan</b>Tools that let humans see inside very old batch systems.</span>
+        </span>
+      </div>
+
+      <div class="ph" style="--x:57%;--y:50%;--w:23%;--r:5deg" role="button" tabindex="0" aria-label="Payouth, 2021. Flip for the story.">
+        <span class="tape"></span>
+        <span class="ph-in">
+          <span class="ph-front"><img src="img/payouth.jpg" alt="Avante Youth Marketing Agency logo" loading="lazy" style="object-fit: contain; background:#444"><span class="cap">Payouth · '21</span></span>
+          <span class="ph-back"><b>Payouth</b>Designed a marketing platform for students.</span>
+        </span>
+      </div>
+
+      <div class="ph empty" style="--x:79%;--y:55%;--w:19%;--r:-3deg" role="button" tabindex="0" aria-label="An empty spot for your project. Flip it.">
+        <span class="ph-in">
+          <span class="ph-front"><span class="blank">?</span><span class="cap">yours · '26</span></span>
+          <span class="ph-back"><b>Your thing?</b>This spot's empty on purpose.<a href="https://cal.com/zafar" target="_blank" rel="noopener">let's talk ↗</a></span>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section class="off" aria-labelledby="off-h">
+    <div class="words">
+      <span class="label">off the clock</span>
+      <h2 id="off-h">I make rooms in Blender.</h2>
+      <p>and, once, a toaster.</p>
+    </div>
+    <figure class="print">
+      <span class="tape"></span>
+      <div class="frame"><div><img src="img/room.jpg" alt="A 3D-rendered living room with a white sofa, a bookshelf and big windows onto green fields" loading="lazy"></div></div>
+      <figure class="toast">
+        <img src="img/toaster.jpg" alt="A red 3D toaster model shown in wireframe" loading="lazy">
+        <figcaption>the toaster</figcaption>
+      </figure>
+    </figure>
+  </section>
+
+  <section class="ble" aria-labelledby="ble-h">
+    <svg viewBox="0 0 420 240" role="img" aria-label="A phone and a Bluetooth wearable lose their connection, search, and reconnect, over and over.">
+      <!-- phone -->
+      <rect class="b-dev" x="40" y="40" width="90" height="162" rx="16"/>
+      <rect class="b-ink" x="70" y="50" width="30" height="5" rx="2.5"/>
+      <g class="b-check"><path d="M68 120 l12 12 l22 -24"/></g>
+      <g class="b-dots"><circle cx="70" cy="122" r="5"/><circle cx="85" cy="122" r="5"/><circle cx="100" cy="122" r="5"/></g>
+      <!-- the link -->
+      <path class="b-link" d="M138 120 L290 120"/>
+      <g class="b-pulses"><circle class="b-pulse" cx="140" cy="120" r="6"/><circle class="b-pulse" cx="140" cy="120" r="6"/></g>
+      <g class="b-cross"><path d="M200 108 l24 24 M224 108 l-24 24"/></g>
+      <!-- wearable -->
+      <g class="b-watch">
+        <rect class="b-dev" x="322" y="46" width="36" height="34" rx="6"/>
+        <rect class="b-dev" x="322" y="160" width="36" height="34" rx="6"/>
+        <circle class="b-dev" cx="340" cy="120" r="44"/>
+        <circle class="b-led" cx="340" cy="120" r="7"/>
+      </g>
+      <text x="212" y="226" text-anchor="middle" style="font-family: var(--f-hand); fill: var(--ink-soft)" font-size="15" id="bleCount">reconnects since you got here: 0</text>
+    </svg>
+    <div>
+      <span class="label" id="ble-h">currently obsessed with</span>
+      <p class="big">Bluetooth that won't stay connected.</p>
+      <a class="more" href="https://zafar.dev/blog/building-a-ble-reconnect-soak-tester" target="_blank" rel="noopener">how I test it all night →</a>
+    </div>
+  </section>
+
+  <section class="talk" id="hello" aria-labelledby="hello-h">
+    <div class="chat" aria-label="Messages from people I've worked with">
+      <div class="chat-top">
+        <span class="avs"><img src="img/suzuki.jpg" alt=""><img src="img/ueda.jpg" alt=""><img src="img/hidayat.jpg" alt=""></span>
+        people I've built with
+      </div>
+      <div class="msg">
+        <img src="img/suzuki.jpg" alt="Yuya Suzuki">
+        <div><p class="who">Yuya Suzuki · KL Wing</p><div class="bub big">It's difficult to find someone who is as dedicated as you are. You helped us out a lot.<span class="react" aria-label="Zafar loved this">♥</span></div></div>
+      </div>
+      <div class="msg">
+        <img src="img/ueda.jpg" alt="Shusaku Ueda">
+        <div><p class="who">Shusaku Ueda · Seekers</p><div class="bub">Thank you for helping us to grow. Even during the tough times.<span class="react" aria-label="Zafar loved this">♥</span></div></div>
+      </div>
+      <div class="msg">
+        <img src="img/hidayat.jpg" alt="Hidayat">
+        <div><p class="who">Hidayat · Fronyx</p><div class="bub">Relentless work. Gets the job done.</div></div>
+      </div>
+      <div class="msg you">
+        <span class="ghost" aria-hidden="true">you</span>
+        <div><p class="who">you</p><div class="bub" aria-label="typing"><i></i><i></i><i></i></div></div>
+      </div>
+    </div>
+
+    <div class="hello">
+      <span class="label">your turn</span>
+      <h2 id="hello-h">What are we building next?</h2>
+      <svg class="plane" viewBox="0 0 400 150" aria-hidden="true">
+        <path class="trail" d="M10 130 C 90 120, 110 30, 190 50 S 300 140, 380 40"/>
+        <g class="flyer"><path class="p" d="M-16 -9 L18 0 L-16 9 L-9 0 Z"/><path class="p" d="M-9 0 L18 0"/></g>
+      </svg>
+      <a class="btn" href="https://cal.com/zafar" target="_blank" rel="noopener">Grab 30 minutes</a>
+      <span class="small">or read <a href="https://docs.google.com/document/d/e/2PACX-1vTqFnfyHNvn48h_-v__nIAxO77b1cJLzTVT_O5cpRvjzDlYLy6bwhQZcagAiF5dXc21eblTIPVgJy6y/pub" target="_blank" rel="noopener">my résumé</a> first</span>
+    </div>
+  </section>
+
+  <footer>
+    <span>made by hand in Tokyo · no frameworks</span>
+    <svg viewBox="0 0 110 34" role="img" aria-label="Zafar's signature"><path d="M4 8 h20 l-18 18 h22 M34 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M50 26 c3 -8 5 -17 9 -18 c2 0 -2 8 -6 9 h8 M62 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M76 26 c2 -6 3 -8 8 -8 M86 22 c8 2 14 -1 20 -8"/></svg>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hero = document.querySelector('.hero');
+  const canvas = document.getElementById('sky');
+
+  // ---------- time of day in Tokyo ----------
+  // hour, sky top, sky bottom, far city, near city, sun glow, nightness
+  const PAL = [
+    [0,  '#070d26', '#1b2350', '#1b2244', '#0d1228', '#6b7cff', 1],
+    [4.5,'#101a45', '#3a3f74', '#262c52', '#141a36', '#8a7cff', .9],
+    [5.6,'#34407e', '#f2a58e', '#5b5f86', '#2e3456', '#ffae80', .55],
+    [7,  '#78c1ee', '#e6f5ff', '#9fb2c8', '#5d7089', '#fff1c4', 0],
+    [15, '#5fb2e6', '#d4eeff', '#98abc2', '#5a6c86', '#fff1c4', 0],
+    [17, '#ea7f5a', '#ffd79c', '#9a7f98', '#4f4868', '#ff9a5c', .2],
+    [18.6,'#3a2d6b', '#e1768c', '#4a4270', '#26223f', '#ff7a7a', .65],
+    [20, '#0c1434', '#2a3264', '#1c2346', '#0f1430', '#6b7cff', 1],
+    [24, '#070d26', '#1b2350', '#1b2244', '#0d1228', '#6b7cff', 1]
+  ];
+  const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255);
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const mixc = (a, b, t) => { const A = rgb(a), B = rgb(b); return A.map((v, i) => lerp(v, B[i], t)); };
+  const css = c => 'rgb(' + c.map(v => Math.round(v * 255)).join(',') + ')';
+  const tokyoHour = () => {
+    const p = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Tokyo', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+    return (+p.find(x => x.type === 'hour').value) + (+p.find(x => x.type === 'minute').value) / 60;
+  };
+  const state = {};
+  const setHour = hRaw => {
+    const h = ((hRaw % 24) + 24) % 24;
+    let i = 0; while (PAL[i + 1][0] <= h) i++;
+    const a = PAL[i], b = PAL[i + 1], t = (h - a[0]) / (b[0] - a[0]);
+    state.skyTop = mixc(a[1], b[1], t); state.skyBot = mixc(a[2], b[2], t);
+    state.far = mixc(a[3], b[3], t); state.near = mixc(a[4], b[4], t);
+    state.glow = mixc(a[5], b[5], t); state.night = lerp(a[6], b[6], t);
+    const st = (h - 6) / 12, mt = (((h - 18) + 24) % 24) / 12;
+    state.sun = [0.08 + 0.84 * st, 0.2 + Math.sin(Math.PI * Math.min(Math.max(st, 0), 1)) * 0.6];
+    state.sunUp = st > -0.04 && st < 1.04 ? 1 : 0;
+    state.moon = [0.08 + 0.84 * mt, 0.2 + Math.sin(Math.PI * Math.min(Math.max(mt, 0), 1)) * 0.58];
+    state.moonUp = mt < 1.04 ? 1 : 0;
+    hero.classList.toggle('is-night', state.night > 0.5);
+    hero.style.setProperty('--sky-top', css(state.skyTop)); hero.style.setProperty('--sky-bot', css(state.skyBot));
+    const hr = Math.floor(h), mn = Math.floor((h - hr) * 60);
+    document.getElementById('hh').setAttribute('transform', `rotate(${(hr % 12) * 30 + mn / 2})`);
+    document.getElementById('mh').setAttribute('transform', `rotate(${mn * 6})`);
+    document.getElementById('timeText').textContent = `Tokyo · ${String(hr).padStart(2, '0')}:${String(mn).padStart(2, '0')}`;
+    dirty = true;
+  };
+  const ticks = document.getElementById('ticks');
+  for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6, r1 = i % 3 ? 25 : 21; const l = document.createElementNS('http://www.w3.org/2000/svg', 'line'); l.setAttribute('x1', Math.sin(a) * r1); l.setAttribute('y1', -Math.cos(a) * r1); l.setAttribute('x2', Math.sin(a) * 27); l.setAttribute('y2', -Math.cos(a) * 27); ticks.appendChild(l); }
+
+  let dirty = true, offset = 0, tweening = false;
+  const qh = parseFloat(new URLSearchParams(location.search).get('h'));
+  if (!isNaN(qh)) offset = qh - tokyoHour();
+  let shown = tokyoHour() + offset;
+  setHour(shown);
+  setInterval(() => { if (!tweening) { shown = tokyoHour() + offset; setHour(shown); } }, 30000);
+  const clock = document.getElementById('clock');
+  clock.addEventListener('click', () => {
+    if (tweening) return;
+    offset += 3; const from = shown, to = tokyoHour() + offset;
+    document.getElementById('tipText').textContent = offset % 24 ? `(pretending it's ${offset % 24}h later)` : 'back to real time';
+    if (reduce) { shown = to; setHour(to); return; }
+    tweening = true; const t0 = performance.now(), D = 1800;
+    const step = now => { const k = Math.min(1, (now - t0) / D), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; shown = from + (to - from) * e; setHour(shown); if (k < 1) requestAnimationFrame(step); else tweening = false; };
+    requestAnimationFrame(step);
+  });
+
+  // ---------- WebGPU sky ----------
+  const WGSL = /* wgsl */`
+struct U {
+  res: vec2f, time: f32, night: f32,
+  mouse: vec2f, sun: vec2f,
+  moon: vec2f, sunUp: f32, moonUp: f32,
+  skyTop: vec4f, skyBot: vec4f, far: vec4f, near: vec4f, glow: vec4f,
+  shoot: vec4f,
+};
+@group(0) @binding(0) var<uniform> u: U;
+
+@vertex fn vs(@builtin(vertex_index) i: u32) -> @builtin(position) vec4f {
+  var p = array<vec2f, 3>(vec2f(-1.0, -3.0), vec2f(3.0, 1.0), vec2f(-1.0, 1.0));
+  return vec4f(p[i], 0.0, 1.0);
+}
+
+fn h11(p: f32) -> f32 { return fract(sin(p * 127.1 + 1.7) * 43758.5453); }
+fn h21(p: vec2f) -> f32 { return fract(sin(dot(p, vec2f(127.1, 311.7))) * 43758.5453); }
+fn vnoise(p: vec2f) -> f32 {
+  let i = floor(p); let f = fract(p); let s = f * f * (3.0 - 2.0 * f);
+  let a = h21(i); let b = h21(i + vec2f(1.0, 0.0)); let c = h21(i + vec2f(0.0, 1.0)); let d = h21(i + vec2f(1.0, 1.0));
+  return mix(mix(a, b, s.x), mix(c, d, s.x), s.y);
+}
+fn fbm(p0: vec2f) -> f32 {
+  var p = p0; var v = 0.0; var a = 0.5;
+  for (var k = 0; k < 5; k++) { v += a * vnoise(p); p = p * 2.03 + vec2f(1.7, 9.2); a *= 0.5; }
+  return v;
+}
+
+// one row of buildings; returns coverage
+fn bld(x: f32, y: f32, base: f32, w: f32, hmin: f32, hmax: f32, seed: f32, px: f32) -> f32 {
+  let q = x / w; let id = floor(q); let f = fract(q);
+  let r = h11(id + seed);
+  var h = hmin + (hmax - hmin) * r * r;
+  if (h11(id * 1.7 + seed) > 0.88) { h *= 1.55; }
+  let top = base + h;
+  let gap = select(0.0, 0.07, h11(id + seed * 3.1) > 0.45);
+  let side = min(f - gap, 1.0 - gap - f) * w;
+  var cov = smoothstep(-px, px, side) * smoothstep(-px, px, top - y);
+  if (h11(id + seed * 5.3) > 0.55) {
+    let inner = min(f - 0.3, 0.7 - f) * w;
+    cov = max(cov, smoothstep(-px, px, inner) * smoothstep(-px, px, top + h * 0.1 - y));
+  }
+  if (h11(id + seed * 7.7) > 0.78) {
+    let ax = abs(f - 0.5) * w;
+    cov = max(cov, smoothstep(px, 0.0, ax - 0.0011) * smoothstep(-px, px, top + 0.045 - y));
+  }
+  return cov;
+}
+
+fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, night: f32, t: f32) -> f32 {
+  let g = vec2f(x / ww, (y - base) / wh);
+  let c = floor(g); let f = fract(g);
+  let inWin = step(0.26, f.x) * step(f.x, 0.74) * step(0.28, f.y) * step(f.y, 0.74);
+  let r = h21(c + seed);
+  let flick = h21(c + vec2f(floor(t * 0.12 + r * 9.0), 3.0));
+  let lit = step(1.0 - mix(0.04, 0.3, night), mix(r, flick, 0.3));
+  return inWin * lit;
+}
+
+@fragment fn fs(@builtin(position) fc: vec4f) -> @location(0) vec4f {
+  let px = 1.0 / u.res.y;
+  let asp = u.res.x / u.res.y;
+  let uv = vec2f(fc.x / u.res.y, 1.0 - fc.y / u.res.y);
+  let t = u.time;
+  let night = u.night;
+  let mx = u.mouse.x;
+  let sunP = vec2f(u.sun.x * asp, u.sun.y);
+  let moonP = vec2f(u.moon.x * asp, u.moon.y);
+
+  // sky
+  let sy = clamp((uv.y - 0.15) / 0.85, 0.0, 1.0);
+  var col = mix(u.skyBot.rgb, u.skyTop.rgb, pow(sy, 0.75));
+  let ds = length(uv - sunP);
+  col += u.glow.rgb * (exp(-ds * 5.0) * 0.5 + exp(-ds * 1.4) * 0.16) * u.sunUp;
+  col = mix(col, vec3f(1.0, 0.96, 0.84), smoothstep(0.05, 0.046, ds) * u.sunUp);
+  let dm = length(uv - moonP);
+  col += vec3f(0.62, 0.7, 1.0) * exp(-dm * 8.0) * 0.22 * u.moonUp;
+  let disk = smoothstep(0.034, 0.031, dm);
+  let bite = smoothstep(0.034, 0.031, length(uv - moonP - vec2f(0.016, 0.009)));
+  col = mix(col, vec3f(0.97, 0.95, 0.86), disk * (1.0 - bite * 0.88) * u.moonUp);
+
+  // stars
+  let sg = uv * 64.0;
+  let sc = floor(sg);
+  let sr = h21(sc);
+  if (sr > 0.972) {
+    let off = vec2f(h21(sc + 3.1), h21(sc + 7.3)) - 0.5;
+    let d = length(fract(sg) - 0.5 - off * 0.6);
+    let tw = 0.55 + 0.45 * sin(t * (0.8 + sr * 3.0) + sr * 60.0);
+    col += vec3f(1.0, 0.97, 0.9) * smoothstep(0.11, 0.0, d) * tw * night * smoothstep(0.32, 0.6, uv.y);
+  }
+
+  // shooting star
+  let age = t - u.shoot.z;
+  if (age > 0.0 && age < 1.2) {
+    let dir = normalize(vec2f(-1.0, -0.42));
+    let head = u.shoot.xy + dir * age * 0.75;
+    let tail = head - dir * 0.2;
+    let pa = uv - tail; let ba = head - tail;
+    let hh = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    let d = length(pa - ba * hh);
+    col += vec3f(1.0, 0.94, 0.84) * smoothstep(0.004, 0.0, d) * hh * hh * (1.0 - age / 1.2) * 1.6 * max(night, 0.25);
+  }
+
+  // clouds, lit by the sun's colour
+  let n = fbm(vec2f(uv.x * 1.2 + t * 0.005 - mx * 0.01, uv.y * 3.4));
+  let band = smoothstep(0.42, 0.6, uv.y) * smoothstep(1.08, 0.82, uv.y);
+  let ca = smoothstep(0.46, 0.74, n) * band;
+  let cLit = mix(vec3f(1.0), u.glow.rgb, 0.5) * (0.82 + 0.25 * n);
+  let cloudCol = mix(cLit, vec3f(0.2, 0.24, 0.42) + u.skyBot.rgb * 0.2, night);
+  col = mix(col, cloudCol, ca * mix(0.8, 0.45, night));
+
+  // Mt. Fuji, far away on a clear day
+  let fx = asp * 0.22 - mx * 0.006;
+  let fdx = max(abs(uv.x - fx) - 0.016, 0.0);
+  let fy = 0.5 - fdx * 0.58 - fdx * fdx * 0.6;
+  let fuji = smoothstep(px, -px, uv.y - fy);
+  let snowLine = 0.448 + (vnoise(vec2f(uv.x * 80.0, 1.0)) - 0.5) * 0.02;
+  let fujiCol = mix(u.far.rgb, u.skyBot.rgb, 0.55);
+  let snowCol = mix(mix(vec3f(0.96, 0.97, 1.0), u.glow.rgb, 0.25), fujiCol * 1.25, night * 0.7);
+  col = mix(col, select(fujiCol, snowCol, uv.y > snowLine), fuji * 0.9);
+
+  // far city + Skytree
+  let x3 = uv.x - mx * 0.012;
+  let b3 = bld(x3, uv.y, 0.29, 0.036, 0.018, 0.085, 11.0, px);
+  let farC = mix(u.far.rgb, u.skyBot.rgb, 0.3);
+  let stx = asp * 0.82;
+  let st = (uv.y - 0.29) / 0.35;
+  let stw = 0.009 * (1.0 - st) + 0.0022 + 0.0055 * smoothstep(0.03, 0.0, abs(st - 0.56)) + 0.0035 * smoothstep(0.025, 0.0, abs(st - 0.75));
+  let tree = smoothstep(px, -px, abs(x3 - stx) - stw) * step(0.0, st) * step(st, 1.0);
+  let spire = smoothstep(px, 0.0, abs(x3 - stx) - 0.001) * step(1.0, st) * step(st, 1.17);
+  col = mix(col, farC, max(b3, max(tree, spire)));
+  col += vec3f(0.5, 0.62, 1.0) * tree * night * 0.45 * (0.55 + 0.45 * sin(st * 36.0 - t * 1.5));
+  col = mix(col, vec3f(1.0, 0.86, 0.58), wins(x3, uv.y, 0.29, 0.006, 0.009, 3.0, night, t) * b3 * night * 0.55);
+
+  // middle city + Tokyo Tower
+  let x2 = uv.x - mx * 0.025;
+  let b2 = bld(x2, uv.y, 0.22, 0.056, 0.035, 0.14, 23.0, px);
+  let midC = mix(u.near.rgb, u.far.rgb, 0.5);
+  col = mix(col, midC, b2);
+  let w2 = wins(x2, uv.y, 0.22, 0.008, 0.012, 5.0, night, t) * b2;
+  col = mix(col, mix(midC * 1.2 + 0.02, vec3f(1.0, 0.84, 0.52), night), w2 * mix(0.22, 0.9, night));
+
+  let ttx = asp * 0.6;
+  let k = (uv.y - 0.22) / 0.36;
+  let tdx = abs(x2 - ttx);
+  let hwid = 0.05 * pow(clamp(1.0 - k, 0.0, 1.0), 2.4) + 0.0026;
+  var tower = smoothstep(px, -px, tdx - hwid) * step(0.0, k) * step(k, 1.0);
+  tower *= 1.0 - step(k, 0.13) * step(tdx, (0.13 - k) / 0.13 * hwid * 0.6);
+  let deck1 = smoothstep(px, -px, tdx - hwid - 0.007) * step(0.4, k) * step(k, 0.44);
+  let deck2 = smoothstep(px, -px, tdx - hwid - 0.004) * step(0.66, k) * step(k, 0.685);
+  let ant = smoothstep(px, 0.0, tdx - 0.0011) * step(1.0, k) * step(k, 1.2);
+  tower = max(max(tower, ant), max(deck1, deck2));
+  let white = step(0.8, fract(k * 7.0)) + deck1 + deck2;
+  var tcol = mix(vec3f(0.89, 0.34, 0.2), vec3f(0.96, 0.95, 0.92), clamp(white, 0.0, 1.0));
+  tcol = mix(tcol, mix(vec3f(1.0, 0.55, 0.2), vec3f(1.0, 0.8, 0.5), clamp(white, 0.0, 1.0)), night);
+  col = mix(col, tcol, tower);
+  let halo = length(vec2f(x2 - ttx, (uv.y - 0.36) * 0.45));
+  col += vec3f(1.0, 0.5, 0.18) * exp(-halo * 28.0) * night * 0.35;
+  col += vec3f(1.0, 0.25, 0.2) * smoothstep(0.012, 0.0, length(vec2f(x2 - ttx, uv.y - 0.652))) * step(0.5, fract(t * 0.8)) * (0.4 + night);
+
+  // elevated track and a Yamanote-green train
+  let x15 = uv.x - mx * 0.035;
+  let ty = 0.175;
+  let deckL = smoothstep(px, -px, abs(uv.y - (ty - 0.006)) - 0.0045);
+  let pf = fract(x15 / 0.09);
+  let pillar = step(uv.y, ty - 0.01) * smoothstep(px, -px, abs(pf - 0.5) * 0.09 - 0.0035);
+  col = mix(col, mix(u.near.rgb, u.far.rgb, 0.3), max(deckL, pillar));
+  let loopLen = asp + 1.6;
+  let hd = (t * 0.07) % loopLen - 0.8;
+  let lx = x15 - hd;
+  let ci = floor(lx / 0.2);
+  let cf = lx - ci * 0.2;
+  let inCar = step(0.0, lx) * step(lx, 0.6) * step(cf, 0.192) * step(ty - 0.0015, uv.y) * step(uv.y, ty + 0.024);
+  var car = mix(vec3f(0.84, 0.86, 0.89), u.near.rgb * 1.6 + 0.05, night * 0.7);
+  car = mix(car, vec3f(0.5, 0.76, 0.25), step(ty + 0.003, uv.y) * step(uv.y, ty + 0.007));
+  let wf = fract(cf / 0.024);
+  let winM = step(ty + 0.011, uv.y) * step(uv.y, ty + 0.019) * step(0.18, wf) * step(wf, 0.82) * step(0.006, cf) * step(cf, 0.186);
+  car = mix(car, mix(vec3f(0.3, 0.36, 0.45), vec3f(1.0, 0.9, 0.62), night), winM);
+  col = mix(col, car, inCar);
+  let lamp = length(vec2f(x15 - (hd + 0.6), (uv.y - ty - 0.01) * 2.0));
+  col += vec3f(1.0, 0.9, 0.7) * exp(-lamp * 60.0) * night * 0.8;
+
+  // near city
+  let x1 = uv.x - mx * 0.05;
+  let b1 = bld(x1, uv.y, 0.1, 0.084, 0.05, 0.19, 41.0, px);
+  let nearC = u.near.rgb;
+  col = mix(col, nearC, b1);
+  let w1 = wins(x1, uv.y, 0.1, 0.012, 0.016, 9.0, night, t) * b1;
+  col = mix(col, mix(nearC * 1.3 + 0.03, vec3f(1.0, 0.82, 0.5), night), w1 * mix(0.3, 1.0, night));
+
+  // dissolve into the paper with an inky, uneven edge
+  let edge = uv.y + (fbm(vec2f(uv.x * 5.0, uv.y * 2.0 + 3.0)) - 0.5) * 0.07;
+  let a = smoothstep(0.03, 0.21, edge);
+  col += (h21(fc.xy + vec2f(fract(t) * 97.0, 0.0)) - 0.5) * 0.028;
+  return vec4f(clamp(col, vec3f(0.0), vec3f(1.0)) * a, a);
+}`;
+
+  const fallback = () => hero.classList.add('no-gpu');
+  (async () => {
+    try {
+      if (!navigator.gpu) return fallback();
+      const adapter = await navigator.gpu.requestAdapter({ powerPreference: 'low-power' });
+      if (!adapter) return fallback();
+      const device = await adapter.requestDevice();
+      device.addEventListener('uncapturederror', ev => { console.warn('WebGPU error:', ev.error.message); fallback(); });
+      device.lost.then(() => fallback());
+      const ctx = canvas.getContext('webgpu');
+      const format = navigator.gpu.getPreferredCanvasFormat();
+      ctx.configure({ device, format, alphaMode: 'premultiplied' });
+      const module = device.createShaderModule({ code: WGSL });
+      const info = await module.getCompilationInfo?.();
+      if (info && info.messages.some(m => m.type === 'error')) { console.warn('WGSL: ' + info.messages.map(m => m.lineNum + ':' + m.message).join(' | ')); return fallback(); }
+      const pipeline = device.createRenderPipeline({
+        layout: 'auto',
+        vertex: { module, entryPoint: 'vs' },
+        fragment: { module, entryPoint: 'fs', targets: [{ format }] },
+        primitive: { topology: 'triangle-list' }
+      });
+      const ubuf = device.createBuffer({ size: 144, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+      const bind = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: ubuf } }] });
+      const data = new Float32Array(36);
+
+      const resize = () => {
+        const dpr = Math.min(devicePixelRatio || 1, 1.5);
+        let w = Math.round(canvas.clientWidth * dpr), h = Math.round(canvas.clientHeight * dpr);
+        const cap = 2600000; if (w * h > cap) { const s = Math.sqrt(cap / (w * h)); w = Math.round(w * s); h = Math.round(h * s); }
+        if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; dirty = true; }
+      };
+      new ResizeObserver(resize).observe(canvas); resize();
+
+      const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+      addEventListener('pointermove', e => { mouse.tx = e.clientX / innerWidth * 2 - 1; mouse.ty = e.clientY / innerHeight * 2 - 1; }, { passive: true });
+
+      let shoot = [0, 0, -99], t0 = performance.now(), nextShoot = 6;
+      const time = () => reduce ? 0 : (performance.now() - t0) / 1000;
+      hero.addEventListener('click', e => {
+        if (e.target.closest('a, button, figure, .note')) return;
+        const r = canvas.getBoundingClientRect();
+        shoot = [(e.clientX - r.left) / r.height + 0.12, 1 - (e.clientY - r.top) / r.height + 0.05, time()];
+        dirty = true;
+      });
+
+      let visible = true;
+      new IntersectionObserver(([en]) => { visible = en.isIntersecting; if (visible) requestAnimationFrame(frame); }).observe(hero);
+
+      function frame() {
+        if (!visible || document.hidden) return;
+        const t = time();
+        mouse.x += (mouse.tx - mouse.x) * 0.05; mouse.y += (mouse.ty - mouse.y) * 0.05;
+        if (!reduce && state.night > 0.5 && t > nextShoot) {
+          const asp = canvas.width / canvas.height;
+          shoot = [asp * (0.35 + Math.random() * 0.6), 0.7 + Math.random() * 0.25, t];
+          nextShoot = t + 7 + Math.random() * 9;
+        }
+        if (!reduce || dirty) {
+          data.set([canvas.width, canvas.height, t, state.night, mouse.x, mouse.y, state.sun[0], state.sun[1], state.moon[0], state.moon[1], state.sunUp, state.moonUp], 0);
+          data.set([...state.skyTop, 1, ...state.skyBot, 1, ...state.far, 1, ...state.near, 1, ...state.glow, 1, ...shoot, 0], 12);
+          device.queue.writeBuffer(ubuf, 0, data);
+          const enc = device.createCommandEncoder();
+          const pass = enc.beginRenderPass({ colorAttachments: [{ view: ctx.getCurrentTexture().createView(), loadOp: 'clear', clearValue: { r: 0, g: 0, b: 0, a: 0 }, storeOp: 'store' }] });
+          pass.setPipeline(pipeline); pass.setBindGroup(0, bind); pass.draw(3); pass.end();
+          device.queue.submit([enc.finish()]);
+          dirty = false;
+        }
+        requestAnimationFrame(frame);
+      }
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) requestAnimationFrame(frame); });
+      requestAnimationFrame(frame);
+    } catch (err) { console.warn('WebGPU unavailable, using the painted sky instead.', err); fallback(); }
+  })();
+
+  // ---------- lights ----------
+  const lamp = document.getElementById('lamp'), root = document.documentElement;
+  const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  const sync = () => lamp.setAttribute('aria-pressed', String(isDark()));
+  lamp.addEventListener('click', () => { root.dataset.theme = isDark() ? 'light' : 'dark'; sync(); });
+  sync();
+
+  // ---------- bluetooth counter (one reconnect every 8s loop) ----------
+  if (!reduce) { let n = 0; const c = document.getElementById('bleCount'); setTimeout(() => setInterval(() => { n++; c.textContent = 'reconnects since you got here: ' + n; }, 8000), 7200); }
+
+  // ---------- the pile: tap to flip, drag to move ----------
+  const fine = matchMedia('(pointer: fine)').matches && !matchMedia('(max-width: 760px)').matches;
+  let z = 10;
+  document.querySelectorAll('.ph').forEach(ph => {
+    let sx, sy, ox, oy, moved = false, down = false;
+    const flip = () => ph.classList.toggle('flipped');
+    ph.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('a')) { e.preventDefault(); flip(); } });
+    ph.addEventListener('pointerdown', e => {
+      if (e.button !== 0 || e.target.closest('a')) return;
+      down = true; moved = false; sx = e.clientX; sy = e.clientY;
+      ox = parseFloat(ph.style.getPropertyValue('--dx')) || 0; oy = parseFloat(ph.style.getPropertyValue('--dy')) || 0;
+      if (fine) { ph.setPointerCapture(e.pointerId); ph.style.zIndex = ++z; }
+    });
+    ph.addEventListener('pointermove', e => {
+      if (!down || !fine) return;
+      const dx = e.clientX - sx, dy = e.clientY - sy;
+      if (!moved && Math.hypot(dx, dy) < 5) return;
+      moved = true; ph.classList.add('dragging');
+      ph.style.setProperty('--dx', ox + dx + 'px'); ph.style.setProperty('--dy', oy + dy + 'px');
+    });
+    const up = e => {
+      if (!down) return; down = false; ph.classList.remove('dragging');
+      if (!moved && e.type === 'pointerup' && !e.target.closest('a')) flip();
+      if (moved) ph.style.setProperty('--r', (Math.random() * 12 - 6).toFixed(1) + 'deg');
+    };
+    ph.addEventListener('pointerup', up); ph.addEventListener('pointercancel', up);
+  });
+})();
+</script>
+</body>
+</html>
