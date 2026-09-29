@@ -1,0 +1,15 @@
+{
+  "name": "zafar-party",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev -c wrangler.jsonc",
+    "deploy": "wrangler deploy -c wrangler.jsonc"
+  },
+  "dependencies": {
+    "partyserver": "^0.5.10"
+  },
+  "devDependencies": {
+    "wrangler": "^4.100.0"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "zafar-party",
+  "account_id": "e8e4e405b53eee172786886b66ed2e93",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-05-26",
+  "durable_objects": {
+    "bindings": [{ "name": "Pile", "class_name": "Pile" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Pile"] }],
+  "observability": { "enabled": true }
+}
