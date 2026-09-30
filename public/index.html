@@ -1412,9 +1412,15 @@ fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, hour: f32, offic
   let send = () => {};
   const tidyBtn = document.getElementById('tidy');
   const place = ph => {
-    // Keep local and remote photos inside the board, including after a resize.
+    // Keep photos on screen, including after a resize. On desktop they can use the
+    // full window width (the empty margins beside the column); on phones the board
+    // scrolls sideways, so they stay inside it.
     const inset = 18;
-    const dx = Math.max(inset - ph.offsetLeft, Math.min(pile.clientWidth - ph.offsetLeft - ph.offsetWidth - inset, (ph._fx || 0) * pile.clientWidth));
+    const wide = !matchMedia('(max-width: 760px)').matches;
+    const left = wide ? pile.getBoundingClientRect().left : 0;
+    const minX = wide ? inset - left - ph.offsetLeft : inset - ph.offsetLeft;
+    const maxX = wide ? document.documentElement.clientWidth - inset - left - ph.offsetLeft - ph.offsetWidth : pile.clientWidth - ph.offsetLeft - ph.offsetWidth - inset;
+    const dx = Math.max(minX, Math.min(maxX, (ph._fx || 0) * pile.clientWidth));
     const dy = Math.max(inset - ph.offsetTop, Math.min(pile.clientHeight - ph.offsetTop - ph.offsetHeight - inset, (ph._fy || 0) * pile.clientHeight));
     ph.style.setProperty('--dx', dx + 'px');
     ph.style.setProperty('--dy', dy + 'px');
@@ -1423,6 +1429,7 @@ fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, hour: f32, offic
   const messy = () => Object.values(photos).some(p => p._fx || p._fy);
   const syncTidy = () => { tidyBtn.hidden = !messy(); };
   new ResizeObserver(() => Object.values(photos).forEach(place)).observe(pile);
+  addEventListener('resize', () => Object.values(photos).forEach(place), { passive: true });
 
   document.querySelectorAll('.ph').forEach(ph => {
     const id = ph.dataset.id;
@@ -1444,7 +1451,7 @@ fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, hour: f32, offic
       const dx = e.clientX - sx, dy = e.clientY - sy;
       if (!moved && Math.hypot(dx, dy) < 5) return;
       moved = true; ph.classList.add('dragging'); ph.classList.remove('remote');
-      setPos(ph, Math.max(-.6, Math.min(.6, ox + dx / pile.clientWidth)), Math.max(-.6, Math.min(.6, oy + dy / pile.clientHeight)));
+      setPos(ph, Math.max(-1.6, Math.min(1.6, ox + dx / pile.clientWidth)), Math.max(-.6, Math.min(.6, oy + dy / pile.clientHeight)));
       const now = performance.now();
       if (now - lastSent > 33) { lastSent = now; send({ t: 'move', id, x: ph._fx, y: ph._fy, r: r() }); }
     });

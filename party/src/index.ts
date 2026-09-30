@@ -49,7 +49,8 @@ export class Pile extends Server<Env> {
     if (m.t === 'move' || m.t === 'drop') {
       if (!validId(m.id)) return
       if (!this.pos.has(m.id) && this.pos.size >= 16) return
-      const p = { x: clamp(m.x, -0.6, 0.6), y: clamp(m.y, -0.6, 0.6), r: clamp(m.r, -12, 12) }
+      // x may leave the pile's column: on wide screens photos can go into the side margins
+      const p = { x: clamp(m.x, -1.6, 1.6), y: clamp(m.y, -0.6, 0.6), r: clamp(m.r, -12, 12) }
       this.pos.set(m.id, p)
       this.broadcast(JSON.stringify({ t: m.t, id: m.id, ...p, by: conn.id }), [conn.id])
     } else if (m.t === 'cur') {
