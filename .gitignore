@@ -30,3 +30,6 @@ logs
 .wrangler
 .dev.vars*
 !.dev.vars.example
+
+# cf build output
+.cloudflare

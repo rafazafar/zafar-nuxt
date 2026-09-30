@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Art of Technical Decision Making | Zafar.dev</title>
+<meta name="description" content="How senior engineers evaluate trade-offs and make decisions that stand the test of time.">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://zafar.dev/blog/technical-decision-making/">
+<link rel="alternate" hreflang="en" href="https://zafar.dev/blog/technical-decision-making/">
+<link rel="alternate" hreflang="ja" href="https://zafar.dev/ja/blog/technical-decision-making/">
+<link rel="alternate" hreflang="de" href="https://zafar.dev/de/blog/technical-decision-making/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Art of Technical Decision Making | Zafar.dev">
+<meta property="og:description" content="How senior engineers evaluate trade-offs and make decisions that stand the test of time.">
+<meta property="og:url" content="https://zafar.dev/blog/technical-decision-making/">
+<meta property="og:image" content="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&amp;w=800">
+<meta property="article:published_time" content="2025-11-28">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
+<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body class="is-post">
+<div class="masthead" id="top">
+  <div class="sky" aria-hidden="true"></div>
+  <header class="top">
+    <a class="sig" href="/">zafar ✎</a>
+    <nav class="top-r">
+      <a href="https://docs.google.com/document/d/e/2PACX-1vTqFnfyHNvn48h_-v__nIAxO77b1cJLzTVT_O5cpRvjzDlYLy6bwhQZcagAiF5dXc21eblTIPVgJy6y/pub" target="_blank" rel="noopener">résumé</a>
+      <a href="/blog/">blog</a>
+      <a href="/#hello">say hi</a>
+      <button class="lamp" id="lamp" type="button" aria-label="Switch the lights" aria-pressed="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 a5.5 5.5 0 0 1 3 10 v2 h-6 v-2 a5.5 5.5 0 0 1 3 -10 z M8 17 h4"/></svg>
+      </button>
+    </nav>
+  </header>
+</div>
+<script>(()=>{const P=[[0,'#070d26','#1b2350',1],[4.5,'#101a45','#3a3f74',.9],[5.6,'#34407e','#f2a58e',.55],[7,'#78c1ee','#e6f5ff',0],[15,'#5fb2e6','#d4eeff',0],[17,'#ea7f5a','#ffd79c',.2],[18.6,'#3a2d6b','#e1768c',.65],[20,'#0c1434','#2a3264',1],[24,'#070d26','#1b2350',1]];
+const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>'rgb('+rgb(a).map((v,i)=>Math.round(v+(rgb(b)[i]-v)*t)).join(',')+')';
+const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
+const h=+p.find(x=>x.type==='hour').value+p.find(x=>x.type==='minute').value/60;let i=0;while(P[i+1][0]<=h)i++;
+const a=P[i],b=P[i+1],t=(h-a[0])/(b[0]-a[0]),m=document.getElementById('top');
+m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot',mix(a[2],b[2],t));m.classList.toggle('is-night',a[3]+(b[3]-a[3])*t>.5)})()</script>
+<main class="page">
+  <a class="back" href="/blog/"><span aria-hidden="true">←</span> all notes</a>
+  <article class="post">
+    <header class="post-head">
+      <span class="label"><time datetime="2025-11-28">Nov 28, 2025</time> · 6 min read</span>
+      <h1>The Art of Technical Decision Making</h1>
+      <p class="sub">How senior engineers evaluate trade-offs and make decisions that stand the test of time.</p>
+    </header>
+    <figure class="cover">
+      <span class="tape"></span>
+      <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&amp;w=800" alt="">
+    </figure>
+    <div class="prose">
+<p>As engineers progress in their careers, the nature of their work changes. Early on, it&#39;s about writing code and solving technical problems. But as you become senior, your impact comes increasingly from decisions—architectural choices, technology selections, and trade-off evaluations that affect entire teams and products.</p>
+<h2 id="decision-making-frameworks-that-actually-work"><a class="anchor" href="#decision-making-frameworks-that-actually-work" aria-hidden="true" tabindex="-1">#</a>Decision Making Frameworks That Actually Work</h2>
+<p>After years of making (and sometimes regretting) technical decisions, I&#39;ve developed a framework that helps me evaluate options more systematically.</p>
+<h3 id="the-3-month-1-year-3-year-test"><a class="anchor" href="#the-3-month-1-year-3-year-test" aria-hidden="true" tabindex="-1">#</a>The 3-Month, 1-Year, 3-Year Test</h3>
+<p>For any significant decision, I ask: How will this look in 3 months, 1 year, and 3 years?</p>
+<ul>
+<li><strong>3 months</strong>: Short-term pain and learning curves</li>
+<li><strong>1 year</strong>: Operational overhead and team adoption</li>
+<li><strong>3 years</strong>: Technical debt or advantages, scalability</li>
+</ul>
+<p>This simple exercise has saved me from choosing shiny new technologies that would create problems down the road.</p>
+<h3 id="the-reversibility-principle"><a class="anchor" href="#the-reversibility-principle" aria-hidden="true" tabindex="-1">#</a>The Reversibility Principle</h3>
+<p>Not all decisions are created equal. Jeff Bezos&#39;s framework of Type 1 (irreversible) and Type 2 (reversible) decisions applies perfectly to engineering.</p>
+<p><strong>Type 1 decisions</strong> (hard to reverse):</p>
+<ul>
+<li>Database migrations</li>
+<li>Core architecture choices</li>
+<li>Vendor lock-in situations</li>
+</ul>
+<p><strong>Type 2 decisions</strong> (easily reversible):</p>
+<ul>
+<li>Library choices with similar alternatives</li>
+<li>UI framework selections</li>
+<li>Internal tooling</li>
+</ul>
+<p>For Type 2 decisions, I optimize for speed and learning. Don&#39;t spend weeks evaluating React vs. Vue if either would work. Pick one and ship.</p>
+<h2 id="common-decision-traps"><a class="anchor" href="#common-decision-traps" aria-hidden="true" tabindex="-1">#</a>Common Decision Traps</h2>
+<h3 id="the-google-does-it-fallacy"><a class="anchor" href="#the-google-does-it-fallacy" aria-hidden="true" tabindex="-1">#</a>The &quot;Google Does It&quot; Fallacy</h3>
+<p>I&#39;ve fallen into this trap. &quot;Netflix uses microservices, so we should too.&quot; No. Netflix has thousands of engineers. You&#39;re a team of five. The constraints are different, so the optimal solution is different.</p>
+<h3 id="analysis-paralysis"><a class="anchor" href="#analysis-paralysis" aria-hidden="true" tabindex="-1">#</a>Analysis Paralysis</h3>
+<p>At some point, more research is just procrastination. I&#39;ve learned to set a &quot;decision deadline&quot; for myself. After that date, I make the best call with available information.</p>
+<h3 id="ignoring-the-team"><a class="anchor" href="#ignoring-the-team" aria-hidden="true" tabindex="-1">#</a>Ignoring the Team</h3>
+<p>The best technical decision is worthless if your team can&#39;t execute it. I&#39;ve learned to evaluate decisions based on:</p>
+<ul>
+<li>Current team expertise</li>
+<li>Learning curve and documentation</li>
+<li>Hiring implications (can we find people who know this?)</li>
+</ul>
+<h2 id="documenting-decisions"><a class="anchor" href="#documenting-decisions" aria-hidden="true" tabindex="-1">#</a>Documenting Decisions</h2>
+<p>Every significant decision should be documented. I use Architecture Decision Records (ADRs) with a simple template:</p>
+<ol>
+<li><strong>Context</strong>: What problem are we solving?</li>
+<li><strong>Decision</strong>: What did we decide?</li>
+<li><strong>Consequences</strong>: What are the trade-offs?</li>
+<li><strong>Status</strong>: Accepted, deprecated, superseded</li>
+</ol>
+<p>This documentation becomes invaluable when the context is forgotten six months later.</p>
+<h2 id="the-human-side-of-technical-decisions"><a class="anchor" href="#the-human-side-of-technical-decisions" aria-hidden="true" tabindex="-1">#</a>The Human Side of Technical Decisions</h2>
+<p>Technical decisions often have political and social dimensions. I&#39;ve learned to:</p>
+<ul>
+<li><strong>Build consensus early</strong>: Get input from stakeholders before the decision is finalized</li>
+<li><strong>Acknowledge uncertainty</strong>: &quot;We&#39;re trying this because...&quot; is better than false confidence</li>
+<li><strong>Plan for pivoting</strong>: Be explicit about conditions that would cause us to revisit the decision</li>
+</ul>
+<h2 id="learning-from-bad-decisions"><a class="anchor" href="#learning-from-bad-decisions" aria-hidden="true" tabindex="-1">#</a>Learning from Bad Decisions</h2>
+<p>Not every decision will be right. The mark of a senior engineer isn&#39;t never being wrong—it&#39;s how you handle it when you are.</p>
+<p>When a decision turns out to be suboptimal:</p>
+<ol>
+<li>Acknowledge it quickly</li>
+<li>Analyze why (without blame)</li>
+<li>Course-correct decisively</li>
+<li>Document the learning</li>
+</ol>
+<h2 id="conclusion"><a class="anchor" href="#conclusion" aria-hidden="true" tabindex="-1">#</a>Conclusion</h2>
+<p>Technical decision making is a skill that improves with practice and reflection. The goal isn&#39;t to be perfect—it&#39;s to be intentional, learn from mistakes, and build organizational knowledge over time.</p>
+<p>What&#39;s your approach to technical decision making? I&#39;d love to hear your frameworks and lessons learned.</p>
+
+    </div>
+  </article>
+  <nav class="pager" aria-label="More notes">
+    <a class="pg pg-older" href="/blog/resilient-architecture/" rel="prev">
+      <span class="label">← older</span>
+      <span class="pg-title">Building Resilient Architecture: A Practical Guide</span>
+    </a>
+    <a class="pg pg-newer" href="/blog/system-design-at-scale/" rel="next">
+      <span class="label">newer →</span>
+      <span class="pg-title">System Design at Scale: Lessons from 7 Years of Building</span>
+    </a>
+  </nav>
+</main>
+<div class="page page-end">
+  <section class="hello" aria-labelledby="hello-h">
+    <span class="label">your turn</span>
+    <h2 id="hello-h">What are we building next?</h2>
+    <a class="btn" href="https://cal.com/zafar" target="_blank" rel="noopener">Grab 30 minutes</a>
+  </section>
+  <footer>
+    <span>made by hand in Tokyo · no frameworks</span>
+    <span class="langs">also in <a href="/ja/blog/technical-decision-making/" hreflang="ja" lang="ja">日本語</a> · <a href="/de/blog/technical-decision-making/" hreflang="de" lang="de">Deutsch</a></span>
+    <svg viewBox="0 0 110 34" role="img" aria-label="Zafar's signature"><path d="M4 8 h20 l-18 18 h22 M34 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M50 26 c3 -8 5 -17 9 -18 c2 0 -2 8 -6 9 h8 M62 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M76 26 c2 -6 3 -8 8 -8 M86 22 c8 2 14 -1 20 -8"/></svg>
+  </footer>
+</div>
+<script>(()=>{const l=document.getElementById('lamp'),r=document.documentElement;
+const dark=()=>r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+const sync=()=>l.setAttribute('aria-pressed',String(dark()));
+l.addEventListener('click',()=>{r.dataset.theme=dark()?'light':'dark';try{localStorage.setItem('theme',r.dataset.theme)}catch(e){}sync()});sync()})()</script>
+</body>
+</html>

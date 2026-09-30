@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Notizen | Zafar.dev</title>
+<meta name="description" content="Notizen von Zafar über Produktentwicklung, Echtzeitsysteme, Bluetooth und KI-Werkzeuge.">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://zafar.dev/de/blog/">
+<link rel="alternate" hreflang="en" href="https://zafar.dev/blog/">
+<link rel="alternate" hreflang="ja" href="https://zafar.dev/ja/blog/">
+<link rel="alternate" hreflang="de" href="https://zafar.dev/de/blog/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Notizen | Zafar.dev">
+<meta property="og:description" content="Notizen von Zafar über Produktentwicklung, Echtzeitsysteme, Bluetooth und KI-Werkzeuge.">
+<meta property="og:url" content="https://zafar.dev/de/blog/">
+<meta property="og:image" content="https://zafar.dev/home/profile.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
+<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body class="is-index">
+<div class="masthead" id="top">
+  <div class="sky" aria-hidden="true"></div>
+  <header class="top">
+    <a class="sig" href="/de">zafar ✎</a>
+    <nav class="top-r">
+      <a href="https://docs.google.com/document/d/e/2PACX-1vTqFnfyHNvn48h_-v__nIAxO77b1cJLzTVT_O5cpRvjzDlYLy6bwhQZcagAiF5dXc21eblTIPVgJy6y/pub" target="_blank" rel="noopener">Lebenslauf</a>
+      <a href="/de/blog/" aria-current="page">Blog</a>
+      <a href="/#hello">Hallo sagen</a>
+      <button class="lamp" id="lamp" type="button" aria-label="Licht umschalten" aria-pressed="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 a5.5 5.5 0 0 1 3 10 v2 h-6 v-2 a5.5 5.5 0 0 1 3 -10 z M8 17 h4"/></svg>
+      </button>
+    </nav>
+  </header>
+</div>
+<script>(()=>{const P=[[0,'#070d26','#1b2350',1],[4.5,'#101a45','#3a3f74',.9],[5.6,'#34407e','#f2a58e',.55],[7,'#78c1ee','#e6f5ff',0],[15,'#5fb2e6','#d4eeff',0],[17,'#ea7f5a','#ffd79c',.2],[18.6,'#3a2d6b','#e1768c',.65],[20,'#0c1434','#2a3264',1],[24,'#070d26','#1b2350',1]];
+const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>'rgb('+rgb(a).map((v,i)=>Math.round(v+(rgb(b)[i]-v)*t)).join(',')+')';
+const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
+const h=+p.find(x=>x.type==='hour').value+p.find(x=>x.type==='minute').value/60;let i=0;while(P[i+1][0]<=h)i++;
+const a=P[i],b=P[i+1],t=(h-a[0])/(b[0]-a[0]),m=document.getElementById('top');
+m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot',mix(a[2],b[2],t));m.classList.toggle('is-night',a[3]+(b[3]-a[3])*t>.5)})()</script>
+<main class="page">
+  <section class="intro">
+    <span class="label">Dinge, die ich aufgeschrieben habe</span>
+    <h1>Notizen</h1>
+    <p class="sub">Über Produkte, <em>wackeliges Bluetooth</em> und darüber, große Systeme langweilig zu halten.</p>
+  </section>
+  <a class="featured" href="/de/blog/system-design-at-scale/">
+    <span class="tape"></span>
+    <span class="f-img"><img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&amp;w=800" alt=""></span>
+    <span class="f-body">
+      <span class="label">neu · <time datetime="2025-12-15">15. Dez. 2025</time></span>
+      <span class="f-title">Systemdesign im Maßstab: Lektionen aus 7 Jahren Entwicklung</span>
+      <span class="f-desc">Wichtige architektonische Entscheidungen und Muster, die ich beim Skalieren von Produkten von null auf Hunderttausende Nutzer gelernt habe.</span>
+      <span class="f-more">lesen <span aria-hidden="true">→</span> <span class="f-min">8 Min.</span></span>
+    </span>
+  </a>
+  <div class="archive">
+  <section class="year" aria-labelledby="y-2025">
+    <h2 class="yr" id="y-2025">2025</h2>
+    <ol class="rows">
+      <li><a class="row" href="/de/blog/technical-decision-making/">
+        <time class="r-date" datetime="2025-11-28">28. Nov.</time>
+        <span class="r-main"><span class="r-title">Die Kunst der technischen Entscheidungsfindung</span><span class="r-desc">Wie Senior-Engineering Trade-offs evaluieren und Entscheidungen treffen, die den Test der Zeit bestehen.</span></span>
+        <span class="r-min">6 Min.</span>
+      </a></li>
+      <li><a class="row" href="/de/blog/resilient-architecture/">
+        <time class="r-date" datetime="2025-10-15">15. Okt.</time>
+        <span class="r-main"><span class="r-title">Resiliente Architektur aufbauen: Ein praktischer Leitfaden</span><span class="r-desc">Praktische Muster für den Aufbau von Systemen, die Ausfälle elegant überstehen und sich schnell erholen.</span></span>
+        <span class="r-min">7 Min.</span>
+      </a></li>
+      <li><a class="row" href="/de/blog/leading-without-authority/">
+        <time class="r-date" datetime="2025-09-20">20. Sept.</time>
+        <span class="r-main"><span class="r-title">Führen ohne Autorität: Engineering Leadership Lektionen</span><span class="r-desc">Wie man technische Initiativen vorantreibt und Entscheidungen beeinflusst, wenn man nicht der Chef ist.</span></span>
+        <span class="r-min">7 Min.</span>
+      </a></li>
+      <li><a class="row" href="/de/blog/ai-in-devops/">
+        <time class="r-date" datetime="2025-08-05">5. Aug.</time>
+        <span class="r-main"><span class="r-title">KI im DevOps: Ihr neuer super-intelligenter Teamkollege</span><span class="r-desc">Wie künstliche Intelligenz die DevOps-Landschaft verändert und sie schneller, intelligenter und zuverlässiger macht.</span></span>
+        <span class="r-min">4 Min.</span>
+      </a></li>
+      <li><a class="row" href="/de/blog/walk-up-simple/">
+        <time class="r-date" datetime="2025-04-20">20. Apr.</time>
+        <span class="r-main"><span class="r-title">Walk-up Simple</span><span class="r-desc">Eine Anleitung zur Walk-Up-Simple-Methode von Tesla und zum Gesetz der zwei Füße</span></span>
+        <span class="r-min">3 Min.</span>
+      </a></li>
+      <li><a class="row" href="/de/blog/why-vue-is-the-most-reliable-framework-for-the-long-haul/">
+        <time class="r-date" datetime="2025-03-15">15. März</time>
+        <span class="r-main"><span class="r-title">Warum Vue das zuverlässigste Framework für die Langstrecke ist</span><span class="r-desc">Vue.js hat sich als eine solide Wahl für Entwickler erwiesen, die Stabilität, Flexibilität und klaren, einfachen Code suchen. Hier erfahren Sie, warum Vue herausragt.</span></span>
+        <span class="r-min">2 Min.</span>
+      </a></li>
+      <li><a class="row" href="/de/blog/write-better-typescript-and-less-unit-testing/">
+        <time class="r-date" datetime="2025-01-28">28. Jan.</time>
+        <span class="r-main"><span class="r-title">Schreiben Sie besseres Typescript und weniger Unit-Tests</span><span class="r-desc">Warum das Entwerfen digitaler Erlebnisse, die Benutzer dazu anregen, langsamer zu werden und sich intensiv zu engagieren, zu bedeutungsvolleren Interaktionen und besseren Ergebnissen führen kann.</span></span>
+        <span class="r-min">7 Min.</span>
+      </a></li>
+    </ol>
+  </section>
+  <section class="year" aria-labelledby="y-2022">
+    <h2 class="yr" id="y-2022">2022</h2>
+    <ol class="rows">
+      <li><a class="row" href="/de/blog/git-cheatsheet/">
+        <time class="r-date" datetime="2022-04-23">23. Apr.</time>
+        <span class="r-main"><span class="r-title">Git-Spickzettel: Wichtige Befehle für Entwickler</span><span class="r-desc">Eine umfassende Referenzanleitung zu Git-Befehlen und -Workflows für Entwickler aller Erfahrungsstufen, mit Tipps zur Vermeidung häufiger Fehler.</span></span>
+        <span class="r-min">5 Min.</span>
+      </a></li>
+    </ol>
+  </section>
+  </div>
+</main>
+<div class="page page-end">
+  <section class="hello" aria-labelledby="hello-h">
+    <span class="label">du bist dran</span>
+    <h2 id="hello-h">Was bauen wir als Nächstes?</h2>
+    <a class="btn" href="https://cal.com/zafar" target="_blank" rel="noopener">30 Minuten buchen</a>
+  </section>
+  <footer>
+    <span>von Hand gemacht in Tokio · ohne Frameworks</span>
+    <span class="langs">auch auf <a href="/blog/" hreflang="en" lang="en">English</a> · <a href="/ja/blog/" hreflang="ja" lang="ja">日本語</a></span>
+    <svg viewBox="0 0 110 34" role="img" aria-label="Zafar's signature"><path d="M4 8 h20 l-18 18 h22 M34 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M50 26 c3 -8 5 -17 9 -18 c2 0 -2 8 -6 9 h8 M62 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M76 26 c2 -6 3 -8 8 -8 M86 22 c8 2 14 -1 20 -8"/></svg>
+  </footer>
+</div>
+<script>(()=>{const l=document.getElementById('lamp'),r=document.documentElement;
+const dark=()=>r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+const sync=()=>l.setAttribute('aria-pressed',String(dark()));
+l.addEventListener('click',()=>{r.dataset.theme=dark()?'light':'dark';try{localStorage.setItem('theme',r.dataset.theme)}catch(e){}sync()});sync()})()</script>
+</body>
+</html>

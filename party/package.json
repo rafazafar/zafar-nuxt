@@ -3,13 +3,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev -c wrangler.jsonc",
-    "deploy": "wrangler deploy -c wrangler.jsonc"
+    "dev": "cf dev",
+    "deploy": "cf deploy"
   },
   "dependencies": {
     "partyserver": "^0.5.10"
   },
   "devDependencies": {
+    "cf": "^1.0.0-beta.5",
     "wrangler": "^4.100.0"
   }
 }

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resiliente Architektur aufbauen: Ein praktischer Leitfaden | Zafar.dev</title>
+<meta name="description" content="Praktische Muster für den Aufbau von Systemen, die Ausfälle elegant überstehen und sich schnell erholen.">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://zafar.dev/de/blog/resilient-architecture/">
+<link rel="alternate" hreflang="en" href="https://zafar.dev/blog/resilient-architecture/">
+<link rel="alternate" hreflang="ja" href="https://zafar.dev/ja/blog/resilient-architecture/">
+<link rel="alternate" hreflang="de" href="https://zafar.dev/de/blog/resilient-architecture/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Resiliente Architektur aufbauen: Ein praktischer Leitfaden | Zafar.dev">
+<meta property="og:description" content="Praktische Muster für den Aufbau von Systemen, die Ausfälle elegant überstehen und sich schnell erholen.">
+<meta property="og:url" content="https://zafar.dev/de/blog/resilient-architecture/">
+<meta property="og:image" content="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&amp;w=800">
+<meta property="article:published_time" content="2025-10-15">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
+<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body class="is-post">
+<div class="masthead" id="top">
+  <div class="sky" aria-hidden="true"></div>
+  <header class="top">
+    <a class="sig" href="/de">zafar ✎</a>
+    <nav class="top-r">
+      <a href="https://docs.google.com/document/d/e/2PACX-1vTqFnfyHNvn48h_-v__nIAxO77b1cJLzTVT_O5cpRvjzDlYLy6bwhQZcagAiF5dXc21eblTIPVgJy6y/pub" target="_blank" rel="noopener">Lebenslauf</a>
+      <a href="/de/blog/">Blog</a>
+      <a href="/#hello">Hallo sagen</a>
+      <button class="lamp" id="lamp" type="button" aria-label="Licht umschalten" aria-pressed="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 a5.5 5.5 0 0 1 3 10 v2 h-6 v-2 a5.5 5.5 0 0 1 3 -10 z M8 17 h4"/></svg>
+      </button>
+    </nav>
+  </header>
+</div>
+<script>(()=>{const P=[[0,'#070d26','#1b2350',1],[4.5,'#101a45','#3a3f74',.9],[5.6,'#34407e','#f2a58e',.55],[7,'#78c1ee','#e6f5ff',0],[15,'#5fb2e6','#d4eeff',0],[17,'#ea7f5a','#ffd79c',.2],[18.6,'#3a2d6b','#e1768c',.65],[20,'#0c1434','#2a3264',1],[24,'#070d26','#1b2350',1]];
+const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>'rgb('+rgb(a).map((v,i)=>Math.round(v+(rgb(b)[i]-v)*t)).join(',')+')';
+const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
+const h=+p.find(x=>x.type==='hour').value+p.find(x=>x.type==='minute').value/60;let i=0;while(P[i+1][0]<=h)i++;
+const a=P[i],b=P[i+1],t=(h-a[0])/(b[0]-a[0]),m=document.getElementById('top');
+m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot',mix(a[2],b[2],t));m.classList.toggle('is-night',a[3]+(b[3]-a[3])*t>.5)})()</script>
+<main class="page">
+  <a class="back" href="/de/blog/"><span aria-hidden="true">←</span> alle Notizen</a>
+  <article class="post">
+    <header class="post-head">
+      <span class="label"><time datetime="2025-10-15">15. Okt. 2025</time> · 7 Min. Lesezeit</span>
+      <h1>Resiliente Architektur aufbauen: Ein praktischer Leitfaden</h1>
+      <p class="sub">Praktische Muster für den Aufbau von Systemen, die Ausfälle elegant überstehen und sich schnell erholen.</p>
+    </header>
+    <figure class="cover">
+      <span class="tape"></span>
+      <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&amp;w=800" alt="">
+    </figure>
+    <div class="prose">
+<p>In einer idealen Welt versagen Services nie, Netzwerke sind immer zuverlässig und Datenbanken gehen niemals offline. In der realen Welt versagt irgendwann alles. Der Unterschied zwischen guten und großartigen Systemen liegt darin, wie sie mit diesen unvermeidlichen Ausfällen umgehen.</p>
+<h2 id="resilienz-muster-die-tatsächlich-funktionieren"><a class="anchor" href="#resilienz-muster-die-tatsächlich-funktionieren" aria-hidden="true" tabindex="-1">#</a>Resilienz-Muster, die tatsächlich funktionieren</h2>
+<h3 id="circuit-breaker"><a class="anchor" href="#circuit-breaker" aria-hidden="true" tabindex="-1">#</a>Circuit Breaker</h3>
+<p>Das Circuit-Breaker-Muster ist eines der effektivsten Tools in meinem Resilienz-Werkzeugkasten. Anstatt wiederholt einen fehlenden Service aufzurufen und die Dinge zu verschlimmern, erkennt der Circuit Breaker Fehler und blockiert temporär Anfragen.</p>
+<p><strong>Implementierungstipps:</strong></p>
+<ul>
+<li>Setze Schwellenwerte basierend auf beobachteten Fehlerraten</li>
+<li>Füge einen Half-Open-Zustand für die schrittweise Erholungserkennung hinzu</li>
+<li>Hab immer einen Fallback – versage niemals stillschweigend</li>
+</ul>
+<h3 id="bulkheads"><a class="anchor" href="#bulkheads" aria-hidden="true" tabindex="-1">#</a>Bulkheads</h3>
+<p>Benannt nach den Schotten in einem Schiffsrumpf, isolieren Bulkheads Fehler, um deren Ausbreitung zu verhindern. In Software bedeutet das:</p>
+<ul>
+<li>Separate Thread-Pools für kritische vs. nicht-kritische Operationen</li>
+<li>Isolierte Ressourcen für verschiedene Service-Bereiche</li>
+<li>Rate Limiting pro Tenant oder Endpunkt</li>
+</ul>
+<h3 id="timeouts-und-retries"><a class="anchor" href="#timeouts-und-retries" aria-hidden="true" tabindex="-1">#</a>Timeouts und Retries</h3>
+<p>Warte niemals unendlich. Setze aggressive Timeouts und implementiere intelligente Retry-Strategien:</p>
+<p><strong>Retry-Richtlinien:</strong></p>
+<ul>
+<li>Wiederhole keine 4xx-Fehler (Client-Fehler)</li>
+<li>Verwende exponentielles Backoff, um Stampeding Herds zu vermeiden</li>
+<li>Füge Jitter hinzu, um synchronisierte Retries zu verhindern</li>
+<li>Erwäge Idempotenz, bevor du Retries implementierst</li>
+</ul>
+<h3 id="graceful-degradation"><a class="anchor" href="#graceful-degradation" aria-hidden="true" tabindex="-1">#</a>Graceful Degradation</h3>
+<p>Wenn Teile deines Systems ausfallen, sollte der Rest weiter funktionieren:</p>
+<ul>
+<li><strong>Produktlistings ohne Empfehlungen</strong>: Zeige weiterhin Produkte, nur ohne personalisierte Vorschläge</li>
+<li><strong>Checkout ohne Fraud-Scoring</strong>: Verarbeite Bestellungen mit manueller Review-Queue</li>
+<li><strong>Analytics ohne Echtzeitdaten</strong>: Zeige gecachte Daten mit einem „Zuletzt aktualisiert“ Zeitstempel</li>
+</ul>
+<h2 id="resilienz-testen"><a class="anchor" href="#resilienz-testen" aria-hidden="true" tabindex="-1">#</a>Resilienz testen</h2>
+<p>Du kannst keine Resilienz beanspruchen, bis du sie getestet hast:</p>
+<h3 id="chaos-engineering"><a class="anchor" href="#chaos-engineering" aria-hidden="true" tabindex="-1">#</a>Chaos Engineering</h3>
+<p>Führe absichtlich Fehler ein. Tools wie Chaos Monkey beenden zufällig Instanzen und zwingen dein System, mit unerwarteten Ausfällen umzugehen.</p>
+<h3 id="load-testing"><a class="anchor" href="#load-testing" aria-hidden="true" tabindex="-1">#</a>Load Testing</h3>
+<p>Kenne deine Grenzen, bevor du sie erreichst. Ich teste mit Last, um:</p>
+<ul>
+<li>Breaking Points zu identifizieren</li>
+<li>Auto-Scaling-Richtlinien zu validieren</li>
+<li>Ressourcenlecks zu entdecken</li>
+<li>Circuit-Breaker-Schwellen zu testen</li>
+</ul>
+<h2 id="fazit"><a class="anchor" href="#fazit" aria-hidden="true" tabindex="-1">#</a>Fazit</h2>
+<p>Resiliente Architektur geht nicht darum, Ausfälle zu verhindern – es geht darum, sie zu überstehen. Durch die Implementierung von Mustern wie Circuit Breakers, Bulkheads und Graceful Degradation kannst du Systeme aufbauen, die Ausfälle elegant handhaben und sich schnell erholen.</p>
+<p>Denk daran: Das Ziel ist nicht Null-Downtime (unmöglich), sondern die Minimierung der Auswirkungen von Downtime, wenn sie auftritt.</p>
+
+    </div>
+  </article>
+  <nav class="pager" aria-label="More notes">
+    <a class="pg pg-older" href="/de/blog/leading-without-authority/" rel="prev">
+      <span class="label">← älter</span>
+      <span class="pg-title">Führen ohne Autorität: Engineering Leadership Lektionen</span>
+    </a>
+    <a class="pg pg-newer" href="/de/blog/technical-decision-making/" rel="next">
+      <span class="label">neuer →</span>
+      <span class="pg-title">Die Kunst der technischen Entscheidungsfindung</span>
+    </a>
+  </nav>
+</main>
+<div class="page page-end">
+  <section class="hello" aria-labelledby="hello-h">
+    <span class="label">du bist dran</span>
+    <h2 id="hello-h">Was bauen wir als Nächstes?</h2>
+    <a class="btn" href="https://cal.com/zafar" target="_blank" rel="noopener">30 Minuten buchen</a>
+  </section>
+  <footer>
+    <span>von Hand gemacht in Tokio · ohne Frameworks</span>
+    <span class="langs">auch auf <a href="/blog/resilient-architecture/" hreflang="en" lang="en">English</a> · <a href="/ja/blog/resilient-architecture/" hreflang="ja" lang="ja">日本語</a></span>
+    <svg viewBox="0 0 110 34" role="img" aria-label="Zafar's signature"><path d="M4 8 h20 l-18 18 h22 M34 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M50 26 c3 -8 5 -17 9 -18 c2 0 -2 8 -6 9 h8 M62 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M76 26 c2 -6 3 -8 8 -8 M86 22 c8 2 14 -1 20 -8"/></svg>
+  </footer>
+</div>
+<script>(()=>{const l=document.getElementById('lamp'),r=document.documentElement;
+const dark=()=>r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+const sync=()=>l.setAttribute('aria-pressed',String(dark()));
+l.addEventListener('click',()=>{r.dataset.theme=dark()?'light':'dark';try{localStorage.setItem('theme',r.dataset.theme)}catch(e){}sync()});sync()})()</script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>iOS Won't Poll Your BLE Device Like Android Can | Zafar.dev</title>
+<meta name="description" content="A field-tested look at Core Bluetooth restoration, Android foreground services, and why locked-screen reconnect promises need evidence.">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://zafar.dev/blog/ios-background-ble-is-not-android-background-ble/">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS Won't Poll Your BLE Device Like Android Can | Zafar.dev">
+<meta property="og:description" content="A field-tested look at Core Bluetooth restoration, Android foreground services, and why locked-screen reconnect promises need evidence.">
+<meta property="og:url" content="https://zafar.dev/blog/ios-background-ble-is-not-android-background-ble/">
+<meta property="og:image" content="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&amp;w=1200&amp;auto=format&amp;fit=crop">
+<meta property="article:published_time" content="2026-07-04">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
+<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body class="is-post">
+<div class="masthead" id="top">
+  <div class="sky" aria-hidden="true"></div>
+  <header class="top">
+    <a class="sig" href="/">zafar ✎</a>
+    <nav class="top-r">
+      <a href="https://docs.google.com/document/d/e/2PACX-1vTqFnfyHNvn48h_-v__nIAxO77b1cJLzTVT_O5cpRvjzDlYLy6bwhQZcagAiF5dXc21eblTIPVgJy6y/pub" target="_blank" rel="noopener">résumé</a>
+      <a href="/blog/">blog</a>
+      <a href="/#hello">say hi</a>
+      <button class="lamp" id="lamp" type="button" aria-label="Switch the lights" aria-pressed="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 a5.5 5.5 0 0 1 3 10 v2 h-6 v-2 a5.5 5.5 0 0 1 3 -10 z M8 17 h4"/></svg>
+      </button>
+    </nav>
+  </header>
+</div>
+<script>(()=>{const P=[[0,'#070d26','#1b2350',1],[4.5,'#101a45','#3a3f74',.9],[5.6,'#34407e','#f2a58e',.55],[7,'#78c1ee','#e6f5ff',0],[15,'#5fb2e6','#d4eeff',0],[17,'#ea7f5a','#ffd79c',.2],[18.6,'#3a2d6b','#e1768c',.65],[20,'#0c1434','#2a3264',1],[24,'#070d26','#1b2350',1]];
+const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>'rgb('+rgb(a).map((v,i)=>Math.round(v+(rgb(b)[i]-v)*t)).join(',')+')';
+const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
+const h=+p.find(x=>x.type==='hour').value+p.find(x=>x.type==='minute').value/60;let i=0;while(P[i+1][0]<=h)i++;
+const a=P[i],b=P[i+1],t=(h-a[0])/(b[0]-a[0]),m=document.getElementById('top');
+m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot',mix(a[2],b[2],t));m.classList.toggle('is-night',a[3]+(b[3]-a[3])*t>.5)})()</script>
+<main class="page">
+  <a class="back" href="/blog/"><span aria-hidden="true">←</span> all notes</a>
+  <article class="post">
+    <header class="post-head">
+      <span class="label"><time datetime="2026-07-04">Jul 4, 2026</time> · 8 min read</span>
+      <h1>iOS Won't Poll Your BLE Device Like Android Can</h1>
+      <p class="sub">A field-tested look at Core Bluetooth restoration, Android foreground services, and why locked-screen reconnect promises need evidence.</p>
+    </header>
+    <figure class="cover">
+      <span class="tape"></span>
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="">
+    </figure>
+    <div class="prose">
+<p>One of the easier mistakes to make in mobile engineering is to treat background execution as a product requirement rather than an operating-system negotiation.</p>
+<p>That mistake becomes expensive when the product depends on Bluetooth Low Energy. A realtime monitoring app can have perfectly reasonable product language like &quot;the device should reconnect automatically,&quot; but Android and iOS do not give you the same tools to implement that sentence.</p>
+<p>Android&#39;s model is direct: you can run a foreground service, hold a bounded wake lock, keep a native BLE runtime alive, and retry connection work in a controlled loop. You still have to respect Doze, App Standby, runtime BLE permissions, foreground-service restrictions, OEM kill policies, and user battery settings. But the runtime model is recognizable: your app has a visible long-running responsibility, and Android gives you mechanisms to keep doing that work under tested device policy.</p>
+<p>On iOS, the model is different. Core Bluetooth background mode is event-driven. It can wake your app for important Bluetooth events, preserve and restore central-manager state, and continue monitoring some pending connection work. It does not give you a permanent background process. It does not let you poll every few seconds while the phone is locked with the screen off. It does not let you make iOS behave like Android with a different retry loop.</p>
+<p>That distinction changes both engineering strategy and product language.</p>
+<h2 id="the-shape-of-the-problem"><a class="anchor" href="#the-shape-of-the-problem" aria-hidden="true" tabindex="-1">#</a>The Shape Of The Problem</h2>
+<p>The monitoring workflow I was working on had three moving parts:</p>
+<ul>
+<li>A phone connected to a wearable sensor over BLE.</li>
+<li>A realtime publishing path from the phone to a message broker.</li>
+<li>A viewer or downstream service consuming the live data.</li>
+</ul>
+<p>When samples stopped appearing downstream, it was tempting to blame the transport layer. Maybe MQTT was stale. Maybe the WebSocket had not recovered. Maybe the broker client needed a more aggressive reconnect policy.</p>
+<p>That was not the real boundary.</p>
+<p>In locked-screen iOS tests, the publishing path resumed as soon as BLE samples resumed. The delay was upstream: iOS decided when the app got enough runtime to process Bluetooth events and reconnect. In one long locked-screen run, the wearable was power-cycled after roughly 25 minutes and did not reconnect or publish while the phone remained locked; after unlock, the app recovered and messages resumed. In other background cases, reconnect could be delayed by tens of seconds to about a minute. The message broker was not the primary cause of the missing data.</p>
+<p>This matters because debugging the wrong layer leads to worse code. You can add more MQTT reconnect logic, more timers, and more state machines, and still not fix the locked-screen BLE behavior. The result is a larger app with the same platform limit.</p>
+<h2 id="what-android-lets-you-build"><a class="anchor" href="#what-android-lets-you-build" aria-hidden="true" tabindex="-1">#</a>What Android Lets You Build</h2>
+<p>Android is not effortless, but it is more explicit for unattended monitoring.</p>
+<p>A reliable Android approach usually includes:</p>
+<ul>
+<li>A foreground service for long-running monitoring work.</li>
+<li>A persistent notification that tells the user monitoring is active.</li>
+<li>BLE reconnect logic in native code or a well-controlled runtime layer.</li>
+<li>Battery optimization guidance for devices used in clinical or operational workflows.</li>
+<li>Clear handling for paused slots, unbound sensors, and intentionally disconnected devices.</li>
+</ul>
+<p>The important point is not that Android always reconnects instantly. It is that Android lets the app own more of the reconnect loop under the tested foreground-service and battery-policy conditions. If the wearable goes away for twenty minutes and comes back, the app has a credible way to keep trying in the background.</p>
+<p>That makes Android the more practical choice for unattended monitoring in controlled deployments, especially when the user expects the phone to sit locked while the wearable continues to operate.</p>
+<h2 id="what-ios-actually-promises"><a class="anchor" href="#what-ios-actually-promises" aria-hidden="true" tabindex="-1">#</a>What iOS Actually Promises</h2>
+<p>iOS offers useful Core Bluetooth mechanisms, but they are not equivalent to a foreground service.</p>
+<p>For central-mode BLE apps, the relevant mechanisms are:</p>
+<ul>
+<li><code>bluetooth-central</code> background mode.</li>
+<li>State preservation and restoration through a restore identifier.</li>
+<li>Restoration callbacks for known central managers and peripherals.</li>
+<li>Pending connection requests that iOS may continue tracking.</li>
+<li>Event delivery when iOS decides the app should be woken.</li>
+</ul>
+<p>Those are valuable tools. They are also bounded tools.</p>
+<p>Background scanning behaves differently from foreground scanning. Duplicate advertisements are coalesced. Scan intervals can become longer when scanner apps are backgrounded. The system controls wake timing, app suspension, relaunch eligibility, and how much background execution time your app receives.</p>
+<p>State restoration also has hard caveats. If the user force-quits the app, or if the device goes through certain Bluetooth or reboot states, iOS may not relaunch the app for restoration. A robust design has to treat those as operational states, not edge cases a retry loop can erase.</p>
+<p>The consequence is simple: iOS background BLE should be treated as best-effort for locked, screen-off operation unless your product can tolerate the delay and uncertainty.</p>
+<h2 id="the-live-activity-temptation"><a class="anchor" href="#the-live-activity-temptation" aria-hidden="true" tabindex="-1">#</a>The Live Activity Temptation</h2>
+<p>Newer iOS behavior around Live Activities can make Bluetooth background privileges look more promising. In some iOS versions, an app with an active Live Activity and an instantiated Bluetooth manager may get more foreground-like Bluetooth behavior in the background.</p>
+<p>That does not make Live Activities a clean reliability primitive.</p>
+<p>Live Activities are user-visible system UI. They appear on the Lock Screen or Dynamic Island. They have duration limits. Users can dismiss them. The system controls presentation. Updates can surface in ways that are not appropriate for a quiet health-adjacent monitoring workflow.</p>
+<p>If your background reliability mechanism creates visible system-managed UI that staff do not understand, you may have traded one failure mode for another. For this kind of monitoring app, I would not use Live Activities as the main reconnect strategy unless the product explicitly wants that visible activity surface.</p>
+<h2 id="a-better-engineering-goal"><a class="anchor" href="#a-better-engineering-goal" aria-hidden="true" tabindex="-1">#</a>A Better Engineering Goal</h2>
+<p>The realistic goal is not &quot;make iOS behave like Android.&quot;</p>
+<p>The better goal is:</p>
+<ul>
+<li>Use Core Bluetooth restoration correctly.</li>
+<li>Prefer pending connections to known peripherals when possible.</li>
+<li>Use service UUID filters when scanning is unavoidable.</li>
+<li>Reattach delegates and resubscribe after restoration.</li>
+<li>Keep MQTT publish recovery short after iOS wakes the app.</li>
+<li>Measure BLE wake time separately from broker publish time.</li>
+<li>Document residual delay as a platform constraint, not an app defect.</li>
+</ul>
+<p>That last point is not a cop-out. It is what lets the team make honest product decisions.</p>
+<p>In practice, the implementation details worth checking are concrete: create the <code>CBCentralManager</code> with a restoration identifier, handle <code>centralManager(_:willRestoreState:)</code>, reattach delegates to restored peripherals, rediscover services when restored state is incomplete, and resubscribe before declaring the slot healthy. For known peripherals, a pending <code>connect</code> request is a stronger primitive than hoping repeated background scans will fire on your preferred schedule.</p>
+<p>For example, if the workflow requires unattended reconnect within a few seconds while the phone is locked overnight, Android should be the recommended platform. If iOS is required, the operational guidance may need to be screen-on, foregrounded, Auto-Lock disabled, or &quot;best-effort while locked.&quot;</p>
+<p>Those are product decisions, not just engineering details.</p>
+<h2 id="the-debugging-lesson"><a class="anchor" href="#the-debugging-lesson" aria-hidden="true" tabindex="-1">#</a>The Debugging Lesson</h2>
+<p>The most useful debugging move was separating the pipeline into timing boundaries:</p>
+<ul>
+<li>When did the wearable become available again?</li>
+<li>When did the OS deliver a BLE event?</li>
+<li>When did the app reconnect and resubscribe?</li>
+<li>When did samples resume?</li>
+<li>When did the broker receive the next publish?</li>
+</ul>
+<p>Without that separation, every outage looks like one vague reconnect problem. With it, you can say where the time is actually going.</p>
+<p>That distinction changes the conversation with product managers and clients. Instead of promising &quot;we will improve reconnect,&quot; you can say: &quot;Android can own this retry loop. iOS can use restoration and pending connections, but locked-screen timing remains OS-controlled. Here is the measured range, and here is the workflow recommendation.&quot;</p>
+<p>That is a much more useful answer.</p>
+<h2 id="takeaway"><a class="anchor" href="#takeaway" aria-hidden="true" tabindex="-1">#</a>Takeaway</h2>
+<p>Cross-platform does not mean platform-identical.</p>
+<p>Flutter can share a lot of UI, state, and domain logic across iOS and Android. BLE background execution is not one of the areas where you get identical behavior for free. The right abstraction is not one that hides the difference. It is one that exposes the difference early enough that the product can make a safe decision.</p>
+<p>For realtime monitoring, that usually means treating Android as the stronger unattended platform, treating iOS locked-screen reconnect as best-effort, and designing tests that prove which layer is actually responsible for delay.</p>
+<p>This article is part of a short series on realtime wearable monitoring. The companion pieces cover <a href="/blog/realtime-telemetry-unreliable-local-infrastructure">designing telemetry around unreliable local infrastructure</a> and <a href="/blog/building-a-ble-reconnect-soak-tester">building a BLE reconnect soak tester</a>.</p>
+
+    </div>
+  </article>
+  <nav class="pager" aria-label="More notes">
+    <a class="pg pg-older" href="/blog/realtime-telemetry-unreliable-local-infrastructure/" rel="prev">
+      <span class="label">← older</span>
+      <span class="pg-title">Designing Realtime Telemetry When Local Infrastructure Disappears</span>
+    </a>
+    <span class="pg pg-empty" aria-hidden="true"></span>
+  </nav>
+</main>
+<div class="page page-end">
+  <section class="hello" aria-labelledby="hello-h">
+    <span class="label">your turn</span>
+    <h2 id="hello-h">What are we building next?</h2>
+    <a class="btn" href="https://cal.com/zafar" target="_blank" rel="noopener">Grab 30 minutes</a>
+  </section>
+  <footer>
+    <span>made by hand in Tokyo · no frameworks</span>
+    
+    <svg viewBox="0 0 110 34" role="img" aria-label="Zafar's signature"><path d="M4 8 h20 l-18 18 h22 M34 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M50 26 c3 -8 5 -17 9 -18 c2 0 -2 8 -6 9 h8 M62 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M76 26 c2 -6 3 -8 8 -8 M86 22 c8 2 14 -1 20 -8"/></svg>
+  </footer>
+</div>
+<script>(()=>{const l=document.getElementById('lamp'),r=document.documentElement;
+const dark=()=>r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+const sync=()=>l.setAttribute('aria-pressed',String(dark()));
+l.addEventListener('click',()=>{r.dataset.theme=dark()?'light':'dark';try{localStorage.setItem('theme',r.dataset.theme)}catch(e){}sync()});sync()})()</script>
+</body>
+</html>

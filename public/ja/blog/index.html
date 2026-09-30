@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Notes | Zafar.dev</title>
+<meta name="description" content="Zafarによる、プロダクト開発、リアルタイムシステム、Bluetooth、AIツールについてのメモ。">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://zafar.dev/ja/blog/">
+<link rel="alternate" hreflang="en" href="https://zafar.dev/blog/">
+<link rel="alternate" hreflang="ja" href="https://zafar.dev/ja/blog/">
+<link rel="alternate" hreflang="de" href="https://zafar.dev/de/blog/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Notes | Zafar.dev">
+<meta property="og:description" content="Zafarによる、プロダクト開発、リアルタイムシステム、Bluetooth、AIツールについてのメモ。">
+<meta property="og:url" content="https://zafar.dev/ja/blog/">
+<meta property="og:image" content="https://zafar.dev/home/profile.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
+<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body class="is-index">
+<div class="masthead" id="top">
+  <div class="sky" aria-hidden="true"></div>
+  <header class="top">
+    <a class="sig" href="/ja">zafar ✎</a>
+    <nav class="top-r">
+      <a href="https://docs.google.com/document/d/e/2PACX-1vTqFnfyHNvn48h_-v__nIAxO77b1cJLzTVT_O5cpRvjzDlYLy6bwhQZcagAiF5dXc21eblTIPVgJy6y/pub" target="_blank" rel="noopener">履歴書</a>
+      <a href="/ja/blog/" aria-current="page">ブログ</a>
+      <a href="/#hello">連絡する</a>
+      <button class="lamp" id="lamp" type="button" aria-label="ライトを切り替える" aria-pressed="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 a5.5 5.5 0 0 1 3 10 v2 h-6 v-2 a5.5 5.5 0 0 1 3 -10 z M8 17 h4"/></svg>
+      </button>
+    </nav>
+  </header>
+</div>
+<script>(()=>{const P=[[0,'#070d26','#1b2350',1],[4.5,'#101a45','#3a3f74',.9],[5.6,'#34407e','#f2a58e',.55],[7,'#78c1ee','#e6f5ff',0],[15,'#5fb2e6','#d4eeff',0],[17,'#ea7f5a','#ffd79c',.2],[18.6,'#3a2d6b','#e1768c',.65],[20,'#0c1434','#2a3264',1],[24,'#070d26','#1b2350',1]];
+const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>'rgb('+rgb(a).map((v,i)=>Math.round(v+(rgb(b)[i]-v)*t)).join(',')+')';
+const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
+const h=+p.find(x=>x.type==='hour').value+p.find(x=>x.type==='minute').value/60;let i=0;while(P[i+1][0]<=h)i++;
+const a=P[i],b=P[i+1],t=(h-a[0])/(b[0]-a[0]),m=document.getElementById('top');
+m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot',mix(a[2],b[2],t));m.classList.toggle('is-night',a[3]+(b[3]-a[3])*t>.5)})()</script>
+<main class="page">
+  <section class="intro">
+    <span class="label">書き留めたこと</span>
+    <h1>Notes</h1>
+    <p class="sub">プロダクトづくり、<em>切れやすいBluetooth</em>、大きなシステムを退屈に保つことについて。</p>
+  </section>
+  <a class="featured" href="/ja/blog/system-design-at-scale/">
+    <span class="tape"></span>
+    <span class="f-img"><img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&amp;w=800" alt=""></span>
+    <span class="f-body">
+      <span class="label">最新 · <time datetime="2025-12-15">2025年12月15日</time></span>
+      <span class="f-title">スケールでのシステム設計：7年間の構築からの教訓</span>
+      <span class="f-desc">ゼロから数十万ユーザーまで製品をスケーリングする際に学んだ重要なアーキテクチャ上の意思決定とパターン</span>
+      <span class="f-more">読む <span aria-hidden="true">→</span> <span class="f-min">8分</span></span>
+    </span>
+  </a>
+  <div class="archive">
+  <section class="year" aria-labelledby="y-2025">
+    <h2 class="yr" id="y-2025">2025</h2>
+    <ol class="rows">
+      <li><a class="row" href="/ja/blog/technical-decision-making/">
+        <time class="r-date" datetime="2025-11-28">11月28日</time>
+        <span class="r-main"><span class="r-title">技術的意思決定の芸術</span><span class="r-desc">シニアエンジニアがトレードオフを評価し、時間の試練に耐える意思決定を行う方法</span></span>
+        <span class="r-min">6分</span>
+      </a></li>
+      <li><a class="row" href="/ja/blog/resilient-architecture/">
+        <time class="r-date" datetime="2025-10-15">10月15日</time>
+        <span class="r-main"><span class="r-title">レジリエントアーキテクチャの構築：実践ガイド</span><span class="r-desc">障害を優雅に乗り越え、迅速に回復するシステムを構築するための実践的パターン</span></span>
+        <span class="r-min">7分</span>
+      </a></li>
+      <li><a class="row" href="/ja/blog/leading-without-authority/">
+        <time class="r-date" datetime="2025-09-20">9月20日</time>
+        <span class="r-main"><span class="r-title">権威なきリーダーシップ：エンジニアリングリーダーシップの教訓</span><span class="r-desc">上司でないときに技術的イニシアチブを推進し、意思決定に影響を与える方法</span></span>
+        <span class="r-min">7分</span>
+      </a></li>
+      <li><a class="row" href="/ja/blog/ai-in-devops/">
+        <time class="r-date" datetime="2025-08-05">8月5日</time>
+        <span class="r-main"><span class="r-title">DevOpsにおけるAI：あなたの新しい超スマートなチームメイト</span><span class="r-desc">人工知能がDevOpsの状況をどのように変革し、より速く、よりスマートに、より信頼性の高いものにしているか。</span></span>
+        <span class="r-min">4分</span>
+      </a></li>
+      <li><a class="row" href="/ja/blog/walk-up-simple/">
+        <time class="r-date" datetime="2025-04-20">4月20日</time>
+        <span class="r-main"><span class="r-title">ウォークアップ・シンプル</span><span class="r-desc">テスラのウォークアップ・シンプル・メソッドと二本の足の法則についてのガイド</span></span>
+        <span class="r-min">3分</span>
+      </a></li>
+      <li><a class="row" href="/ja/blog/why-vue-is-the-most-reliable-framework-for-the-long-haul/">
+        <time class="r-date" datetime="2025-03-15">3月15日</time>
+        <span class="r-main"><span class="r-title">なぜVueは長期的に最も信頼できるフレームワークなのか</span><span class="r-desc">Vue.jsは、安定性、柔軟性、そして明確でシンプルなコードを求める開発者にとって、確かな選択肢であることを証明しています。Vueが際立っている理由をここに示します。</span></span>
+        <span class="r-min">2分</span>
+      </a></li>
+      <li><a class="row" href="/ja/blog/write-better-typescript-and-less-unit-testing/">
+        <time class="r-date" datetime="2025-01-28">1月28日</time>
+        <span class="r-main"><span class="r-title">より良いTypescriptを書き、単体テストを減らす</span><span class="r-desc">ユーザーに速度を落として深く関わることを促すデジタル体験を設計することが、より有意義なインタラクションとより良い結果につながる理由。</span></span>
+        <span class="r-min">7分</span>
+      </a></li>
+    </ol>
+  </section>
+  <section class="year" aria-labelledby="y-2022">
+    <h2 class="yr" id="y-2022">2022</h2>
+    <ol class="rows">
+      <li><a class="row" href="/ja/blog/git-cheatsheet/">
+        <time class="r-date" datetime="2022-04-23">4月23日</time>
+        <span class="r-main"><span class="r-title">Gitチートシート：開発者向けの必須コマンド</span><span class="r-desc">あらゆる経験レベルの開発者向けのGitコマンドとワークフローの包括的なリファレンスガイド。一般的な間違いを避けるためのヒントも紹介しています。</span></span>
+        <span class="r-min">5分</span>
+      </a></li>
+    </ol>
+  </section>
+  </div>
+</main>
+<div class="page page-end">
+  <section class="hello" aria-labelledby="hello-h">
+    <span class="label">あなたの番</span>
+    <h2 id="hello-h">次は何をつくりましょう？</h2>
+    <a class="btn" href="https://cal.com/zafar" target="_blank" rel="noopener">30分話しましょう</a>
+  </section>
+  <footer>
+    <span>東京で手づくり · フレームワークなし</span>
+    <span class="langs">他の言語 <a href="/blog/" hreflang="en" lang="en">English</a> · <a href="/de/blog/" hreflang="de" lang="de">Deutsch</a></span>
+    <svg viewBox="0 0 110 34" role="img" aria-label="Zafar's signature"><path d="M4 8 h20 l-18 18 h22 M34 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M50 26 c3 -8 5 -17 9 -18 c2 0 -2 8 -6 9 h8 M62 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M76 26 c2 -6 3 -8 8 -8 M86 22 c8 2 14 -1 20 -8"/></svg>
+  </footer>
+</div>
+<script>(()=>{const l=document.getElementById('lamp'),r=document.documentElement;
+const dark=()=>r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+const sync=()=>l.setAttribute('aria-pressed',String(dark()));
+l.addEventListener('click',()=>{r.dataset.theme=dark()?'light':'dark';try{localStorage.setItem('theme',r.dataset.theme)}catch(e){}sync()});sync()})()</script>
+</body>
+</html>

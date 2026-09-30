@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a personal portfolio website built with Nuxt 4, showcasing Zafar's work, experience, and blog posts. The site is configured for deployment on Cloudflare with static site generation for blog content.
+This is a personal portfolio website built with Nuxt 4, showcasing Zafar's work, experience, and blog posts. The site is configured for deployment on Cloudflare.
+
+**Static parts (not Nuxt):** the English homepage is hand-written `public/index.html`, and the blog is static HTML generated from Markdown by `blog/build.mjs` (see `blog/README.md` to add a post). Links into either from the Nuxt app must be full page loads (`external: true`).
 
 ## Development Commands
 
@@ -26,13 +28,12 @@ This is a personal portfolio website built with Nuxt 4, showcasing Zafar's work,
 
 ### Directory Structure
 - `app/` - Main application code
-  - `pages/` - File-based routing (index, about, projects, speaking, blog)
+  - `pages/` - File-based routing (index, about, projects, speaking, services)
   - `components/` - Vue components, organized with `landing/` subfolder for homepage sections
   - `layouts/` - Layout components
   - `assets/css/` - Global CSS
   - `utils/` - Utility functions (clipboard, links)
 - `content/` - Content collections managed by Nuxt Content
-  - `blog/` - Blog posts in Markdown
   - `projects/` - Project data in YAML
   - Individual YAML files for page content (about.yml, speaking.yml, etc.)
 - `public/` - Static assets including images organized by project/category
@@ -52,13 +53,11 @@ This is a personal portfolio website built with Nuxt 4, showcasing Zafar's work,
 The project uses a sophisticated content management system via Nuxt Content with:
 - Typed content collections defined in `content.config.ts`
 - YAML-based content for structured data (projects, speaking events, page content)
-- Markdown-based blog posts with frontmatter
 - Image management through structured schemas
 
 ### Deployment Configuration
 - **Target**: Cloudflare Pages with module preset
-- **Prerendering**: Static generation for `/` and `/blog/*` routes
-- **Route Rules**: Blog routes are SSR disabled and statically generated
+- **Prerendering**: Nuxt pages are prerendered by crawling from `/projects`, `/ja` and `/de`. `/` and the blog are static files in `public/`, which the crawler ignores
 - **Observability**: Cloudflare logging enabled
 
 ### Styling and UI
@@ -71,7 +70,6 @@ The project uses a sophisticated content management system via Nuxt Content with
 
 ### Content Structure
 Each content collection has a defined schema:
-- **Blog posts**: Require minRead, date, image, and author fields
 - **Projects**: Include title, description, image, URL, tags, and date
 - **Speaking events**: Categorized as Live talk, Podcast, or Conference
 - **Index page**: Contains hero, about, experience, testimonials, blog, and FAQ sections

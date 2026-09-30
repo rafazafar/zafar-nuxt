@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Designing Realtime Telemetry When Local Infrastructure Disappears | Zafar.dev</title>
+<meta name="description" content="BLE, MQTT5, local brokers, and product decisions for systems where the network path is allowed to go away.">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://zafar.dev/blog/realtime-telemetry-unreliable-local-infrastructure/">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Designing Realtime Telemetry When Local Infrastructure Disappears | Zafar.dev">
+<meta property="og:description" content="BLE, MQTT5, local brokers, and product decisions for systems where the network path is allowed to go away.">
+<meta property="og:url" content="https://zafar.dev/blog/realtime-telemetry-unreliable-local-infrastructure/">
+<meta property="og:image" content="https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&amp;w=1200&amp;auto=format&amp;fit=crop">
+<meta property="article:published_time" content="2026-07-03">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
+<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body class="is-post">
+<div class="masthead" id="top">
+  <div class="sky" aria-hidden="true"></div>
+  <header class="top">
+    <a class="sig" href="/">zafar ✎</a>
+    <nav class="top-r">
+      <a href="https://docs.google.com/document/d/e/2PACX-1vTqFnfyHNvn48h_-v__nIAxO77b1cJLzTVT_O5cpRvjzDlYLy6bwhQZcagAiF5dXc21eblTIPVgJy6y/pub" target="_blank" rel="noopener">résumé</a>
+      <a href="/blog/">blog</a>
+      <a href="/#hello">say hi</a>
+      <button class="lamp" id="lamp" type="button" aria-label="Switch the lights" aria-pressed="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 a5.5 5.5 0 0 1 3 10 v2 h-6 v-2 a5.5 5.5 0 0 1 3 -10 z M8 17 h4"/></svg>
+      </button>
+    </nav>
+  </header>
+</div>
+<script>(()=>{const P=[[0,'#070d26','#1b2350',1],[4.5,'#101a45','#3a3f74',.9],[5.6,'#34407e','#f2a58e',.55],[7,'#78c1ee','#e6f5ff',0],[15,'#5fb2e6','#d4eeff',0],[17,'#ea7f5a','#ffd79c',.2],[18.6,'#3a2d6b','#e1768c',.65],[20,'#0c1434','#2a3264',1],[24,'#070d26','#1b2350',1]];
+const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>'rgb('+rgb(a).map((v,i)=>Math.round(v+(rgb(b)[i]-v)*t)).join(',')+')';
+const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
+const h=+p.find(x=>x.type==='hour').value+p.find(x=>x.type==='minute').value/60;let i=0;while(P[i+1][0]<=h)i++;
+const a=P[i],b=P[i+1],t=(h-a[0])/(b[0]-a[0]),m=document.getElementById('top');
+m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot',mix(a[2],b[2],t));m.classList.toggle('is-night',a[3]+(b[3]-a[3])*t>.5)})()</script>
+<main class="page">
+  <a class="back" href="/blog/"><span aria-hidden="true">←</span> all notes</a>
+  <article class="post">
+    <header class="post-head">
+      <span class="label"><time datetime="2026-07-03">Jul 3, 2026</time> · 9 min read</span>
+      <h1>Designing Realtime Telemetry When Local Infrastructure Disappears</h1>
+      <p class="sub">BLE, MQTT5, local brokers, and product decisions for systems where the network path is allowed to go away.</p>
+    </header>
+    <figure class="cover">
+      <span class="tape"></span>
+      <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="">
+    </figure>
+    <div class="prose">
+<p>The first uncomfortable requirement was simple: the local machine that received live telemetry might be turned off for hours, and that was allowed.</p>
+<p>Realtime systems are often described as if the infrastructure is always there and the only interesting question is how fast messages move through it.</p>
+<p>That is not always the real problem.</p>
+<p>In one health-adjacent monitoring project, the difficult constraint was not only that wearable devices produced live data. It was that parts of the local infrastructure could be unavailable by design. A local machine might host a broker and monitoring services during the day, then be powered down overnight. Phones and sensors could keep operating. Users still expected the system to recover cleanly when the local infrastructure returned.</p>
+<p>This kind of environment forces a useful discipline: you have to separate engineering problems from policy decisions.</p>
+<h2 id="the-architecture-sentence-is-not-enough"><a class="anchor" href="#the-architecture-sentence-is-not-enough" aria-hidden="true" tabindex="-1">#</a>The Architecture Sentence Is Not Enough</h2>
+<p>It is easy to say: &quot;phones publish telemetry over MQTT and viewers subscribe.&quot;</p>
+<p>That sentence hides the hard parts:</p>
+<ul>
+<li>What happens when the broker is offline?</li>
+<li>Is packet loss acceptable?</li>
+<li>Should the phone buffer data while disconnected?</li>
+<li>If buffered data arrives late, is it still clinically or operationally useful?</li>
+<li>How should viewers distinguish live data from delayed data?</li>
+<li>Which system owns identity, session state, and patient context?</li>
+<li>Does cloud access change the authority model or only the transport path?</li>
+</ul>
+<p>These are not implementation details. They are product and safety decisions.</p>
+<p>If the team does not answer them explicitly, engineers will answer them accidentally through code. A retry loop here, a local cache there, a hidden fallback somewhere else. That is how systems become hard to reason about.</p>
+<h2 id="reconnect-first-backfill-second"><a class="anchor" href="#reconnect-first-backfill-second" aria-hidden="true" tabindex="-1">#</a>Reconnect First, Backfill Second</h2>
+<p>For live monitoring, reconnect reliability is often more valuable than ambitious backfill.</p>
+<p>That sounds counterintuitive. Data loss feels bad, so the instinct is to buffer everything. But full backfill has real complexity:</p>
+<ul>
+<li>You need recorded-time ordering, not receive-time ordering.</li>
+<li>You need deduplication across reconnects.</li>
+<li>You need clear session ownership when the local authority was offline.</li>
+<li>You need limits for storage, battery, and memory.</li>
+<li>You need UI that does not confuse stale data with live monitoring.</li>
+<li>You need risk language around what delayed data means.</li>
+</ul>
+<p>If the product is primarily live monitoring, the first promise should be simpler: when infrastructure returns, the phone reconnects and live telemetry resumes visibly and predictably.</p>
+<p>Backfill can still be valuable, but it should be an explicit feature with explicit limits. &quot;Small bounded diagnostic buffer&quot; and &quot;full overnight lossless replay&quot; are not the same requirement.</p>
+<h2 id="mqtt-is-a-contract-not-just-a-library"><a class="anchor" href="#mqtt-is-a-contract-not-just-a-library" aria-hidden="true" tabindex="-1">#</a>MQTT Is A Contract, Not Just A Library</h2>
+<p>MQTT works well for this shape of system because it gives mobile apps, local services, cloud services, and viewers a shared messaging model. But the library choice is less important than the contract.</p>
+<p>The contract needs to define:</p>
+<ul>
+<li>Topic structure.</li>
+<li>Identifier meaning.</li>
+<li>Payload shape.</li>
+<li>QoS expectations.</li>
+<li>Retained-message policy.</li>
+<li>Protocol version.</li>
+<li>Failure behavior when a client cannot satisfy the contract.</li>
+</ul>
+<p>For this deployment shape, I prefer making MQTT5 over secure WebSockets the explicit platform requirement. WSS made sense because the same contract had to work through local and cloud-facing network paths that were friendlier to HTTPS-style routing than raw MQTT/TLS ports. Native mobile can absolutely use MQTT over TLS TCP in other deployments; the important choice here was to avoid supporting multiple transport personalities accidentally.</p>
+<p>If a client cannot complete an MQTT5 connection, it should fail visibly rather than quietly falling back to MQTT 3.1.1 and creating a second compatibility surface. Silent downgrade is where subtle differences in session behavior, reason codes, properties, and broker configuration become production mysteries.</p>
+<p>A sanitized topic contract looked roughly like this:</p>
+<pre class="shiki"><code>monitoring/{facility_id}/{room_id}/{device_id}/hrm
+monitoring/{facility_id}/{room_id}/{device_id}/device</code></pre>
+<p>That naming is not clever. That is the point. Device, room, and facility identifiers are shared concepts, so they belong in a shared contract rather than being rediscovered independently by every app.</p>
+<p>That sounds strict, but strictness at the wire-contract boundary keeps the rest of the system honest. A monitor app, a viewer app, and a backend service can evolve independently only if they agree on what crosses the network.</p>
+<h2 id="keep-deployment-profiles-out-of-feature-code"><a class="anchor" href="#keep-deployment-profiles-out-of-feature-code" aria-hidden="true" tabindex="-1">#</a>Keep Deployment Profiles Out Of Feature Code</h2>
+<p>The other big design pressure is deployment variation.</p>
+<p>Some environments want local-only operation. Some want local infrastructure with cloud access. Some smaller deployments may not have a central local machine at all. Those profiles should not leak into every screen and service class.</p>
+<p>The pattern I like is to define seams around responsibilities:</p>
+<ul>
+<li>Authentication and actor identity.</li>
+<li>Runtime authority for sessions and assignments.</li>
+<li>Telemetry transport.</li>
+<li>Viewer-facing session feeds.</li>
+<li>Patient-context storage and residency.</li>
+<li>Admin-facing read/write sources.</li>
+</ul>
+<p>Application code should depend on those seams, not on raw profile checks. Profile selection should happen at composition time. If a screen needs a session feed, it should not care whether that feed is local, cloud-routed, or bridged.</p>
+<p>This is not abstraction for its own sake. It prevents deployment policy from becoming a scattered conditional across the codebase.</p>
+<h2 id="degraded-state-is-a-product-feature"><a class="anchor" href="#degraded-state-is-a-product-feature" aria-hidden="true" tabindex="-1">#</a>Degraded State Is A Product Feature</h2>
+<p>When infrastructure disappears, silence is dangerous.</p>
+<p>The system needs to distinguish:</p>
+<ul>
+<li>Live data.</li>
+<li>Last known data.</li>
+<li>Disconnected device.</li>
+<li>Broker unavailable.</li>
+<li>Viewer offline.</li>
+<li>Data delayed or replayed after reconnect.</li>
+<li>Monitoring intentionally paused.</li>
+</ul>
+<p>Those states may share implementation paths, but they should not collapse into the same user experience. A stale heart-rate value and a live heart-rate value are not equivalent. A paused slot and a failed reconnect are not equivalent. A local server outage and a wearable disconnection are not equivalent.</p>
+<p>The engineering lesson is that observability and UX are connected. If the runtime cannot name the state, the UI cannot explain it. If the UI cannot explain it, users invent their own interpretation.</p>
+<h2 id="compliance-changes-the-engineering-shape"><a class="anchor" href="#compliance-changes-the-engineering-shape" aria-hidden="true" tabindex="-1">#</a>Compliance Changes The Engineering Shape</h2>
+<p>Even when you are not writing final regulatory submissions, health-adjacent systems benefit from compliance-aware engineering habits:</p>
+<ul>
+<li>Record architecture decisions close to the code.</li>
+<li>Keep requirements traceable to implementation and tests.</li>
+<li>Treat external libraries, SDKs, OS APIs, and cloud services as managed dependencies.</li>
+<li>Document known platform limits instead of burying them in comments.</li>
+<li>Make release readiness depend on evidence, not only feature completion.</li>
+</ul>
+<p>This does not mean turning every commit into paperwork. It means leaving enough evidence that future engineers can understand why the system behaves the way it does. It is engineering evidence hygiene, not a substitute for formal regulatory, clinical, security, or privacy review.</p>
+<p>In practice, lightweight architecture decision records and product requirement notes were more useful than long retrospective documents. They forced unresolved policy decisions into the open before implementation made them expensive.</p>
+<h2 id="the-main-lesson"><a class="anchor" href="#the-main-lesson" aria-hidden="true" tabindex="-1">#</a>The Main Lesson</h2>
+<p>The hard part of realtime telemetry is not always the realtime transport. Sometimes the hard part is deciding what the system is allowed to promise when the environment is unreliable.</p>
+<p>Should it promise live monitoring only? Should it promise bounded recovery? Should it promise lossless history? Should it recommend one mobile platform over another for unattended operation? Should patient context ever cross a cloud boundary? Each answer changes the architecture.</p>
+<p>The most valuable engineering work was making those questions explicit, then building the code around the answers instead of hiding ambiguity behind retries and caches.</p>
+<p>That is the difference between a demo that moves data and a platform that can be operated, reviewed, and maintained.</p>
+<p>This article is part of a short series on realtime wearable monitoring. The companion pieces cover <a href="/blog/ios-background-ble-is-not-android-background-ble">why iOS background BLE is not Android background BLE</a> and <a href="/blog/building-a-ble-reconnect-soak-tester">building a BLE reconnect soak tester</a>.</p>
+
+    </div>
+  </article>
+  <nav class="pager" aria-label="More notes">
+    <a class="pg pg-older" href="/blog/building-a-ble-reconnect-soak-tester/" rel="prev">
+      <span class="label">← older</span>
+      <span class="pg-title">Building a BLE Reconnect Soak Tester</span>
+    </a>
+    <a class="pg pg-newer" href="/blog/ios-background-ble-is-not-android-background-ble/" rel="next">
+      <span class="label">newer →</span>
+      <span class="pg-title">iOS Won't Poll Your BLE Device Like Android Can</span>
+    </a>
+  </nav>
+</main>
+<div class="page page-end">
+  <section class="hello" aria-labelledby="hello-h">
+    <span class="label">your turn</span>
+    <h2 id="hello-h">What are we building next?</h2>
+    <a class="btn" href="https://cal.com/zafar" target="_blank" rel="noopener">Grab 30 minutes</a>
+  </section>
+  <footer>
+    <span>made by hand in Tokyo · no frameworks</span>
+    
+    <svg viewBox="0 0 110 34" role="img" aria-label="Zafar's signature"><path d="M4 8 h20 l-18 18 h22 M34 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M50 26 c3 -8 5 -17 9 -18 c2 0 -2 8 -6 9 h8 M62 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M76 26 c2 -6 3 -8 8 -8 M86 22 c8 2 14 -1 20 -8"/></svg>
+  </footer>
+</div>
+<script>(()=>{const l=document.getElementById('lamp'),r=document.documentElement;
+const dark=()=>r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+const sync=()=>l.setAttribute('aria-pressed',String(dark()));
+l.addEventListener('click',()=>{r.dataset.theme=dark()?'light':'dark';try{localStorage.setItem('theme',r.dataset.theme)}catch(e){}sync()});sync()})()</script>
+</body>
+</html>

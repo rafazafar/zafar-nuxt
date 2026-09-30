@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Building a BLE Reconnect Soak Tester | Zafar.dev</title>
+<meta name="description" content="A practical testing approach for mobile apps that need evidence for Bluetooth reconnect behavior instead of another hopeful demo.">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://zafar.dev/blog/building-a-ble-reconnect-soak-tester/">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Building a BLE Reconnect Soak Tester | Zafar.dev">
+<meta property="og:description" content="A practical testing approach for mobile apps that need evidence for Bluetooth reconnect behavior instead of another hopeful demo.">
+<meta property="og:url" content="https://zafar.dev/blog/building-a-ble-reconnect-soak-tester/">
+<meta property="og:image" content="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&amp;w=1200&amp;auto=format&amp;fit=crop">
+<meta property="article:published_time" content="2026-07-02">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
+<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body class="is-post">
+<div class="masthead" id="top">
+  <div class="sky" aria-hidden="true"></div>
+  <header class="top">
+    <a class="sig" href="/">zafar ✎</a>
+    <nav class="top-r">
+      <a href="https://docs.google.com/document/d/e/2PACX-1vTqFnfyHNvn48h_-v__nIAxO77b1cJLzTVT_O5cpRvjzDlYLy6bwhQZcagAiF5dXc21eblTIPVgJy6y/pub" target="_blank" rel="noopener">résumé</a>
+      <a href="/blog/">blog</a>
+      <a href="/#hello">say hi</a>
+      <button class="lamp" id="lamp" type="button" aria-label="Switch the lights" aria-pressed="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 a5.5 5.5 0 0 1 3 10 v2 h-6 v-2 a5.5 5.5 0 0 1 3 -10 z M8 17 h4"/></svg>
+      </button>
+    </nav>
+  </header>
+</div>
+<script>(()=>{const P=[[0,'#070d26','#1b2350',1],[4.5,'#101a45','#3a3f74',.9],[5.6,'#34407e','#f2a58e',.55],[7,'#78c1ee','#e6f5ff',0],[15,'#5fb2e6','#d4eeff',0],[17,'#ea7f5a','#ffd79c',.2],[18.6,'#3a2d6b','#e1768c',.65],[20,'#0c1434','#2a3264',1],[24,'#070d26','#1b2350',1]];
+const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>'rgb('+rgb(a).map((v,i)=>Math.round(v+(rgb(b)[i]-v)*t)).join(',')+')';
+const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
+const h=+p.find(x=>x.type==='hour').value+p.find(x=>x.type==='minute').value/60;let i=0;while(P[i+1][0]<=h)i++;
+const a=P[i],b=P[i+1],t=(h-a[0])/(b[0]-a[0]),m=document.getElementById('top');
+m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot',mix(a[2],b[2],t));m.classList.toggle('is-night',a[3]+(b[3]-a[3])*t>.5)})()</script>
+<main class="page">
+  <a class="back" href="/blog/"><span aria-hidden="true">←</span> all notes</a>
+  <article class="post">
+    <header class="post-head">
+      <span class="label"><time datetime="2026-07-02">Jul 2, 2026</time> · 7 min read</span>
+      <h1>Building a BLE Reconnect Soak Tester</h1>
+      <p class="sub">A practical testing approach for mobile apps that need evidence for Bluetooth reconnect behavior instead of another hopeful demo.</p>
+    </header>
+    <figure class="cover">
+      <span class="tape"></span>
+      <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="">
+    </figure>
+    <div class="prose">
+<p>Bluetooth reconnect behavior is one of those features that looks fine in a short demo and then fails in the conditions users actually care about.</p>
+<p>The app connects. Data appears. You turn the peripheral off and on. It reconnects. Everyone feels good.</p>
+<p>Then the phone locks. The screen turns off. The wearable disappears for twenty minutes. The broker restarts. The app is backgrounded. Low Power Mode is on. A battery policy kills something. The user returns later and asks why monitoring stopped.</p>
+<p>That is why I like building a separate soak tester for BLE-heavy products.</p>
+<h2 id="why-a-separate-tester-helps"><a class="anchor" href="#why-a-separate-tester-helps" aria-hidden="true" tabindex="-1">#</a>Why A Separate Tester Helps</h2>
+<p>You can test reconnect behavior inside the main app, but the main app is full of product concerns: onboarding, permissions, naming, patient context, alerts, settings, and UI state. Those are important, but they make reliability testing harder to isolate.</p>
+<p>A soak tester can be narrower:</p>
+<ul>
+<li>Bind one or more known peripherals.</li>
+<li>Connect and disconnect slots independently.</li>
+<li>Publish a simple telemetry stream.</li>
+<li>Pause and resume reconnect behavior deliberately.</li>
+<li>Show connection and broker state plainly.</li>
+<li>Export timing and event data for analysis.</li>
+</ul>
+<p>The goal is not to replace the product app. The goal is to create a controlled harness where reconnect behavior is easy to provoke, observe, and measure.</p>
+<h2 id="use-mock-devices-when-real-devices-are-annoying"><a class="anchor" href="#use-mock-devices-when-real-devices-are-annoying" aria-hidden="true" tabindex="-1">#</a>Use Mock Devices When Real Devices Are Annoying</h2>
+<p>Real sensors are necessary eventually, but mock BLE peripherals are useful early.</p>
+<p>For testing, I used a second phone running nRF Connect as a mock heart-rate device. The mock advertised a known service, accepted connections, and replayed characteristic updates in a loop. That made it possible to test the mobile app&#39;s scanning, authorization, connection, reconnect, and publish paths without depending on scarce hardware for every run.</p>
+<p>The useful thing about a mock peripheral is repeatability. You can power the advertiser off, change advertising data, restart the macro loop, or run scripted scenarios without wondering whether the real device firmware is doing something undocumented.</p>
+<p>Mocks do not prove firmware compatibility, but they let you run dozens of controlled scenarios before pulling scarce hardware back onto the bench.</p>
+<h2 id="test-slots-not-just-a-single-connection"><a class="anchor" href="#test-slots-not-just-a-single-connection" aria-hidden="true" tabindex="-1">#</a>Test Slots, Not Just A Single Connection</h2>
+<p>A monitoring app often needs to handle more than one bound device. That means the test harness should not treat BLE as one global connection state.</p>
+<p>Each slot needs its own lifecycle:</p>
+<ul>
+<li>Not configured.</li>
+<li>Bound but disconnected.</li>
+<li>Connecting.</li>
+<li>Connected and publishing.</li>
+<li>Paused intentionally.</li>
+<li>Failed with a visible reason.</li>
+</ul>
+<p>Bulk controls are useful, but only if individual slots still remain understandable. &quot;Pause all&quot; should not erase the difference between a slot that is intentionally paused and a slot that failed to reconnect.</p>
+<p>This model also makes test results easier to read. If slot 1 reconnects and slot 3 does not, you want the export to preserve that fact.</p>
+<h2 id="measure-the-boundaries-separately"><a class="anchor" href="#measure-the-boundaries-separately" aria-hidden="true" tabindex="-1">#</a>Measure The Boundaries Separately</h2>
+<p>When downstream data stops, the cause can be anywhere in the chain:</p>
+<ul>
+<li>The peripheral is not advertising.</li>
+<li>The phone did not scan or wake.</li>
+<li>The app did not reconnect.</li>
+<li>The app reconnected but did not resubscribe.</li>
+<li>Samples resumed but publish failed.</li>
+<li>The broker connection was stale.</li>
+<li>The viewer was disconnected.</li>
+</ul>
+<p>A useful soak tester records enough events to separate those cases.</p>
+<p>At minimum, I want timestamps for:</p>
+<ul>
+<li>Peripheral selected or bound.</li>
+<li>Connect attempt started.</li>
+<li>Connected.</li>
+<li>Services discovered.</li>
+<li>Notifications subscribed.</li>
+<li>First sample received after reconnect.</li>
+<li>Broker connected.</li>
+<li>First publish after reconnect.</li>
+<li>Disconnect reason, when available.</li>
+</ul>
+<p>Without this timeline, every issue becomes &quot;reconnect is flaky.&quot; With it, you can tell whether the delay is BLE wake timing, GATT setup, broker recovery, or application state.</p>
+<p>A useful export can be boring JSON or CSV. The important part is that each row names the case, slot, event, and timestamp:</p>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  "caseId"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"ios-locked-power-cycle-025m"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  "slot"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">3</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  "event"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"first_publish_after_reconnect"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  "elapsedMs"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">61240</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  "condition"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"locked_screen_after_peripheral_power_cycle"</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre>
+<p>In one long locked-screen iOS case, the test showed the key product fact: after the wearable came back, no samples or publishes resumed while the phone stayed locked. Unlocking returned the app to the fast path. That result was more useful than another vague &quot;iOS background reconnect is flaky&quot; note because it separated BLE wake behavior from broker recovery.</p>
+<h2 id="design-for-long-boring-runs"><a class="anchor" href="#design-for-long-boring-runs" aria-hidden="true" tabindex="-1">#</a>Design For Long, Boring Runs</h2>
+<p>Soak testing is supposed to be boring. The app should sit there, keep running, and produce evidence.</p>
+<p>That changes the UI design. You do not need a beautiful product surface. You need a dense operational surface:</p>
+<ul>
+<li>Current slot state.</li>
+<li>Last sample time.</li>
+<li>Last publish time.</li>
+<li>Broker readiness.</li>
+<li>Reconnect attempts.</li>
+<li>Pause/resume controls.</li>
+<li>Export controls.</li>
+<li>Clear labels for test condition and case ID.</li>
+</ul>
+<p>The case ID matters more than it seems. Once you run multiple scenarios, screenshots and logs become hard to connect. A case ID lets you compare exports across conditions like foreground, background, locked screen, Low Power Mode, broker restart, peripheral power cycle, and long idle periods.</p>
+<h2 id="separate-platform-claims"><a class="anchor" href="#separate-platform-claims" aria-hidden="true" tabindex="-1">#</a>Separate Platform Claims</h2>
+<p>Do not let one platform&#39;s success become a cross-platform claim.</p>
+<p>Android and iOS have different background execution models. Android may continue reconnect work through a foreground service and bounded wake lock, subject to battery policy, permissions, OEM behavior, and user settings. iOS may defer Bluetooth event delivery while locked and screen-off. A soak tester should make that difference visible rather than hiding it behind one green checkmark.</p>
+<p>For a serious report, I want a matrix like:</p>
+<ul>
+<li>App in foreground.</li>
+<li>App backgrounded, screen on.</li>
+<li>App backgrounded, screen locked.</li>
+<li>Peripheral off for a short interval.</li>
+<li>Peripheral off for a long interval.</li>
+<li>Broker unavailable, then restored.</li>
+<li>App force-quit.</li>
+<li>Device rebooted.</li>
+</ul>
+<p>Each platform gets its own result. Each result needs a measured delay or a clear failure state.</p>
+<h2 id="the-product-value"><a class="anchor" href="#the-product-value" aria-hidden="true" tabindex="-1">#</a>The Product Value</h2>
+<p>The output of a soak tester is not just engineering confidence. It is better product language.</p>
+<p>Instead of saying &quot;auto reconnect is supported,&quot; you can say:</p>
+<ul>
+<li>In these tested Android foreground-service conditions, reconnect continued in the background.</li>
+<li>In these tested iOS foreground conditions, reconnect returned to the fast path.</li>
+<li>In locked-screen iOS conditions, reconnect was best-effort and could be delayed or absent until user interaction.</li>
+<li>In the observed failures, MQTT resumed when BLE samples resumed, so the delay was not primarily broker recovery.</li>
+<li>For unattended monitoring, the workflow should prefer Android under controlled device policy, or keep iOS foregrounded depending on the operational requirement.</li>
+</ul>
+<p>That is the kind of specificity that prevents support issues later.</p>
+<h2 id="takeaway"><a class="anchor" href="#takeaway" aria-hidden="true" tabindex="-1">#</a>Takeaway</h2>
+<p>BLE reconnect reliability is not a feature you can infer from a successful connection demo. You have to test the ugly states: locked phones, missing peripherals, stale brokers, long waits, and platform-specific background behavior.</p>
+<p>A focused soak tester gives you a place to do that without dragging the full product through every experiment. It turns &quot;seems flaky&quot; into measured behavior, and measured behavior is what lets engineering, product, and operations make a defensible decision.</p>
+<p>This article is part of a short series on realtime wearable monitoring. The companion pieces cover <a href="/blog/ios-background-ble-is-not-android-background-ble">why iOS background BLE is not Android background BLE</a> and <a href="/blog/realtime-telemetry-unreliable-local-infrastructure">designing telemetry around unreliable local infrastructure</a>.</p>
+
+    </div>
+  </article>
+  <nav class="pager" aria-label="More notes">
+    <a class="pg pg-older" href="/blog/stop-chasing-better-models-build-harnesses/" rel="prev">
+      <span class="label">← older</span>
+      <span class="pg-title">Stop Chasing Better Models, Build Harnesses Instead</span>
+    </a>
+    <a class="pg pg-newer" href="/blog/realtime-telemetry-unreliable-local-infrastructure/" rel="next">
+      <span class="label">newer →</span>
+      <span class="pg-title">Designing Realtime Telemetry When Local Infrastructure Disappears</span>
+    </a>
+  </nav>
+</main>
+<div class="page page-end">
+  <section class="hello" aria-labelledby="hello-h">
+    <span class="label">your turn</span>
+    <h2 id="hello-h">What are we building next?</h2>
+    <a class="btn" href="https://cal.com/zafar" target="_blank" rel="noopener">Grab 30 minutes</a>
+  </section>
+  <footer>
+    <span>made by hand in Tokyo · no frameworks</span>
+    
+    <svg viewBox="0 0 110 34" role="img" aria-label="Zafar's signature"><path d="M4 8 h20 l-18 18 h22 M34 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M50 26 c3 -8 5 -17 9 -18 c2 0 -2 8 -6 9 h8 M62 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M76 26 c2 -6 3 -8 8 -8 M86 22 c8 2 14 -1 20 -8"/></svg>
+  </footer>
+</div>
+<script>(()=>{const l=document.getElementById('lamp'),r=document.documentElement;
+const dark=()=>r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+const sync=()=>l.setAttribute('aria-pressed',String(dark()));
+l.addEventListener('click',()=>{r.dataset.theme=dark()?'light':'dark';try{localStorage.setItem('theme',r.dataset.theme)}catch(e){}sync()});sync()})()</script>
+</body>
+</html>

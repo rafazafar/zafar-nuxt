@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stop Chasing Better Models, Build Harnesses Instead | Zafar.dev</title>
+<meta name="description" content="Every AI coding session starts from zero. Here's how I built a persistent context system that makes the AI arrive pre-onboarded — every single time.">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://zafar.dev/blog/stop-chasing-better-models-build-harnesses/">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="Stop Chasing Better Models, Build Harnesses Instead | Zafar.dev">
+<meta property="og:description" content="Every AI coding session starts from zero. Here's how I built a persistent context system that makes the AI arrive pre-onboarded — every single time.">
+<meta property="og:url" content="https://zafar.dev/blog/stop-chasing-better-models-build-harnesses/">
+<meta property="og:image" content="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&amp;w=800">
+<meta property="article:published_time" content="2026-06-12">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
+<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body class="is-post">
+<div class="masthead" id="top">
+  <div class="sky" aria-hidden="true"></div>
+  <header class="top">
+    <a class="sig" href="/">zafar ✎</a>
+    <nav class="top-r">
+      <a href="https://docs.google.com/document/d/e/2PACX-1vTqFnfyHNvn48h_-v__nIAxO77b1cJLzTVT_O5cpRvjzDlYLy6bwhQZcagAiF5dXc21eblTIPVgJy6y/pub" target="_blank" rel="noopener">résumé</a>
+      <a href="/blog/">blog</a>
+      <a href="/#hello">say hi</a>
+      <button class="lamp" id="lamp" type="button" aria-label="Switch the lights" aria-pressed="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 a5.5 5.5 0 0 1 3 10 v2 h-6 v-2 a5.5 5.5 0 0 1 3 -10 z M8 17 h4"/></svg>
+      </button>
+    </nav>
+  </header>
+</div>
+<script>(()=>{const P=[[0,'#070d26','#1b2350',1],[4.5,'#101a45','#3a3f74',.9],[5.6,'#34407e','#f2a58e',.55],[7,'#78c1ee','#e6f5ff',0],[15,'#5fb2e6','#d4eeff',0],[17,'#ea7f5a','#ffd79c',.2],[18.6,'#3a2d6b','#e1768c',.65],[20,'#0c1434','#2a3264',1],[24,'#070d26','#1b2350',1]];
+const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>'rgb('+rgb(a).map((v,i)=>Math.round(v+(rgb(b)[i]-v)*t)).join(',')+')';
+const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
+const h=+p.find(x=>x.type==='hour').value+p.find(x=>x.type==='minute').value/60;let i=0;while(P[i+1][0]<=h)i++;
+const a=P[i],b=P[i+1],t=(h-a[0])/(b[0]-a[0]),m=document.getElementById('top');
+m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot',mix(a[2],b[2],t));m.classList.toggle('is-night',a[3]+(b[3]-a[3])*t>.5)})()</script>
+<main class="page">
+  <a class="back" href="/blog/"><span aria-hidden="true">←</span> all notes</a>
+  <article class="post">
+    <header class="post-head">
+      <span class="label"><time datetime="2026-06-12">Jun 12, 2026</time> · 8 min read</span>
+      <h1>Stop Chasing Better Models, Build Harnesses Instead</h1>
+      <p class="sub">Every AI coding session starts from zero. Here's how I built a persistent context system that makes the AI arrive pre-onboarded — every single time.</p>
+    </header>
+    <figure class="cover">
+      <span class="tape"></span>
+      <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&amp;w=800" alt="">
+    </figure>
+    <div class="prose">
+<p>Six months ago, I was copy-pasting code from ChatGPT into my terminal like everyone else. Then I realized I&#39;d spent more time correcting AI suggestions than I would have saved by writing the code myself. The tool wasn&#39;t the problem. The harness was.</p>
+<h3 id="the-onboarding-problem-nobody-talks-about"><a class="anchor" href="#the-onboarding-problem-nobody-talks-about" aria-hidden="true" tabindex="-1">#</a>The Onboarding Problem Nobody Talks About</h3>
+<p>Here&#39;s what actually happens when you use an AI coding assistant on a real project. It&#39;s Tuesday morning. You open your AI tool to fix a bug in your payment flow. You paste the error. It suggests a fix using <code>stripe.charges.create()</code> — but your project migrated to the Payment Intents API two years ago. You correct it. It suggests putting business logic in the controller — but your team uses a service layer pattern. You explain that. It generates a test with Jest — but you use Vitest. You tell it. It names the file <code>paymentService.ts</code> — but your convention is <code>payment.service.ts</code>.</p>
+<p>Twenty minutes in, you&#39;ve written six messages just teaching it things it should already know. And tomorrow? It forgets all of it. You&#39;ll repeat the same onboarding dance from scratch.</p>
+<p>This is pair programming with a brilliant developer who has anterograde amnesia.</p>
+<p>Every other complaint about AI coding tools traces back to this root cause. &quot;Inconsistent output&quot; — it has no memory of what consistent means for your project. &quot;Doesn&#39;t follow conventions&quot; — nobody told it what they are. &quot;Blank prompt problem&quot; — you&#39;re compensating for its amnesia every time. &quot;Fear of losing control&quot; — you can&#39;t trust someone who forgets everything daily.</p>
+<h3 id="the-false-fixes"><a class="anchor" href="#the-false-fixes" aria-hidden="true" tabindex="-1">#</a>The False Fixes</h3>
+<p>I tried the obvious things first. Better prompts helped marginally but didn&#39;t scale — I was still the bottleneck, crafting the perfect incantation each session. Copilot was faster at the keystroke level but had zero concept of &quot;this project uses the repository pattern&quot; or &quot;we decided against that ORM because of a specific bug.&quot; Custom GPTs were brittle, with no filesystem access and no way to enforce process.</p>
+<p>Each &quot;solution&quot; hit the same wall: no persistent project context. The AI treats your project as a collection of files rather than a living system with conventions, decisions, and culture.</p>
+<h3 id="the-shift"><a class="anchor" href="#the-shift" aria-hidden="true" tabindex="-1">#</a>The Shift</h3>
+<p>The breakthrough wasn&#39;t finding a better AI model. Models are commodities now — Claude, GPT, Gemini, they&#39;re all smart enough. The problem is the interface layer between you and the AI. The AI needs four things that raw chat interfaces don&#39;t provide: project rules, file conventions, reusable workflows, and access to your actual tools.</p>
+<p>This layer — the infrastructure around the AI, not the AI itself — is what I call the harness. Think of it like a test harness: it doesn&#39;t run your tests, it provides the environment, fixtures, and assertions that make tests reliable and repeatable. A development harness does the same for AI agents.</p>
+<p>I built mine with <a href="https://opencode.ai" target="_blank" rel="noopener">OpenCode</a>, an open-source AI coding agent that runs in your terminal. It has 173k GitHub stars and, more importantly, it was designed from the ground up for exactly this kind of structured AI interaction. Not as a chatbot bolted onto an editor, but as a composable system of agents, skills, and integrations.</p>
+<h3 id="building-the-harness"><a class="anchor" href="#building-the-harness" aria-hidden="true" tabindex="-1">#</a>Building the Harness</h3>
+<p>The harness has four layers. Each one solves a specific part of the onboarding problem.</p>
+<h4 id="layer-1-context-teaching-the-ai-your-project-39-s-personality"><a class="anchor" href="#layer-1-context-teaching-the-ai-your-project-39-s-personality" aria-hidden="true" tabindex="-1">#</a>Layer 1: Context — Teaching the AI Your Project&#39;s Personality</h4>
+<p>The foundation is an <code>AGENTS.md</code> file committed to your project root. This isn&#39;t a README — it&#39;s a briefing document for the AI. It contains your conventions, architecture decisions, test commands, directory structure, and the reasoning behind your choices.</p>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold"># AGENTS.md</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold">## Development Commands</span></span>
+<span class="line"><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">-</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> `bun dev`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> - Start development server</span></span>
+<span class="line"><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">-</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> `bun lint`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> - Run ESLint</span></span>
+<span class="line"><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">-</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> `bun typecheck`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> - Run TypeScript type checking</span></span>
+<span class="line"></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-light-font-weight:bold;--shiki-dark:#79B8FF;--shiki-dark-font-weight:bold">## Architecture</span></span>
+<span class="line"><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">-</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> `app/pages/`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> - File-based routing</span></span>
+<span class="line"><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">-</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> `app/components/`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> - Vue components, organized with </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">`landing/`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> subfolder</span></span>
+<span class="line"><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">-</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> `content/`</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> - Content collections managed by Nuxt Content</span></span>
+<span class="line"><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">-</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> Always follow existing patterns in neighboring files before creating new ones</span></span></code></pre>
+<p>OpenCode reads this file at the start of every session. The AI arrives already knowing your project. No more explaining that you use Vitest, not Jest. No more correcting file naming conventions. The context persists because it lives in git, not in the AI&#39;s ephemeral memory.</p>
+<p>The key insight: AGENTS.md is reviewed in pull requests. When your conventions change, you update it in a PR. The AI adapts automatically. Try doing that with &quot;the prompt I used last time.&quot;</p>
+<h4 id="layer-2-specialization-agents-as-roles-skills-as-playbooks"><a class="anchor" href="#layer-2-specialization-agents-as-roles-skills-as-playbooks" aria-hidden="true" tabindex="-1">#</a>Layer 2: Specialization — Agents as Roles, Skills as Playbooks</h4>
+<p>Not every task needs the same AI behavior. Sometimes you want full-access coding. Sometimes you want read-only analysis. OpenCode handles this with agents and skills.</p>
+<p><strong>Agents</strong> are roles. The <code>build</code> agent has write permissions for implementation work. The <code>plan</code> agent is read-only — it analyzes code and suggests changes without touching anything. You switch between them with the Tab key. You can create custom agents too, like a <code>security-auditor</code> that can read everything but write nothing.</p>
+<p><strong>Skills</strong> are reusable workflows defined in <code>SKILL.md</code> files. They encode process discipline that humans skip under pressure. A TDD skill enforces red-green-refactor even when you&#39;re rushing. A debugging skill prevents the AI from proposing fixes before understanding the root cause. A code review skill checks your diff against your team&#39;s actual conventions.</p>
+<pre class="shiki"><code>.opencode/skills/
+  test-driven-development/SKILL.md
+  systematic-debugging/SKILL.md
+  code-review/SKILL.md
+  brainstorming/SKILL.md</code></pre>
+<p>These are discovered automatically from your project or global config. The critical thing about skills is that they enforce the process you already believe in but don&#39;t always follow. You know you should write the test first. The skill makes the AI do it, even when you&#39;re tempted to skip.</p>
+<h4 id="layer-3-integration-connecting-to-your-real-tools"><a class="anchor" href="#layer-3-integration-connecting-to-your-real-tools" aria-hidden="true" tabindex="-1">#</a>Layer 3: Integration — Connecting to Your Real Tools</h4>
+<p>Without external integrations, the AI is a smart stranger. With them, it becomes a team member with access to your monitoring, docs, and codebase. OpenCode uses the Model Context Protocol (MCP) to connect to external tools.</p>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  "mcp"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: {</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">    "sentry"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: {</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">      "type"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"remote"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">      "url"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"https://mcp.sentry.dev/mcp"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">      "oauth"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: {}</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    },</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">    "context7"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: {</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">      "type"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"remote"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">      "url"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"https://mcp.context7.com/mcp"</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  }</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre>
+<p>Now when a Sentry alert fires, the AI can pull the full stack trace directly — not your paraphrased version. When it needs to look up documentation, it fetches current docs via Context7 instead of hallucinating from training data. You can connect GitHub code search, internal APIs, databases — anything that speaks MCP.</p>
+<h4 id="layer-4-governance-trust-the-harness-not-the-ai"><a class="anchor" href="#layer-4-governance-trust-the-harness-not-the-ai" aria-hidden="true" tabindex="-1">#</a>Layer 4: Governance — Trust the Harness, Not the AI</h4>
+<p>This is what makes it safe to give an AI write access to your codebase. Permissions in OpenCode are fine-grained: you control what each agent can do, down to individual bash commands.</p>
+<pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  "agent"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: {</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">    "build"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: {</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">      "permission"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: {</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">        "edit"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"allow"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">        "bash"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: {</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">          "git push"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"ask"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">          "npm test"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"allow"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
+<span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">          "rm *"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"deny"</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">        }</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">      }</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    }</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  }</span></span>
+<span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre>
+<p>The <code>build</code> agent can edit files and run tests, but asks before pushing to git and can never run destructive commands. The <code>plan</code> agent is fully read-only. You&#39;re not trusting the AI — you&#39;re trusting the harness.</p>
+<h3 id="the-new-monday-morning"><a class="anchor" href="#the-new-monday-morning" aria-hidden="true" tabindex="-1">#</a>The New Monday Morning</h3>
+<p>Here&#39;s what this looks like in practice. A Sentry alert fires at 9 AM: <code>TypeError in /api/checkout, line 142</code>.</p>
+<p><strong>9:01</strong> — You open OpenCode and switch to the <code>plan</code> agent (read-only). Ask it to investigate. The plan agent uses the Sentry MCP to pull the full stack trace, reads the relevant source files, checks AGENTS.md for error handling conventions. It returns: &quot;Missing null check on <code>user.address</code> after the migration in PR #847. Fix should go in <code>validateCheckout()</code>.&quot;</p>
+<p><strong>9:05</strong> — Switch to the <code>build</code> agent. The TDD skill activates. It writes a failing test that reproduces the null address case. Test fails (red). Then implements the fix. Test passes (green). Then refactors. Runs <code>bun lint</code> and <code>bun typecheck</code> — both pass.</p>
+<p><strong>9:12</strong> — The code review skill compares the diff against your team&#39;s conventions. Flags one issue: error message doesn&#39;t match the pattern in AGENTS.md. Quick fix.</p>
+<p><strong>9:15</strong> — Commit with a clean conventional commit message. Review, approve, push.</p>
+<p>Total time: 15 minutes. Without the harness: 45 to 90 minutes of context-switching, manual debugging, test-writing-you&#39;ll-skip, and self-review.</p>
+<h3 id="what-this-doesn-39-t-fix"><a class="anchor" href="#what-this-doesn-39-t-fix" aria-hidden="true" tabindex="-1">#</a>What This Doesn&#39;t Fix</h3>
+<p>Let me be honest about the parts the harness doesn&#39;t solve. Raw AI chat is still better for open-ended brainstorming where you don&#39;t want constraints. The harness adds overhead — you need to write and maintain AGENTS.md and skill files. For one-off scripts or throwaway prototypes, the setup cost isn&#39;t worth it.</p>
+<p>And the AI still makes mistakes. The harness doesn&#39;t make it infallible. It makes it <em>informed</em>. There&#39;s a big difference. An informed AI that knows your project makes mistakes you can catch in code review. An uninformed AI makes mistakes you can&#39;t predict because they come from wrong assumptions about your codebase.</p>
+<h3 id="the-real-takeaway"><a class="anchor" href="#the-real-takeaway" aria-hidden="true" tabindex="-1">#</a>The Real Takeaway</h3>
+<p>The AI isn&#39;t the bottleneck. The context gap is.</p>
+<p>Raw AI models are commodities. The real leverage is in the system you build around the model — project context files, reusable workflows, tool integrations, permission guardrails. That&#39;s the moat. Not which model you use, but how well you&#39;ve taught it your world.</p>
+<p>This reframes AI from &quot;magic autocomplete&quot; to &quot;junior engineer you onboard once.&quot; The harness is the onboarding document. And unlike a human, the AI re-reads it every single session.</p>
+<p>Stop chasing better models. Start building harnesses.</p>
+
+    </div>
+  </article>
+  <nav class="pager" aria-label="More notes">
+    <a class="pg pg-older" href="/blog/system-design-at-scale/" rel="prev">
+      <span class="label">← older</span>
+      <span class="pg-title">System Design at Scale: Lessons from 7 Years of Building</span>
+    </a>
+    <a class="pg pg-newer" href="/blog/building-a-ble-reconnect-soak-tester/" rel="next">
+      <span class="label">newer →</span>
+      <span class="pg-title">Building a BLE Reconnect Soak Tester</span>
+    </a>
+  </nav>
+</main>
+<div class="page page-end">
+  <section class="hello" aria-labelledby="hello-h">
+    <span class="label">your turn</span>
+    <h2 id="hello-h">What are we building next?</h2>
+    <a class="btn" href="https://cal.com/zafar" target="_blank" rel="noopener">Grab 30 minutes</a>
+  </section>
+  <footer>
+    <span>made by hand in Tokyo · no frameworks</span>
+    
+    <svg viewBox="0 0 110 34" role="img" aria-label="Zafar's signature"><path d="M4 8 h20 l-18 18 h22 M34 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M50 26 c3 -8 5 -17 9 -18 c2 0 -2 8 -6 9 h8 M62 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M76 26 c2 -6 3 -8 8 -8 M86 22 c8 2 14 -1 20 -8"/></svg>
+  </footer>
+</div>
+<script>(()=>{const l=document.getElementById('lamp'),r=document.documentElement;
+const dark=()=>r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+const sync=()=>l.setAttribute('aria-pressed',String(dark()));
+l.addEventListener('click',()=>{r.dataset.theme=dark()?'light':'dark';try{localStorage.setItem('theme',r.dataset.theme)}catch(e){}sync()});sync()})()</script>
+</body>
+</html>

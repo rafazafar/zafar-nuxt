@@ -1,25 +1,15 @@
 <script setup lang="ts">
-import type { Collections, ContentEnCollectionItem, BlogCollectionItem } from '@nuxt/content'
+import type { ContentEnCollectionItem } from '@nuxt/content'
+// Written by blog/build.mjs from blog/posts/<lang>/*.md
+import latest from '~/data/blog-latest.json'
 
 defineProps<{
   page: ContentEnCollectionItem
 }>()
 
 const { locale } = useI18n()
-const localePath = useLocalePath()
 
-const { data: posts } = await useAsyncData(`index-blogs-${locale.value}`, async () => {
-  const collection = (locale.value === 'en' ? 'blog' : `blog_${locale.value}`) as keyof Collections
-  const allContent = await queryCollection(collection).all() as BlogCollectionItem[]
-  return allContent
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 3)
-}, {
-  watch: [locale]
-})
-if (!posts.value) {
-  throw createError({ statusCode: 404, statusMessage: 'blogs posts not found', fatal: true })
-}
+const posts = computed(() => (latest as Record<string, typeof latest.en>)[locale.value] ?? latest.en)
 </script>
 
 <template>
@@ -38,12 +28,16 @@ if (!posts.value) {
       class="gap-4 lg:gap-y-4"
     >
       <UBlogPost
-        v-for="(post, index) in posts"
-        :key="index"
+        v-for="post in posts"
+        :key="post.path"
         orientation="horizontal"
         variant="naked"
-        v-bind="post"
-        :to="localePath(post.path)"
+        :title="post.title"
+        :description="post.description"
+        :date="post.date"
+        :image="post.image"
+        :to="post.path"
+        external
         :ui="{
           root: 'group relative lg:items-start lg:flex ring-0 hover:ring-0',
           body: '!px-0',

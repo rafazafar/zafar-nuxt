@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Git-Spickzettel: Wichtige Befehle für Entwickler | Zafar.dev</title>
+<meta name="description" content="Eine umfassende Referenzanleitung zu Git-Befehlen und -Workflows für Entwickler aller Erfahrungsstufen, mit Tipps zur Vermeidung häufiger Fehler.">
+<link rel="icon" href="/favicon.ico">
+<link rel="canonical" href="https://zafar.dev/de/blog/git-cheatsheet/">
+<link rel="alternate" hreflang="en" href="https://zafar.dev/blog/git-cheatsheet/">
+<link rel="alternate" hreflang="ja" href="https://zafar.dev/ja/blog/git-cheatsheet/">
+<link rel="alternate" hreflang="de" href="https://zafar.dev/de/blog/git-cheatsheet/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git-Spickzettel: Wichtige Befehle für Entwickler | Zafar.dev">
+<meta property="og:description" content="Eine umfassende Referenzanleitung zu Git-Befehlen und -Workflows für Entwickler aller Erfahrungsstufen, mit Tipps zur Vermeidung häufiger Fehler.">
+<meta property="og:url" content="https://zafar.dev/de/blog/git-cheatsheet/">
+<meta property="og:image" content="https://images.unsplash.com/photo-1556075798-4825dfaaf498?q=80&amp;w=800">
+<meta property="article:published_time" content="2022-04-23">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
+<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
+</head>
+<body class="is-post">
+<div class="masthead" id="top">
+  <div class="sky" aria-hidden="true"></div>
+  <header class="top">
+    <a class="sig" href="/de">zafar ✎</a>
+    <nav class="top-r">
+      <a href="https://docs.google.com/document/d/e/2PACX-1vTqFnfyHNvn48h_-v__nIAxO77b1cJLzTVT_O5cpRvjzDlYLy6bwhQZcagAiF5dXc21eblTIPVgJy6y/pub" target="_blank" rel="noopener">Lebenslauf</a>
+      <a href="/de/blog/">Blog</a>
+      <a href="/#hello">Hallo sagen</a>
+      <button class="lamp" id="lamp" type="button" aria-label="Licht umschalten" aria-pressed="false">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 a5.5 5.5 0 0 1 3 10 v2 h-6 v-2 a5.5 5.5 0 0 1 3 -10 z M8 17 h4"/></svg>
+      </button>
+    </nav>
+  </header>
+</div>
+<script>(()=>{const P=[[0,'#070d26','#1b2350',1],[4.5,'#101a45','#3a3f74',.9],[5.6,'#34407e','#f2a58e',.55],[7,'#78c1ee','#e6f5ff',0],[15,'#5fb2e6','#d4eeff',0],[17,'#ea7f5a','#ffd79c',.2],[18.6,'#3a2d6b','#e1768c',.65],[20,'#0c1434','#2a3264',1],[24,'#070d26','#1b2350',1]];
+const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>'rgb('+rgb(a).map((v,i)=>Math.round(v+(rgb(b)[i]-v)*t)).join(',')+')';
+const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
+const h=+p.find(x=>x.type==='hour').value+p.find(x=>x.type==='minute').value/60;let i=0;while(P[i+1][0]<=h)i++;
+const a=P[i],b=P[i+1],t=(h-a[0])/(b[0]-a[0]),m=document.getElementById('top');
+m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot',mix(a[2],b[2],t));m.classList.toggle('is-night',a[3]+(b[3]-a[3])*t>.5)})()</script>
+<main class="page">
+  <a class="back" href="/de/blog/"><span aria-hidden="true">←</span> alle Notizen</a>
+  <article class="post">
+    <header class="post-head">
+      <span class="label"><time datetime="2022-04-23">23. Apr. 2022</time> · 5 Min. Lesezeit</span>
+      <h1>Git-Spickzettel: Wichtige Befehle für Entwickler</h1>
+      <p class="sub">Eine umfassende Referenzanleitung zu Git-Befehlen und -Workflows für Entwickler aller Erfahrungsstufen, mit Tipps zur Vermeidung häufiger Fehler.</p>
+    </header>
+    <figure class="cover">
+      <span class="tape"></span>
+      <img src="https://images.unsplash.com/photo-1556075798-4825dfaaf498?q=80&amp;w=800" alt="">
+    </figure>
+    <div class="prose">
+<h2 id="grundlegende-befehle"><a class="anchor" href="#grundlegende-befehle" aria-hidden="true" tabindex="-1">#</a>Grundlegende Befehle</h2>
+<ul>
+<li><code>git init</code>: Initialisiert ein neues Git-Repository</li>
+<li><code>git clone &lt;repository&gt;</code>: Klont ein vorhandenes Repository</li>
+<li><code>git add &lt;file&gt;</code>: Fügt eine Datei zum Staging-Bereich hinzu</li>
+<li><code>git commit -m &quot;&lt;message&gt;&quot;</code>: Überträgt Änderungen mit einer Nachricht</li>
+<li><code>git push</code>: Pusht Änderungen in das Remote-Repository</li>
+<li><code>git pull</code>: Holt Änderungen aus dem Remote-Repository</li>
+<li><code>git status</code>: Überprüft den Status des Repositorys</li>
+</ul>
+<h2 id="branching"><a class="anchor" href="#branching" aria-hidden="true" tabindex="-1">#</a>Branching</h2>
+<ul>
+<li><code>git branch &lt;branch&gt;</code>: Erstellt einen neuen Branch</li>
+<li><code>git checkout &lt;branch&gt;</code>: Wechselt zu einem anderen Branch</li>
+<li><code>git merge &lt;branch&gt;</code>: Führt einen Branch in den aktuellen Branch zusammen</li>
+<li><code>git branch -d &lt;branch&gt;</code>: Löscht einen Branch</li>
+</ul>
+<h2 id="andere-nützliche-befehle"><a class="anchor" href="#andere-nützliche-befehle" aria-hidden="true" tabindex="-1">#</a>Andere nützliche Befehle</h2>
+<ul>
+<li><code>git log</code>: Zeigt den Commit-Verlauf an</li>
+<li><code>git diff</code>: Zeigt die im Repository vorgenommenen Änderungen an</li>
+<li><code>git reset &lt;file&gt;</code>: Macht das Staging einer Datei rückgängig</li>
+<li><code>git stash</code>: Speichert Änderungen vorübergehend</li>
+<li><code>git stash pop</code>: Stellt die zuletzt zwischengespeicherten Änderungen wieder her</li>
+</ul>
+<h2 id="grundlegender-workflow"><a class="anchor" href="#grundlegender-workflow" aria-hidden="true" tabindex="-1">#</a>Grundlegender Workflow</h2>
+<ol>
+<li>Nehmen Sie Änderungen an Ihrem lokalen Repository vor: Erstellen oder bearbeiten Sie Dateien, fügen Sie sie mit <code>git add</code> zum Staging-Bereich hinzu und übertragen Sie die Änderungen dann mit <code>git commit</code>.</li>
+<li>Pushen Sie Ihre Änderungen in das Remote-Repository: Verwenden Sie <code>git push</code>, um Ihre übertragenen Änderungen an das Remote-Repository zu senden.</li>
+<li>Aktualisieren Sie Ihr lokales Repository mit Änderungen aus dem Remote-Repository: Verwenden Sie <code>git pull</code>, um Änderungen aus dem Remote-Repository abzurufen und in Ihr lokales Repository zusammenzuführen.</li>
+</ol>
+<h2 id="branching-workflow"><a class="anchor" href="#branching-workflow" aria-hidden="true" tabindex="-1">#</a>Branching-Workflow</h2>
+<ol>
+<li>Erstellen Sie einen neuen Branch: Verwenden Sie <code>git branch &lt;branch&gt;</code>, um einen neuen Branch zu erstellen.</li>
+<li>Wechseln Sie zum neuen Branch: Verwenden Sie <code>git checkout &lt;branch&gt;</code>, um zum neuen Branch zu wechseln.</li>
+<li>Nehmen Sie Änderungen vor und übertragen Sie sie wie gewohnt.</li>
+<li>Führen Sie den Branch in den Haupt-Branch zusammen: Wenn Sie bereit sind, die Änderungen aus Ihrem neuen Branch in den Haupt-Branch (normalerweise Master) zu übernehmen, wechseln Sie mit <code>git checkout &lt;branch&gt;</code> zurück zum Haupt-Branch und verwenden Sie dann <code>git merge &lt;branch&gt;</code>, um die Änderungen aus Ihrem neuen Branch in den Haupt-Branch zusammenzuführen.</li>
+</ol>
+<h2 id="einen-bereits-gepushten-commit-rückgängig-machen"><a class="anchor" href="#einen-bereits-gepushten-commit-rückgängig-machen" aria-hidden="true" tabindex="-1">#</a>Einen bereits gepushten Commit rückgängig machen</h2>
+<p>Wenn Sie den ursprünglichen Commit beibehalten, aber nur die von ihm vorgenommenen Änderungen rückgängig machen möchten, können Sie den Befehl <code>git revert</code> verwenden, um einen neuen Commit zu erstellen, der die vom ursprünglichen Commit vorgenommenen Änderungen rückgängig macht. Zum Beispiel:</p>
+<pre class="shiki"><code>git revert &lt;commit-hash&gt;</code></pre>
+<p>Dadurch wird ein neuer Commit erstellt, der die im ursprünglichen Commit vorgenommenen Änderungen rückgängig macht. Sie können den Revert-Commit dann in das Remote-Repository pushen, um die Änderungen auf dem Remote rückgängig zu machen.</p>
+<h2 id="häufige-entwicklerfehler-bei-der-verwendung-von-git"><a class="anchor" href="#häufige-entwicklerfehler-bei-der-verwendung-von-git" aria-hidden="true" tabindex="-1">#</a>Häufige Entwicklerfehler bei der Verwendung von Git</h2>
+<h3 id="vergessen-änderungen-zu-committen"><a class="anchor" href="#vergessen-änderungen-zu-committen" aria-hidden="true" tabindex="-1">#</a>Vergessen, Änderungen zu committen</h3>
+<p>Es ist wichtig, Ihre Änderungen regelmäßig zu committen, damit Sie einen Überblick über die von Ihnen gemachten Fortschritte haben. Wenn Sie vergessen, Ihre Änderungen zu committen, können Sie Ihre Arbeit verlieren, wenn etwas schief geht.</p>
+<h3 id="nicht-oft-genug-committen"><a class="anchor" href="#nicht-oft-genug-committen" aria-hidden="true" tabindex="-1">#</a>Nicht oft genug committen</h3>
+<p>Auf der anderen Seite ist es auch wichtig, Ihre Änderungen oft genug zu committen, damit Sie nicht zu viele Änderungen in einem einzigen Commit haben. Große Commits können schwieriger zu überprüfen und zu beheben sein, wenn es Probleme gibt.</p>
+<p>Versuchen Sie, mindestens einmal pro Stunde zu committen.</p>
+<h3 id="kein-branching"><a class="anchor" href="#kein-branching" aria-hidden="true" tabindex="-1">#</a>Kein Branching</h3>
+<p>Es ist eine gute Idee, Branches zu verwenden, wenn Sie an neuen Funktionen arbeiten oder wesentliche Änderungen an Ihrer Codebasis vornehmen. Dies hilft, Ihren Haupt-Branch (normalerweise Master) stabil zu halten und ermöglicht es Ihnen, gleichzeitig an mehreren Funktionen zu arbeiten.</p>
+<h3 id="den-haupt-branch-nicht-sauber-halten"><a class="anchor" href="#den-haupt-branch-nicht-sauber-halten" aria-hidden="true" tabindex="-1">#</a>Den Haupt-Branch nicht sauber halten</h3>
+<p>Es ist wichtig, Ihren Haupt-Branch (normalerweise Master) sauber zu halten und nur gut getesteten Code aufzunehmen. Dies erleichtert das Zurücksetzen von Änderungen bei Bedarf und verringert das Risiko, Fehler in Ihre Codebasis einzuführen.</p>
+<h3 id="änderungen-vor-dem-zusammenführen-nicht-überprüfen"><a class="anchor" href="#änderungen-vor-dem-zusammenführen-nicht-überprüfen" aria-hidden="true" tabindex="-1">#</a>Änderungen vor dem Zusammenführen nicht überprüfen</h3>
+<p>Es ist eine gute Idee, Änderungen vor dem Zusammenführen in den Haupt-Branch zu überprüfen, insbesondere wenn Sie mit einem Team arbeiten. Dies hilft sicherzustellen, dass der Code von hoher Qualität ist und keine Probleme verursacht.</p>
+
+    </div>
+  </article>
+  <nav class="pager" aria-label="More notes">
+    <span class="pg pg-empty" aria-hidden="true"></span>
+    <a class="pg pg-newer" href="/de/blog/write-better-typescript-and-less-unit-testing/" rel="next">
+      <span class="label">neuer →</span>
+      <span class="pg-title">Schreiben Sie besseres Typescript und weniger Unit-Tests</span>
+    </a>
+  </nav>
+</main>
+<div class="page page-end">
+  <section class="hello" aria-labelledby="hello-h">
+    <span class="label">du bist dran</span>
+    <h2 id="hello-h">Was bauen wir als Nächstes?</h2>
+    <a class="btn" href="https://cal.com/zafar" target="_blank" rel="noopener">30 Minuten buchen</a>
+  </section>
+  <footer>
+    <span>von Hand gemacht in Tokio · ohne Frameworks</span>
+    <span class="langs">auch auf <a href="/blog/git-cheatsheet/" hreflang="en" lang="en">English</a> · <a href="/ja/blog/git-cheatsheet/" hreflang="ja" lang="ja">日本語</a></span>
+    <svg viewBox="0 0 110 34" role="img" aria-label="Zafar's signature"><path d="M4 8 h20 l-18 18 h22 M34 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M50 26 c3 -8 5 -17 9 -18 c2 0 -2 8 -6 9 h8 M62 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M76 26 c2 -6 3 -8 8 -8 M86 22 c8 2 14 -1 20 -8"/></svg>
+  </footer>
+</div>
+<script>(()=>{const l=document.getElementById('lamp'),r=document.documentElement;
+const dark=()=>r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+const sync=()=>l.setAttribute('aria-pressed',String(dark()));
+l.addEventListener('click',()=>{r.dataset.theme=dark()?'light':'dark';try{localStorage.setItem('theme',r.dataset.theme)}catch(e){}sync()});sync()})()</script>
+</body>
+</html>
