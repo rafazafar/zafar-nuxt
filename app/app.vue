@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Collections } from '@nuxt/content'
-
 const colorMode = useColorMode()
 const { locale } = useI18n()
 
@@ -26,28 +24,6 @@ useSeoMeta({
   titleTemplate: '%s - Zafar Portfolio',
   twitterCard: 'summary_large_image'
 })
-
-const [{ data: navigation }, { data: files }] = await Promise.all([
-  useAsyncData(`navigation-${locale.value}`, () => {
-    const collection = `content_${locale.value}` as keyof Collections
-    return Promise.all([
-      queryCollectionNavigation(collection)
-    ])
-  }, {
-    watch: [locale],
-    transform: data => data.flat()
-  }),
-  useLazyAsyncData(`search-${locale.value}`, () => {
-    const collection = `content_${locale.value}` as keyof Collections
-    return Promise.all([
-      queryCollectionSearchSections(collection)
-    ])
-  }, {
-    server: false,
-    watch: [locale],
-    transform: data => data.flat()
-  })
-])
 </script>
 
 <template>
@@ -58,15 +34,5 @@ const [{ data: navigation }, { data: files }] = await Promise.all([
         <NuxtPage />
       </UMain>
     </NuxtLayout>
-
-    <ClientOnly>
-      <LazyUContentSearch
-        :files="files"
-        :navigation="navigation"
-        shortcut="meta_k"
-        :links="useNavLinks()"
-        :fuse="{ resultLimit: 42 }"
-      />
-    </ClientOnly>
   </UApp>
 </template>

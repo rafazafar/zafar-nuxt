@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { ContentEnCollectionItem } from '@nuxt/content'
+import type { IndexPage } from '~/utils/content'
 // Written by blog/build.mjs from blog/posts/<lang>/*.md
 import latest from '~/data/blog-latest.json'
 
 defineProps<{
-  page: ContentEnCollectionItem
+  page: IndexPage
 }>()
 
 const { locale } = useI18n()

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { Collections } from '@nuxt/content'
 import type { NuxtError } from '#app'
 
 defineProps({
@@ -23,28 +22,6 @@ useSeoMeta({
 })
 
 const navLinks = useNavLinks()
-
-const [{ data: navigation }, { data: files }] = await Promise.all([
-  useAsyncData(`navigation-${locale.value}`, () => {
-    const collection = `content_${locale.value}` as keyof Collections
-    return Promise.all([
-      queryCollectionNavigation(collection)
-    ])
-  }, {
-    watch: [locale],
-    transform: data => data.flat()
-  }),
-  useLazyAsyncData(`search-${locale.value}`, () => {
-    const collection = `content_${locale.value}` as keyof Collections
-    return Promise.all([
-      queryCollectionSearchSections(collection)
-    ])
-  }, {
-    server: false,
-    watch: [locale],
-    transform: data => data.flat()
-  })
-])
 </script>
 
 <template>
@@ -60,16 +37,6 @@ const [{ data: navigation }, { data: files }] = await Promise.all([
     </UMain>
 
     <AppFooter />
-
-    <ClientOnly>
-      <LazyUContentSearch
-        :files="files"
-        shortcut="meta_k"
-        :navigation="navigation"
-        :links="navLinks"
-        :fuse="{ resultLimit: 42 }"
-      />
-    </ClientOnly>
 
     <UToaster />
   </div>

@@ -33,7 +33,7 @@ This is a personal portfolio website built with Nuxt 4, showcasing Zafar's work,
   - `layouts/` - Layout components
   - `assets/css/` - Global CSS
   - `utils/` - Utility functions (clipboard, links)
-- `content/` - Content collections managed by Nuxt Content
+- `content/` - Page content as plain YAML, bundled at build time by `app/utils/content.ts` (no Nuxt Content, no database)
   - `projects/` - Project data in YAML
   - Individual YAML files for page content (about.yml, speaking.yml, etc.)
 - `public/` - Static assets including images organized by project/category
@@ -42,22 +42,22 @@ This is a personal portfolio website built with Nuxt 4, showcasing Zafar's work,
 ### Key Technologies
 - **Nuxt 4** (upgraded from v3 with full v4 support)
 - **Nuxt UI Pro** for UI components
-- **Nuxt Content** for content management with structured collections
 - **Nuxt Image** for optimized images
 - **Motion-v** for animations
 - **VueUse** for Vue composition utilities
 - **Nuxt OG Image** for social media previews
-- **Better SQLite3** for potential database operations
 
 ### Content Management
-The project uses a sophisticated content management system via Nuxt Content with:
-- Typed content collections defined in `content.config.ts`
-- YAML-based content for structured data (projects, speaking events, page content)
-- Image management through structured schemas
+Content is plain YAML in `content/<locale>/`. A small Vite plugin in `nuxt.config.ts` turns `.yml` imports into objects, and `app/utils/content.ts` exposes typed helpers:
+- `getPage(locale, 'index' | 'about' | 'speaking' | 'projects')` - falls back to English
+- `getProjects(locale)` - every file in `content/<locale>/projects/`, newest first
+- `renderMarkdown(text)` - for the short Markdown fields (about text, FAQ answers)
+
+The types for each file live in `app/utils/content.ts`. Edit the YAML and rebuild; there is nothing to query at runtime.
 
 ### Deployment Configuration
-- **Target**: Cloudflare Pages with module preset
-- **Prerendering**: Nuxt pages are prerendered by crawling from `/projects`, `/ja` and `/de`. `/` and the blog are static files in `public/`, which the crawler ignores
+- **Target**: Cloudflare Workers (`cloudflare_module` preset), configured in `wrangler.jsonc` (Cloudflare's build runs `npx wrangler deploy`, which needs that file)
+- **Rendering**: SSR only, no prerendering. `/` and the blog are static files in `public/`, served as assets before the Worker runs
 - **Observability**: Cloudflare logging enabled
 
 ### Styling and UI
@@ -69,7 +69,7 @@ The project uses a sophisticated content management system via Nuxt Content with
 ## Development Notes
 
 ### Content Structure
-Each content collection has a defined schema:
+Each YAML file has a TypeScript type in `app/utils/content.ts`:
 - **Projects**: Include title, description, image, URL, tags, and date
 - **Speaking events**: Categorized as Live talk, Podcast, or Conference
 - **Index page**: Contains hero, about, experience, testimonials, blog, and FAQ sections

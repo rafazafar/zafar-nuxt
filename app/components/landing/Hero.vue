@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { ContentEnCollectionItem } from '@nuxt/content'
+import type { IndexPage } from '~/utils/content'
 
 const { footer, global } = useAppConfig()
 
 defineProps<{
-  page: ContentEnCollectionItem
+  page: IndexPage
 }>()
 
 const motto = 'Don\'t Stop Building'

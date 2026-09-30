@@ -1,38 +1,9 @@
 <script setup lang="ts">
-import type { Collections, ProjectsCollectionItem } from '@nuxt/content'
-
 const { locale } = useI18n()
 const { global } = useAppConfig()
 
-const pageCollection = computed(() =>
-  (locale.value === 'en' ? 'projects_page' : `projects_page_${locale.value}`) as keyof Collections
-)
-const listCollection = computed(() =>
-  (locale.value === 'en' ? 'projects' : `projects_${locale.value}`) as keyof Collections
-)
-
-const { data: page } = await useAsyncData(
-  () => `projects-hub-${locale.value}`,
-  async () => queryCollection(pageCollection.value).first(),
-  { watch: [locale] }
-)
-
-if (!page.value) {
-  throw createError({
-    statusCode: 404,
-    statusMessage: 'Projects page not found',
-    fatal: true
-  })
-}
-
-const { data: projects } = await useAsyncData(
-  () => `projects-list-${locale.value}`,
-  async () => {
-    const all = await queryCollection(listCollection.value).all() as ProjectsCollectionItem[]
-    return all.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-  },
-  { watch: [locale] }
-)
+const page = computed(() => getPage(locale.value, 'projects'))
+const projects = computed(() => getProjects(locale.value))
 
 const ctaProject = computed(() =>
   (projects.value ?? []).find(p => p.url === global.meetingLink) ?? null

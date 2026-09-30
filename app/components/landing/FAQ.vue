@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { ContentEnCollectionItem } from '@nuxt/content'
+import type { IndexPage } from '~/utils/content'
 
 const props = defineProps<{
-  page: ContentEnCollectionItem
+  page: IndexPage
 }>()
 
 const items = computed(() => {
@@ -52,11 +52,12 @@ const ui = {
           }"
         >
           <template #body="{ item: _item }">
-            <MDC
-              :value="(_item as { content: string }).content"
-              unwrap="p"
-              class="px-4"
+            <!-- eslint-disable vue/no-v-html -- trusted Markdown from our own content/*.yml -->
+            <div
+              class="px-4 [&_a]:underline"
+              v-html="renderMarkdown((_item as { content: string }).content)"
             />
+            <!-- eslint-enable vue/no-v-html -->
           </template>
         </UAccordion>
       </template>

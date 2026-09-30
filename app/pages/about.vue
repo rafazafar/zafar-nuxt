@@ -1,21 +1,7 @@
 <script setup lang="ts">
-import type { Collections, AboutCollectionItem } from '@nuxt/content'
-
 const { locale } = useI18n()
 
-const { data: page } = await useAsyncData(`about-${locale.value}`, async () => {
-  const collection = (locale.value === 'en' ? 'about' : `about_${locale.value}`) as keyof Collections
-  return await queryCollection(collection).first() as AboutCollectionItem | null
-}, {
-  watch: [locale]
-})
-if (!page.value) {
-  throw createError({
-    statusCode: 404,
-    statusMessage: 'Page not found',
-    fatal: true
-  })
-}
+const page = computed(() => getPage(locale.value, 'about'))
 
 const { global } = useAppConfig()
 
@@ -53,10 +39,12 @@ useSeoMeta({
         container: '!pt-0'
       }"
     >
-      <MDC
-        :value="page.content"
-        unwrap="p"
+      <!-- eslint-disable vue/no-v-html -- trusted Markdown from our own content/*.yml -->
+      <div
+        class="space-y-4 [&_a]:underline"
+        v-html="renderMarkdown(page.content)"
       />
+      <!-- eslint-enable vue/no-v-html -->
       <div class="flex flex-row justify-center items-center py-10 space-x-[-2rem]">
         <PolaroidItem
           v-for="(image, index) in page.images"

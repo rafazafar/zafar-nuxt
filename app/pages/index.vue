@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Collections, ContentEnCollectionItem } from '@nuxt/content'
-
 const { locale } = useI18n()
 
 useHead({
@@ -9,20 +7,7 @@ useHead({
   }
 })
 
-const { data: page } = await useAsyncData(`index-${locale.value}`, async () => {
-  const collection = `content_${locale.value}` as keyof Collections
-  return await queryCollection(collection).first() as ContentEnCollectionItem | null
-}, {
-  watch: [locale]
-})
-
-if (!page.value) {
-  throw createError({
-    statusCode: 404,
-    statusMessage: 'Page not found',
-    fatal: true
-  })
-}
+const page = computed(() => getPage(locale.value, 'index'))
 
 useSeoMeta({
   title: page.value?.seo?.title || page.value?.title,

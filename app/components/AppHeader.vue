@@ -26,9 +26,6 @@ watch(() => route.fullPath, () => {
         linkLeadingIcon: 'hidden'
       }"
     >
-      <template #list-leading>
-        <UContentSearchButton size="sm" class="min-h-11 min-w-11" />
-      </template>
       <template #list-trailing>
         <LanguageSelector />
         <ColorModeButton />
@@ -37,7 +34,6 @@ watch(() => route.fullPath, () => {
 
     <!-- Mobile bar -->
     <div class="pointer-events-auto md:hidden flex items-center gap-2 w-full max-w-lg bg-muted/90 backdrop-blur-sm rounded-full px-2 py-1.5 border border-muted/50 shadow-lg shadow-neutral-950/5 safe-area-pad">
-      <UContentSearchButton size="sm" class="min-h-11 min-w-11 shrink-0" />
       <div class="flex-1" />
       <LanguageSelector />
       <ColorModeButton />
