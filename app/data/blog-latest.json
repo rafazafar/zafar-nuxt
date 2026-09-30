@@ -5,7 +5,7 @@
       "description": "A field-tested look at Core Bluetooth restoration, Android foreground services, and why locked-screen reconnect promises need evidence.",
       "date": "2026-07-04",
       "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=1200&auto=format&fit=crop",
-      "minRead": 8,
+      "minRead": 4,
       "path": "/blog/ios-background-ble-is-not-android-background-ble/"
     },
     {
@@ -13,7 +13,7 @@
       "description": "BLE, MQTT5, local brokers, and product decisions for systems where the network path is allowed to go away.",
       "date": "2026-07-03",
       "image": "https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=1200&auto=format&fit=crop",
-      "minRead": 9,
+      "minRead": 4,
       "path": "/blog/realtime-telemetry-unreliable-local-infrastructure/"
     },
     {
@@ -21,59 +21,59 @@
       "description": "A practical testing approach for mobile apps that need evidence for Bluetooth reconnect behavior instead of another hopeful demo.",
       "date": "2026-07-02",
       "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop",
-      "minRead": 7,
+      "minRead": 4,
       "path": "/blog/building-a-ble-reconnect-soak-tester/"
     }
   ],
   "ja": [
     {
-      "title": "スケールでのシステム設計：7年間の構築からの教訓",
-      "description": "ゼロから数十万ユーザーまで製品をスケーリングする際に学んだ重要なアーキテクチャ上の意思決定とパターン",
+      "title": "システムの成長に向き合った7年間で学んだこと",
+      "description": "モジュールの境界、データベースの負荷、チームが保守できる設計について、経験から振り返ります。",
       "date": "2025-12-15",
       "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800",
-      "minRead": 8,
+      "minRead": 2,
       "path": "/ja/blog/system-design-at-scale/"
     },
     {
-      "title": "技術的意思決定の芸術",
-      "description": "シニアエンジニアがトレードオフを評価し、時間の試練に耐える意思決定を行う方法",
+      "title": "後から振り返れる技術判断の進め方",
+      "description": "時間がたった後の負担と、選択を変える難しさを確認してから、技術を選びます。",
       "date": "2025-11-28",
       "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800",
-      "minRead": 6,
+      "minRead": 2,
       "path": "/ja/blog/technical-decision-making/"
     },
     {
-      "title": "レジリエントアーキテクチャの構築：実践ガイド",
-      "description": "障害を優雅に乗り越え、迅速に回復するシステムを構築するための実践的パターン",
+      "title": "依存先が停止したとき、どう動くか",
+      "description": "サーキットブレーカー、資源の分離、代替処理を使い、障害の影響と復旧方法を考えます。",
       "date": "2025-10-15",
       "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800",
-      "minRead": 7,
+      "minRead": 2,
       "path": "/ja/blog/resilient-architecture/"
     }
   ],
   "de": [
     {
-      "title": "Systemdesign im Maßstab: Lektionen aus 7 Jahren Entwicklung",
-      "description": "Wichtige architektonische Entscheidungen und Muster, die ich beim Skalieren von Produkten von null auf Hunderttausende Nutzer gelernt habe.",
+      "title": "Was ich in sieben Jahren über Skalierung gelernt habe",
+      "description": "Klare Modulgrenzen, beobachtete Datenbanklast und Systeme, die das Team langfristig warten kann.",
       "date": "2025-12-15",
       "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800",
-      "minRead": 8,
+      "minRead": 2,
       "path": "/de/blog/system-design-at-scale/"
     },
     {
-      "title": "Die Kunst der technischen Entscheidungsfindung",
-      "description": "Wie Senior-Engineering Trade-offs evaluieren und Entscheidungen treffen, die den Test der Zeit bestehen.",
+      "title": "Technische Entscheidungen, mit denen das Team arbeiten kann",
+      "description": "Fragen zu Zeit, Umkehrbarkeit und den Menschen, die das Ergebnis betreiben werden.",
       "date": "2025-11-28",
       "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800",
-      "minRead": 6,
+      "minRead": 2,
       "path": "/de/blog/technical-decision-making/"
     },
     {
-      "title": "Resiliente Architektur aufbauen: Ein praktischer Leitfaden",
-      "description": "Praktische Muster für den Aufbau von Systemen, die Ausfälle elegant überstehen und sich schnell erholen.",
+      "title": "Was passiert, wenn eine Abhängigkeit ausfällt?",
+      "description": "Circuit Breaker, getrennte Ressourcen und geplante Fallbacks begrenzen die Folgen eines Ausfalls.",
       "date": "2025-10-15",
       "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800",
-      "minRead": 7,
+      "minRead": 2,
       "path": "/de/blog/resilient-architecture/"
     }
   ]

@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Git Cheatsheet: Essential Commands for Developers | Zafar.dev</title>
-<meta name="description" content="A comprehensive reference guide to Git commands and workflows for developers of all experience levels, with tips to avoid common mistakes.">
+<title>The Git commands I keep close by | Zafar.dev</title>
+<meta name="description" content="A short reference for everyday changes, branches, temporary work, and undoing a shared commit.">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://zafar.dev/blog/git-cheatsheet/">
 <link rel="alternate" hreflang="en" href="https://zafar.dev/blog/git-cheatsheet/">
 <link rel="alternate" hreflang="ja" href="https://zafar.dev/ja/blog/git-cheatsheet/">
 <link rel="alternate" hreflang="de" href="https://zafar.dev/de/blog/git-cheatsheet/">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Git Cheatsheet: Essential Commands for Developers | Zafar.dev">
-<meta property="og:description" content="A comprehensive reference guide to Git commands and workflows for developers of all experience levels, with tips to avoid common mistakes.">
+<meta property="og:title" content="The Git commands I keep close by | Zafar.dev">
+<meta property="og:description" content="A short reference for everyday changes, branches, temporary work, and undoing a shared commit.">
 <meta property="og:url" content="https://zafar.dev/blog/git-cheatsheet/">
 <meta property="og:image" content="https://images.unsplash.com/photo-1556075798-4825dfaaf498?q=80&amp;w=800">
 <meta property="article:published_time" content="2022-04-23">
@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
-<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<link rel="stylesheet" href="/blog/blog.css?v=18a31658">
 <script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body class="is-post">
@@ -48,69 +48,59 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
   <a class="back" href="/blog/"><span aria-hidden="true">←</span> all notes</a>
   <article class="post">
     <header class="post-head">
-      <span class="label"><time datetime="2022-04-23">Apr 23, 2022</time> · 5 min read</span>
-      <h1>Git Cheatsheet: Essential Commands for Developers</h1>
-      <p class="sub">A comprehensive reference guide to Git commands and workflows for developers of all experience levels, with tips to avoid common mistakes.</p>
+      <span class="label"><time datetime="2022-04-23">Apr 23, 2022</time> · 2 min read</span>
+      <h1>The Git commands I keep close by</h1>
+      <p class="sub">A short reference for everyday changes, branches, temporary work, and undoing a shared commit.</p>
     </header>
     <figure class="cover">
       <span class="tape"></span>
       <img src="https://images.unsplash.com/photo-1556075798-4825dfaaf498?q=80&amp;w=800" alt="">
     </figure>
     <div class="prose">
-<h2 id="basic-commands"><a class="anchor" href="#basic-commands" aria-hidden="true" tabindex="-1">#</a>Basic Commands</h2>
-<ul>
-<li><code>git init</code>: Initialize a new Git repository</li>
-<li><code>git clone &lt;repository&gt;</code>: Clone an existing repository</li>
-<li><code>git add &lt;file&gt;</code>: Add a file to the staging area</li>
-<li><code>git commit -m &quot;&lt;message&gt;&quot;</code>: Commit changes with a message</li>
-<li><code>git push</code>: Push changes to the remote repository</li>
-<li><code>git pull</code>: Pull changes from the remote repository</li>
-<li><code>git status</code>: Check the status of the repository</li>
-</ul>
-<h2 id="branching"><a class="anchor" href="#branching" aria-hidden="true" tabindex="-1">#</a>Branching</h2>
-<ul>
-<li><code>git branch &lt;branch&gt;</code>: Create a new branch</li>
-<li><code>git checkout &lt;branch&gt;</code>: Switch to a different branch</li>
-<li><code>git merge &lt;branch&gt;</code>: Merge a branch into the current branch</li>
-<li><code>git branch -d &lt;branch&gt;</code>: Delete a branch</li>
-</ul>
-<h2 id="other-useful-commands"><a class="anchor" href="#other-useful-commands" aria-hidden="true" tabindex="-1">#</a>Other Useful Commands</h2>
-<ul>
-<li><code>git log</code>: View the commit history</li>
-<li><code>git diff</code>: View the changes made in the repository</li>
-<li><code>git reset &lt;file&gt;</code>: Unstage a file</li>
-<li><code>git stash</code>: Save changes temporarily</li>
-<li><code>git stash pop</code>: Restore the most recently stashed changes</li>
-</ul>
-<h2 id="basic-workflow"><a class="anchor" href="#basic-workflow" aria-hidden="true" tabindex="-1">#</a>Basic Workflow</h2>
-<ol>
-<li>Make changes to your local repository: Create or edit files, add them to the staging area using <code>git add</code>, and then commit the changes using <code>git commit</code>.</li>
-<li>Push your changes to the remote repository: Use <code>git push</code> to send your committed changes to the remote repository.</li>
-<li>Update your local repository with changes from the remote repository: Use <code>git pull</code> to fetch and merge changes from the remote repository into your local repository.</li>
+<p>Most everyday Git work follows a short path: edit files, choose what belongs in a commit, record it, and share it. I find the commands easier to remember when I keep those steps separate.</p>
+<figure class="concept concept--flow">
+<div class="concept-title">Where your changes go</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3h7l5 5v13H7z M14 3v6h5 M10 13h6 M10 17h6"/></svg><strong>Working files</strong><span>Edit your files.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12l5 5L20 6"/></svg><strong>Staging area</strong><span>git add selects changes.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6c0-4 18-4 18 0s-18 4-18 0v12c0 4 18 4 18 0V6 M3 12c0 4 18 4 18 0"/></svg><strong>Local history</strong><span>git commit records them.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 18a4 4 0 0 1-1-8 7 7 0 0 1 13-1 4.5 4.5 0 0 1 0 9z"/></svg><strong>Remote</strong><span>git push shares commits.</span></li>
 </ol>
-<h2 id="branching-workflow"><a class="anchor" href="#branching-workflow" aria-hidden="true" tabindex="-1">#</a>Branching Workflow</h2>
-<ol>
-<li>Create a new branch: Use <code>git branch &lt;branch&gt;</code> to create a new branch.</li>
-<li>Switch to the new branch: Use <code>git checkout &lt;branch&gt;</code> to switch to the new branch.</li>
-<li>Make changes and commit them as usual.</li>
-<li>Merge the branch into the main branch: When you are ready to incorporate the changes from your new branch into the main branch (usually master), switch back to the main branch using <code>git checkout &lt;branch&gt;</code> and then use <code>git merge &lt;branch&gt;</code> to merge the changes from your new branch into the main branch.</li>
-</ol>
-<h2 id="undo-a-commit-that-39-s-already-pushed"><a class="anchor" href="#undo-a-commit-that-39-s-already-pushed" aria-hidden="true" tabindex="-1">#</a>Undo a Commit That&#39;s Already Pushed</h2>
-<p>If you want to leave the original commit in place, but just undo the changes it made, you can use the <code>git revert</code> command to create a new commit that undoes the changes made by the original commit. For example:</p>
+<figcaption>Staging selects the next snapshot. A local commit does not send it to the remote.</figcaption>
+</figure>
+
+<h2 id="start-a-repository-and-check-your-work"><a class="anchor" href="#start-a-repository-and-check-your-work" aria-hidden="true" tabindex="-1">#</a>Start a repository and check your work</h2>
+<ul>
+<li><code>git init</code>: Create a repository in the current directory.</li>
+<li><code>git clone &lt;repository&gt;</code>: Copy an existing repository.</li>
+<li><code>git status</code>: Check the current branch and file states.</li>
+<li><code>git diff</code>: Read changes in tracked files that you have not staged.</li>
+<li><code>git log</code>: Read the commit history.</li>
+</ul>
+<p>Check the state before making a commit or changing branches. It is easier to choose the next command when you know where your changes are.</p>
+<h2 id="record-and-share-a-change"><a class="anchor" href="#record-and-share-a-change" aria-hidden="true" tabindex="-1">#</a>Record and share a change</h2>
+<p>Use <code>git add &lt;file&gt;</code> to stage the changes you want in the next commit. Then use <code>git commit -m &quot;&lt;message&gt;&quot;</code> to record them locally. <code>git push</code> sends your commits to the remote repository.</p>
+<p>To bring remote changes into your current branch, use <code>git pull</code>. It fetches and integrates changes; the integration method depends on your configuration and options.</p>
+<p>The normal workflow is to edit, stage, commit, and push. Keep your branch up to date with the team&#39;s work as you go.</p>
+<h2 id="work-on-a-branch"><a class="anchor" href="#work-on-a-branch" aria-hidden="true" tabindex="-1">#</a>Work on a branch</h2>
+<ul>
+<li><code>git branch &lt;branch&gt;</code>: Create a branch.</li>
+<li><code>git checkout &lt;branch&gt;</code>: Switch to that branch.</li>
+<li><code>git merge &lt;branch&gt;</code>: Merge the named branch into your current branch.</li>
+<li><code>git branch -d &lt;branch&gt;</code>: Delete a branch when Git&#39;s merge checks allow it.</li>
+</ul>
+<p>For a feature, create a branch and switch to it. Make and commit the changes there. When the work is ready, switch back to your project&#39;s main branch and merge the feature branch into it.</p>
+<p>The current branch matters: <code>git merge</code> changes the branch you are on.</p>
+<h2 id="set-unfinished-work-aside"><a class="anchor" href="#set-unfinished-work-aside" aria-hidden="true" tabindex="-1">#</a>Set unfinished work aside</h2>
+<p><code>git reset &lt;file&gt;</code> removes a file&#39;s changes from the staging area while keeping the working copy. It is useful when you staged more than you intended.</p>
+<p><code>git stash</code> temporarily stores local changes. <code>git stash pop</code> applies the most recent stash and removes it if the application succeeds. These commands help when you need to interrupt one piece of work for another.</p>
+<h2 id="undo-a-commit-that-is-already-shared"><a class="anchor" href="#undo-a-commit-that-is-already-shared" aria-hidden="true" tabindex="-1">#</a>Undo a commit that is already shared</h2>
+<p>Use <code>git revert</code> when you want a new commit that reverses an earlier commit while keeping the history:</p>
 <pre class="shiki"><code>git revert &lt;commit-hash&gt;</code></pre>
-<p>This will create a new commit that undoes the changes made in the original commit. You can then push the revert commit to the remote repository to undo the changes on the remote.</p>
-<h2 id="common-developer-mistakes-when-using-git"><a class="anchor" href="#common-developer-mistakes-when-using-git" aria-hidden="true" tabindex="-1">#</a>Common Developer Mistakes When Using Git</h2>
-<h3 id="forgetting-to-commit-changes"><a class="anchor" href="#forgetting-to-commit-changes" aria-hidden="true" tabindex="-1">#</a>Forgetting to Commit Changes</h3>
-<p>It&#39;s important to commit your changes regularly so that you have a record of the progress you have made. If you forget to commit your changes, you may lose your work if something goes wrong.</p>
-<h3 id="not-committing-often-enough"><a class="anchor" href="#not-committing-often-enough" aria-hidden="true" tabindex="-1">#</a>Not Committing Often Enough</h3>
-<p>On the other hand, it&#39;s also important to commit your changes often enough so that you don&#39;t have too many changes in a single commit. Large commits can be harder to review and troubleshoot if there are problems.</p>
-<p>Try to commit at least once per hour.</p>
-<h3 id="not-branching"><a class="anchor" href="#not-branching" aria-hidden="true" tabindex="-1">#</a>Not Branching</h3>
-<p>It&#39;s a good idea to use branches when working on new features or making significant changes to your codebase. This helps to keep your main branch (usually master) stable and allows you to work on multiple features at the same time.</p>
-<h3 id="not-keeping-the-main-branch-clean"><a class="anchor" href="#not-keeping-the-main-branch-clean" aria-hidden="true" tabindex="-1">#</a>Not Keeping the Main Branch Clean</h3>
-<p>It&#39;s important to keep your main branch (usually master) clean and only include well-tested code. This makes it easier to roll back changes if necessary and reduces the risk of introducing bugs into your codebase.</p>
-<h3 id="not-reviewing-changes-before-merging"><a class="anchor" href="#not-reviewing-changes-before-merging" aria-hidden="true" tabindex="-1">#</a>Not Reviewing Changes Before Merging</h3>
-<p>It&#39;s a good idea to review changes before merging them into the main branch, especially if you are working with a team. This helps to ensure that the code is of high quality and does not introduce any issues.</p>
+<p>Push the revert commit to share that reversal with the team. The original commit remains in the history, along with the explanation of how it was undone.</p>
+<h2 id="keep-commits-small-enough-to-review"><a class="anchor" href="#keep-commits-small-enough-to-review" aria-hidden="true" tabindex="-1">#</a>Keep commits small enough to review</h2>
+<p>Uncommitted work has no commit history to return to. I try to commit at least once an hour while working, but a useful commit should also describe one coherent change. Large batches make review and fault finding harder.</p>
+<p>Use branches for features and significant changes. Review and test the work before merging it into the main branch. Keeping that branch stable makes a later rollback easier and gives teammates a reliable starting point.</p>
 
     </div>
   </article>
@@ -118,7 +108,7 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
     <span class="pg pg-empty" aria-hidden="true"></span>
     <a class="pg pg-newer" href="/blog/write-better-typescript-and-less-unit-testing/" rel="next">
       <span class="label">newer →</span>
-      <span class="pg-title">Write better Typescript and less Unit Testing</span>
+      <span class="pg-title">Better TypeScript, more useful tests</span>
     </a>
   </nav>
 </main>

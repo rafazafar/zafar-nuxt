@@ -1,79 +1,71 @@
 ---
-title: "Git-Spickzettel: Wichtige Befehle für Entwickler"
-description: Eine umfassende Referenzanleitung zu Git-Befehlen und -Workflows für Entwickler aller Erfahrungsstufen, mit Tipps zur Vermeidung häufiger Fehler.
+title: "Git-Befehle zum Nachschlagen"
+description: "Eine kurze Hilfe für Änderungen, Branches, unfertige Arbeit und das Rückgängigmachen geteilter Commits."
 date: 2022-04-23
 image: https://images.unsplash.com/photo-1556075798-4825dfaaf498?q=80&w=800
-minRead: 5
+minRead: 2
 ---
 
-## Grundlegende Befehle
+Die meisten Git-Aufgaben folgen einem kurzen Ablauf: Dateien ändern, Änderungen für einen Commit auswählen, den Commit erstellen und ihn teilen. Die Befehle lassen sich leichter einordnen, wenn diese Schritte klar getrennt bleiben.
 
-- `git init`: Initialisiert ein neues Git-Repository
-- `git clone <repository>`: Klont ein vorhandenes Repository
-- `git add <file>`: Fügt eine Datei zum Staging-Bereich hinzu
-- `git commit -m "<message>"`: Überträgt Änderungen mit einer Nachricht
-- `git push`: Pusht Änderungen in das Remote-Repository
-- `git pull`: Holt Änderungen aus dem Remote-Repository
-- `git status`: Überprüft den Status des Repositorys
+<figure class="concept concept--flow">
+<div class="concept-title">Wohin deine Änderungen gehen</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3h7l5 5v13H7z M14 3v6h5 M10 13h6 M10 17h6"/></svg><strong>Arbeitsdateien</strong><span>Dateien bearbeiten.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12l5 5L20 6"/></svg><strong>Staging</strong><span>Mit git add auswählen.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6c0-4 18-4 18 0s-18 4-18 0v12c0 4 18 4 18 0V6 M3 12c0 4 18 4 18 0"/></svg><strong>Lokale Historie</strong><span>Mit git commit speichern.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 18a4 4 0 0 1-1-8 7 7 0 0 1 13-1 4.5 4.5 0 0 1 0 9z"/></svg><strong>Remote</strong><span>Mit git push teilen.</span></li>
+</ol>
+<figcaption>Staging wählt den nächsten Stand aus. Ein lokaler Commit sendet noch nichts an das Remote.</figcaption>
+</figure>
 
-## Branching
+## Anfangen und den Zustand prüfen
 
-- `git branch <branch>`: Erstellt einen neuen Branch
-- `git checkout <branch>`: Wechselt zu einem anderen Branch
-- `git merge <branch>`: Führt einen Branch in den aktuellen Branch zusammen
-- `git branch -d <branch>`: Löscht einen Branch
+- `git init`: Ein neues Repository im aktuellen Verzeichnis anlegen.
+- `git clone <repository>`: Ein vorhandenes Repository kopieren.
+- `git status`: Branch und Dateizustände prüfen.
+- `git diff`: Noch nicht gestagte Änderungen an versionierten Dateien ansehen.
+- `git log`: Die Commit-Historie lesen.
 
-## Andere nützliche Befehle
+Vor einem Commit oder Branch-Wechsel lohnt sich der Blick auf den Zustand. Dann ist klar, wo die eigene Arbeit liegt.
 
-- `git log`: Zeigt den Commit-Verlauf an
-- `git diff`: Zeigt die im Repository vorgenommenen Änderungen an
-- `git reset <file>`: Macht das Staging einer Datei rückgängig
-- `git stash`: Speichert Änderungen vorübergehend
-- `git stash pop`: Stellt die zuletzt zwischengespeicherten Änderungen wieder her
+## Änderungen speichern und teilen
 
-## Grundlegender Workflow
+Mit `git add <file>` wählst du Änderungen für den nächsten Commit aus. `git commit -m "<message>"` speichert sie lokal in der Historie. Erst `git push` überträgt die Commits an das Remote-Repository.
 
-1. Nehmen Sie Änderungen an Ihrem lokalen Repository vor: Erstellen oder bearbeiten Sie Dateien, fügen Sie sie mit `git add` zum Staging-Bereich hinzu und übertragen Sie die Änderungen dann mit `git commit`.
-2. Pushen Sie Ihre Änderungen in das Remote-Repository: Verwenden Sie `git push`, um Ihre übertragenen Änderungen an das Remote-Repository zu senden.
-3. Aktualisieren Sie Ihr lokales Repository mit Änderungen aus dem Remote-Repository: Verwenden Sie `git pull`, um Änderungen aus dem Remote-Repository abzurufen und in Ihr lokales Repository zusammenzuführen.
+`git pull` holt entfernte Änderungen und integriert sie in den aktuellen Branch. Wie die Integration erfolgt, hängt von Konfiguration und Optionen ab.
 
-## Branching-Workflow
+Im Alltag heißt das: bearbeiten, stagen, committen und pushen. Hole während der Arbeit auch die Änderungen des Teams in deinen Branch.
 
-1. Erstellen Sie einen neuen Branch: Verwenden Sie `git branch <branch>`, um einen neuen Branch zu erstellen.
-2. Wechseln Sie zum neuen Branch: Verwenden Sie `git checkout <branch>`, um zum neuen Branch zu wechseln.
-3. Nehmen Sie Änderungen vor und übertragen Sie sie wie gewohnt.
-4. Führen Sie den Branch in den Haupt-Branch zusammen: Wenn Sie bereit sind, die Änderungen aus Ihrem neuen Branch in den Haupt-Branch (normalerweise Master) zu übernehmen, wechseln Sie mit `git checkout <branch>` zurück zum Haupt-Branch und verwenden Sie dann `git merge <branch>`, um die Änderungen aus Ihrem neuen Branch in den Haupt-Branch zusammenzuführen.
+## Auf einem Branch arbeiten
 
-## Einen bereits gepushten Commit rückgängig machen
+- `git branch <branch>`: Einen Branch erstellen.
+- `git checkout <branch>`: Zu einem Branch wechseln.
+- `git merge <branch>`: Den genannten Branch in den aktuellen Branch übernehmen.
+- `git branch -d <branch>`: Einen Branch löschen, sofern die Merge-Prüfungen von Git das erlauben.
 
-Wenn Sie den ursprünglichen Commit beibehalten, aber nur die von ihm vorgenommenen Änderungen rückgängig machen möchten, können Sie den Befehl `git revert` verwenden, um einen neuen Commit zu erstellen, der die vom ursprünglichen Commit vorgenommenen Änderungen rückgängig macht. Zum Beispiel:
+Für eine Funktion erstellst du einen Branch und wechselst dorthin. Nach Arbeit, Tests und Review wechselst du zum Hauptbranch zurück und mergst den Feature-Branch.
+
+Bei `git merge` ist wichtig, auf welchem Branch du gerade stehst. Dieser Branch wird geändert.
+
+## Unfertige Arbeit beiseitelegen
+
+`git reset <file>` nimmt Änderungen aus dem Staging-Bereich. Die Arbeitskopie bleibt erhalten. Das hilft, wenn du versehentlich zu viel ausgewählt hast.
+
+`git stash` legt lokale Änderungen vorübergehend ab. `git stash pop` wendet den neuesten Stash an und entfernt ihn, wenn das erfolgreich war. So lässt sich eine Aufgabe unterbrechen, ohne sie schon committen zu müssen.
+
+## Einen geteilten Commit rückgängig machen
+
+`git revert` erstellt einen neuen Commit, der die Änderungen eines früheren Commits umkehrt:
 
 ```
 git revert <commit-hash>
 ```
 
-Dadurch wird ein neuer Commit erstellt, der die im ursprünglichen Commit vorgenommenen Änderungen rückgängig macht. Sie können den Revert-Commit dann in das Remote-Repository pushen, um die Änderungen auf dem Remote rückgängig zu machen.
+Anschließend kannst du den Revert-Commit pushen. Der ursprüngliche Commit bleibt in der Historie sichtbar, ebenso seine Rücknahme.
 
-## Häufige Entwicklerfehler bei der Verwendung von Git
+## Kleine, verständliche Commits machen
 
-### Vergessen, Änderungen zu committen
+Ohne Commit fehlt ein gespeicherter Stand in der Historie. Ich versuche während der Arbeit mindestens stündlich zu committen. Zugleich sollte ein Commit eine zusammenhängende Änderung beschreiben. Große Pakete erschweren Review und Fehlersuche.
 
-Es ist wichtig, Ihre Änderungen regelmäßig zu committen, damit Sie einen Überblick über die von Ihnen gemachten Fortschritte haben. Wenn Sie vergessen, Ihre Änderungen zu committen, können Sie Ihre Arbeit verlieren, wenn etwas schief geht.
-
-### Nicht oft genug committen
-
-Auf der anderen Seite ist es auch wichtig, Ihre Änderungen oft genug zu committen, damit Sie nicht zu viele Änderungen in einem einzigen Commit haben. Große Commits können schwieriger zu überprüfen und zu beheben sein, wenn es Probleme gibt.
-
-Versuchen Sie, mindestens einmal pro Stunde zu committen.
-
-### Kein Branching
-
-Es ist eine gute Idee, Branches zu verwenden, wenn Sie an neuen Funktionen arbeiten oder wesentliche Änderungen an Ihrer Codebasis vornehmen. Dies hilft, Ihren Haupt-Branch (normalerweise Master) stabil zu halten und ermöglicht es Ihnen, gleichzeitig an mehreren Funktionen zu arbeiten.
-
-### Den Haupt-Branch nicht sauber halten
-
-Es ist wichtig, Ihren Haupt-Branch (normalerweise Master) sauber zu halten und nur gut getesteten Code aufzunehmen. Dies erleichtert das Zurücksetzen von Änderungen bei Bedarf und verringert das Risiko, Fehler in Ihre Codebasis einzuführen.
-
-### Änderungen vor dem Zusammenführen nicht überprüfen
-
-Es ist eine gute Idee, Änderungen vor dem Zusammenführen in den Haupt-Branch zu überprüfen, insbesondere wenn Sie mit einem Team arbeiten. Dies hilft sicherzustellen, dass der Code von hoher Qualität ist und keine Probleme verursacht.
+Verwende Branches für Funktionen und größere Änderungen. Prüfe und teste die Arbeit vor dem Merge. Ein stabiler Hauptbranch gibt dem Team einen verlässlichen Ausgangspunkt und erleichtert spätere Rücknahmen.

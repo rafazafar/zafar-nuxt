@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Die Kunst der technischen Entscheidungsfindung | Zafar.dev</title>
-<meta name="description" content="Wie Senior-Engineering Trade-offs evaluieren und Entscheidungen treffen, die den Test der Zeit bestehen.">
+<title>Technische Entscheidungen, mit denen das Team arbeiten kann | Zafar.dev</title>
+<meta name="description" content="Fragen zu Zeit, Umkehrbarkeit und den Menschen, die das Ergebnis betreiben werden.">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://zafar.dev/de/blog/technical-decision-making/">
 <link rel="alternate" hreflang="en" href="https://zafar.dev/blog/technical-decision-making/">
 <link rel="alternate" hreflang="ja" href="https://zafar.dev/ja/blog/technical-decision-making/">
 <link rel="alternate" hreflang="de" href="https://zafar.dev/de/blog/technical-decision-making/">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Die Kunst der technischen Entscheidungsfindung | Zafar.dev">
-<meta property="og:description" content="Wie Senior-Engineering Trade-offs evaluieren und Entscheidungen treffen, die den Test der Zeit bestehen.">
+<meta property="og:title" content="Technische Entscheidungen, mit denen das Team arbeiten kann | Zafar.dev">
+<meta property="og:description" content="Fragen zu Zeit, Umkehrbarkeit und den Menschen, die das Ergebnis betreiben werden.">
 <meta property="og:url" content="https://zafar.dev/de/blog/technical-decision-making/">
 <meta property="og:image" content="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&amp;w=800">
 <meta property="article:published_time" content="2025-11-28">
@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
-<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<link rel="stylesheet" href="/blog/blog.css?v=18a31658">
 <script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body class="is-post">
@@ -48,67 +48,51 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
   <a class="back" href="/de/blog/"><span aria-hidden="true">←</span> alle Notizen</a>
   <article class="post">
     <header class="post-head">
-      <span class="label"><time datetime="2025-11-28">28. Nov. 2025</time> · 6 Min. Lesezeit</span>
-      <h1>Die Kunst der technischen Entscheidungsfindung</h1>
-      <p class="sub">Wie Senior-Engineering Trade-offs evaluieren und Entscheidungen treffen, die den Test der Zeit bestehen.</p>
+      <span class="label"><time datetime="2025-11-28">28. Nov. 2025</time> · 2 Min. Lesezeit</span>
+      <h1>Technische Entscheidungen, mit denen das Team arbeiten kann</h1>
+      <p class="sub">Fragen zu Zeit, Umkehrbarkeit und den Menschen, die das Ergebnis betreiben werden.</p>
     </header>
     <figure class="cover">
       <span class="tape"></span>
       <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&amp;w=800" alt="">
     </figure>
     <div class="prose">
-<p>Wenn sich Ingenieure in ihrer Karriere weiterentwickeln, verändert sich die Natur ihrer Arbeit. Am Anfang geht es darum, Code zu schreiben und technische Probleme zu lösen. Aber mit zunehmender Seniorität kommt dein Impact zunehmend aus Entscheidungen – architektonische Entscheidungen, Technologieauswahlen und Trade-off-Bewertungen, die ganze Teams und Produkte betreffen.</p>
-<h2 id="entscheidungsframeworks-die-tatsächlich-funktionieren"><a class="anchor" href="#entscheidungsframeworks-die-tatsächlich-funktionieren" aria-hidden="true" tabindex="-1">#</a>Entscheidungsframeworks, die tatsächlich funktionieren</h2>
-<p>Nach Jahren des Treffens (und manchmal Bereuens) technischer Entscheidungen habe ich ein Framework entwickelt, das mir hilft, Optionen systematischer zu bewerten.</p>
-<h3 id="der-3-monate-1-jahr-3-jahre-test"><a class="anchor" href="#der-3-monate-1-jahr-3-jahre-test" aria-hidden="true" tabindex="-1">#</a>Der 3-Monate-, 1-Jahr-, 3-Jahre-Test</h3>
-<p>Für jede bedeutende Entscheidung frage ich: Wie wird das in 3 Monaten, 1 Jahr und 3 Jahren aussehen?</p>
-<ul>
-<li><strong>3 Monate</strong>: Kurzfristiger Schmerz und Lernkurven</li>
-<li><strong>1 Jahr</strong>: Betrieblicher Overhead und Team-Adoption</li>
-<li><strong>3 Jahre</strong>: Technische Schulden oder Vorteile, Skalierbarkeit</li>
-</ul>
-<p>Diese einfache Übung hat mich vor der Wahl glänzender neuer Technologien bewahrt, die später Probleme verursacht hätten.</p>
-<h3 id="das-reversibilitätsprinzip"><a class="anchor" href="#das-reversibilitätsprinzip" aria-hidden="true" tabindex="-1">#</a>Das Reversibilitätsprinzip</h3>
-<p>Nicht alle Entscheidungen sind gleich. Jeff Bezos&#39; Framework von Typ-1 (irreversibel) und Typ-2 (reversibel) Entscheidungen lässt sich perfekt auf Engineering übertragen.</p>
-<p><strong>Typ-1-Entscheidungen</strong> (schwer rückgängig zu machen):</p>
-<ul>
-<li>Datenbankmigrationen</li>
-<li>Kernarchitekturentscheidungen</li>
-<li>Vendor-Lock-in-Situationen</li>
-</ul>
-<p><strong>Typ-2-Entscheidungen</strong> (leicht rückgängig zu machen):</p>
-<ul>
-<li>Bibliotheksauswahlen mit ähnlichen Alternativen</li>
-<li>UI-Framework-Auswahlen</li>
-<li>Interne Tools</li>
-</ul>
-<p>Bei Typ-2-Entscheidungen optimiere ich für Geschwindigkeit und Lernen. Verbringe keine Wochen mit der Evaluierung von React vs. Vue, wenn beides funktionieren würde. Wähle eines aus und shippe.</p>
-<h2 id="häufige-entscheidungsfallen"><a class="anchor" href="#häufige-entscheidungsfallen" aria-hidden="true" tabindex="-1">#</a>Häufige Entscheidungsfallen</h2>
-<h3 id="der-google-macht-es-fehlschluss"><a class="anchor" href="#der-google-macht-es-fehlschluss" aria-hidden="true" tabindex="-1">#</a>Der „Google macht es“-Fehlschluss</h3>
-<p>Ich bin in diese Falle getappt. „Netflix verwendet Microservices, also sollten wir das auch.“ Nein. Netflix hat Tausende von Ingenieuren. Du bist ein Team von fünf. Die Rahmenbedingungen sind anders, also ist auch die optimale Lösung anders.</p>
-<h3 id="analyse-paralyse"><a class="anchor" href="#analyse-paralyse" aria-hidden="true" tabindex="-1">#</a>Analyse-Paralyse</h3>
-<p>Irgendwann ist mehr Forschung nur noch Prokrastination. Ich habe gelernt, mir selbst eine „Entscheidungsfrist&quot; zu setzen. Nach diesem Datum treffe ich die beste Entscheidung mit verfügbaren Informationen.</p>
-<h3 id="das-team-ignorieren"><a class="anchor" href="#das-team-ignorieren" aria-hidden="true" tabindex="-1">#</a>Das Team ignorieren</h3>
-<p>Die beste technische Entscheidung ist wertlos, wenn dein Team sie nicht umsetzen kann. Ich habe gelernt, Entscheidungen basierend auf zu bewerten:</p>
-<ul>
-<li>Aktuelles Team-Know-how</li>
-<li>Lernkurve und Dokumentation</li>
-<li>Hiring-Auswirkungen (können wir Leute finden, die das können?)</li>
-</ul>
-<h2 id="fazit"><a class="anchor" href="#fazit" aria-hidden="true" tabindex="-1">#</a>Fazit</h2>
-<p>Technische Entscheidungsfindung ist eine Fähigkeit, die durch Übung und Reflexion verbessert wird. Das Ziel ist nicht, perfekt zu sein – es ist, bewusst zu sein, aus Fehlern zu lernen und im Laufe der Zeit organisationales Wissen aufzubauen.</p>
-<p>Wie gehst du mit technischen Entscheidungen um? Ich würde gerne deine Frameworks und gelernten Lektionen hören.</p>
+<p>Manche technische Entscheidung bereue ich erst lange nach der Einführung. Am Anfang war das Werkzeug interessant und das Beispiel überzeugend. Später musste das Team mit den Folgen arbeiten.</p>
+<p>Mit zunehmender Erfahrung besteht ein größerer Teil meiner Arbeit aus solchen Entscheidungen. Ein paar feste Fragen helfen mir, Optionen gründlicher zu prüfen.</p>
+<h2 id="drei-zeitpunkte-betrachten"><a class="anchor" href="#drei-zeitpunkte-betrachten" aria-hidden="true" tabindex="-1">#</a>Drei Zeitpunkte betrachten</h2>
+<p>Bei einer größeren Entscheidung denke ich an drei Monate, ein Jahr und drei Jahre.</p>
+<figure class="concept concept--horizon">
+<div class="concept-title">Eine Entscheidung, drei Zeitpunkte</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18 M12 7v5l4 2"/></svg><strong>3 Monate</strong><span>Lernen und umstellen.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3a3 3 0 1 0 0 6 3 3 0 1 0 0-6 M2 21v-4a6 6 0 0 1 12 0v4 M17 4a3 3 0 0 1 0 6 M17 13a5 5 0 0 1 5 5v3"/></svg><strong>1 Jahr</strong><span>Betreiben und im Team nutzen.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7a9 9 0 0 0-16 3 M4 3v7h7 M4 17a9 9 0 0 0 16-3 M20 21v-7h-7"/></svg><strong>3 Jahre</strong><span>Skalierung, Schulden, Nutzen.</span></li>
+</ol>
+<figcaption>Neben der Einführung zählt auch der spätere Betrieb.</figcaption>
+</figure>
+
+<p>Nach drei Monaten interessieren mich Lernaufwand und Umstellung. Nach einem Jahr frage ich nach Betrieb und Akzeptanz im Team. Nach drei Jahren geht es um Skalierung, technische Schulden und den Nutzen, der geblieben ist.</p>
+<p>Diese Fragen haben mich schon davon abgehalten, eine neue Technologie nur deshalb zu wählen, weil ich sie ausprobieren wollte.</p>
+<h2 id="wie-aufwendig-wäre-der-rückweg"><a class="anchor" href="#wie-aufwendig-wäre-der-rückweg" aria-hidden="true" tabindex="-1">#</a>Wie aufwendig wäre der Rückweg?</h2>
+<p>Jeff Bezos unterscheidet zwischen schwer umkehrbaren Entscheidungen vom Typ 1 und leicht umkehrbaren Entscheidungen vom Typ 2. Das finde ich auch in der Softwareentwicklung hilfreich.</p>
+<p>Datenbankmigrationen, grundlegende Architekturentscheidungen und eine starke Bindung an einen Anbieter können schwer rückgängig zu machen sein. Eine austauschbare Bibliothek oder ein internes Werkzeug lässt sich oft leichter ersetzen. Bei einem UI-Framework hängt das stark davon ab, wie viel Code bereits darauf aufbaut.</p>
+<p>Wenn React und Vue für ein neues Projekt gleichermaßen passen, bringt ein erster Versuch oft mehr als wochenlanges Vergleichen. Für einen späteren Austausch einer großen Anwendung gilt diese Annahme nicht automatisch.</p>
+<h2 id="mit-den-eigenen-bedingungen-entscheiden"><a class="anchor" href="#mit-den-eigenen-bedingungen-entscheiden" aria-hidden="true" tabindex="-1">#</a>Mit den eigenen Bedingungen entscheiden</h2>
+<p>Ich habe selbst schon mit „Netflix macht das auch“ argumentiert. Doch eine Organisation mit Tausenden Entwicklern hat andere Möglichkeiten als ein Team von fünf Personen.</p>
+<p>Prüfe deshalb die vorhandenen Kenntnisse, den Lernaufwand, die Dokumentation und die Chancen, später passende Mitarbeiter zu finden. Das Team muss die Entscheidung umsetzen und das Ergebnis betreiben können.</p>
+<p>Recherche braucht außerdem ein Ende. Ich setze mir eine Frist und entscheide dann anhand der verfügbaren Informationen. Sonst wird der nächste Vergleich irgendwann zum Aufschub.</p>
+<p>Eine schlechte Entscheidung lässt sich nicht immer vermeiden. Hilfreich ist, ihre Gründe zu verstehen und daraus etwas für die nächste Entscheidung mitzunehmen. So bleibt die Erfahrung auch für andere im Team nutzbar.</p>
 
     </div>
   </article>
   <nav class="pager" aria-label="More notes">
     <a class="pg pg-older" href="/de/blog/resilient-architecture/" rel="prev">
       <span class="label">← älter</span>
-      <span class="pg-title">Resiliente Architektur aufbauen: Ein praktischer Leitfaden</span>
+      <span class="pg-title">Was passiert, wenn eine Abhängigkeit ausfällt?</span>
     </a>
     <a class="pg pg-newer" href="/de/blog/system-design-at-scale/" rel="next">
       <span class="label">neuer →</span>
-      <span class="pg-title">Systemdesign im Maßstab: Lektionen aus 7 Jahren Entwicklung</span>
+      <span class="pg-title">Was ich in sieben Jahren über Skalierung gelernt habe</span>
     </a>
   </nav>
 </main>

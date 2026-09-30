@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>スケールでのシステム設計：7年間の構築からの教訓 | Zafar.dev</title>
-<meta name="description" content="ゼロから数十万ユーザーまで製品をスケーリングする際に学んだ重要なアーキテクチャ上の意思決定とパターン">
+<title>システムの成長に向き合った7年間で学んだこと | Zafar.dev</title>
+<meta name="description" content="モジュールの境界、データベースの負荷、チームが保守できる設計について、経験から振り返ります。">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://zafar.dev/ja/blog/system-design-at-scale/">
 <link rel="alternate" hreflang="en" href="https://zafar.dev/blog/system-design-at-scale/">
 <link rel="alternate" hreflang="ja" href="https://zafar.dev/ja/blog/system-design-at-scale/">
 <link rel="alternate" hreflang="de" href="https://zafar.dev/de/blog/system-design-at-scale/">
 <meta property="og:type" content="article">
-<meta property="og:title" content="スケールでのシステム設計：7年間の構築からの教訓 | Zafar.dev">
-<meta property="og:description" content="ゼロから数十万ユーザーまで製品をスケーリングする際に学んだ重要なアーキテクチャ上の意思決定とパターン">
+<meta property="og:title" content="システムの成長に向き合った7年間で学んだこと | Zafar.dev">
+<meta property="og:description" content="モジュールの境界、データベースの負荷、チームが保守できる設計について、経験から振り返ります。">
 <meta property="og:url" content="https://zafar.dev/ja/blog/system-design-at-scale/">
 <meta property="og:image" content="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&amp;w=800">
 <meta property="article:published_time" content="2025-12-15">
@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
-<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<link rel="stylesheet" href="/blog/blog.css?v=18a31658">
 <script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body class="is-post">
@@ -48,50 +48,49 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
   <a class="back" href="/ja/blog/"><span aria-hidden="true">←</span> すべてのノート</a>
   <article class="post">
     <header class="post-head">
-      <span class="label"><time datetime="2025-12-15">2025年12月15日</time> · 8分で読めます</span>
-      <h1>スケールでのシステム設計：7年間の構築からの教訓</h1>
-      <p class="sub">ゼロから数十万ユーザーまで製品をスケーリングする際に学んだ重要なアーキテクチャ上の意思決定とパターン</p>
+      <span class="label"><time datetime="2025-12-15">2025年12月15日</time> · 2分で読めます</span>
+      <h1>システムの成長に向き合った7年間で学んだこと</h1>
+      <p class="sub">モジュールの境界、データベースの負荷、チームが保守できる設計について、経験から振り返ります。</p>
     </header>
     <figure class="cover">
       <span class="tape"></span>
       <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&amp;w=800" alt="">
     </figure>
     <div class="prose">
-<p>過去7年間、採用プラットフォームからフィンテック、旅行アプリまで、複数の業界でシステムを構築しスケーリングする機会に恵まれました。各プロジェクトは、ユーザーベースが数百から数十万に成長する際に何が機能し何が機能しないかについて、貴重な教訓を教えてくれました。</p>
-<h2 id="シンプルに始めるが-複雑さを計画する"><a class="anchor" href="#シンプルに始めるが-複雑さを計画する" aria-hidden="true" tabindex="-1">#</a>シンプルに始めるが、複雑さを計画する</h2>
-<p>ジュニアエンジニアが犯す最大のミスは、初日からオーバーエンジニアリングすることです。私も経験があります。キャリア初期には、プロダクトマーケットフィットすら確立していない製品のために、マイクロサービスアーキテクチャを設計するのに数週間を費やしました。</p>
-<p><strong>教訓：</strong> モノリスから始めましょう。まずユーザーの問題解決に集中してください。しかし—そしてこれが重要です—将来の抽出を念頭に置いて境界を設計してください。モノリス内の適切に定義されたモジュールは、完全な書き換えなしに後でサービスになることができます。</p>
-<h2 id="データベースがボトルネックになる"><a class="anchor" href="#データベースがボトルネックになる" aria-hidden="true" tabindex="-1">#</a>データベースがボトルネックになる</h2>
-<p>毎回。毎回。毎回。複数のプロジェクトでこの教訓を辛い経験として学びました。アプリケーションコードは水平に簡単にスケーリングできます。データベースは？そう簡単ではありません。</p>
-<h3 id="実際に機能するパターン"><a class="anchor" href="#実際に機能するパターン" aria-hidden="true" tabindex="-1">#</a>実際に機能するパターン：</h3>
-<ol>
-<li><p><strong>アナリティクス用の読み取りレプリカ</strong>：レポートクエリがメインアプリケーションを遅くしないようにしてください。初日から読み取りレプリカにオフロードしてください。</p>
-</li>
-<li><p><strong>キャッシング戦略、ただキャッシングだけではなく</strong>：Redisは魔法ではありません。戦略が必要です。キャッシュの無効化は確かにコンピュータサイエンスの難しい問題の一つです。TTLベースのキャッシングとバックグラウンドリフレッシュが、ほとんどの読み取り重視のワークロードでうまく機能することを発見しました。</p>
-</li>
-<li><p><strong>コネクションプーリング</strong>：これは明らかに思えるかもしれませんが、コネクション枯渇でダウンした本番システムを見てきました。プール使用率を監視してください。</p>
-</li>
+<p>以前、まだ市場で必要とされるかも分からない製品に、数週間かけてマイクロサービスを設計したことがあります。今なら、その時間をまず利用者の問題の理解に使います。</p>
+<p>採用サービス、フィンテック、旅行アプリに携わった7年間で、利用者が数百人から数十万人へ増える過程を経験しました。その中で、早い段階で増やした複雑さが、後の開発を難しくすることを学びました。</p>
+<h2 id="小さく始めて-責任の範囲を分ける"><a class="anchor" href="#小さく始めて-責任の範囲を分ける" aria-hidden="true" tabindex="-1">#</a>小さく始めて、責任の範囲を分ける</h2>
+<p>私は、モジュールの境界を明確にしたモノリスから始めることを基本にしています。チームは利用者の問題に集中でき、複数のサービスを運用する負担も抑えられます。</p>
+<p>後で一部を独立したサービスにする場合も、境界が明確なら分離しやすくなります。将来に備えることと、将来必要なものをすべて先に作ることは別です。</p>
+<h2 id="データベースを早めに確認する"><a class="anchor" href="#データベースを早めに確認する" aria-hidden="true" tabindex="-1">#</a>データベースを早めに確認する</h2>
+<p>私が関わった複数の案件では、データベースが処理能力の制約になりました。アプリケーションの台数を増やすより、データベースの負荷を解決する方が難しい場面がありました。</p>
+<p>集計クエリで通常の処理が遅くならないようにします。分析機能が必要なら、読み取りレプリカへの分離を早めに計画します。</p>
+<p>キャッシュには更新方針が必要です。Redisを導入するだけでは、古いデータをいつ更新するかは決まりません。読み取りが多い処理では、有効期間（TTL）とバックグラウンド更新を組み合わせる方法が役立ちました。</p>
+<p>接続プールの使用状況も監視します。接続が足りなくなり、本番システムが停止した例を見てきたためです。</p>
+<figure class="concept concept--split">
+<div class="concept-title">データベースの負荷を分けて考える</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6c0-4 18-4 18 0s-18 4-18 0v12c0 4 18 4 18 0V6 M3 12c0 4 18 4 18 0"/></svg><strong>集計処理</strong><span>読み取りレプリカへ分離する</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18 M12 7v5l4 2"/></svg><strong>繰り返す読み取り</strong><span>有効期間を決めてキャッシュする</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17v4 M9 12v9 M15 7v14 M21 2v19"/></svg><strong>接続数</strong><span>プールの使用状況と上限を監視する</span></li>
 </ol>
-<h2 id="結果整合性を受け入れる"><a class="anchor" href="#結果整合性を受け入れる" aria-hidden="true" tabindex="-1">#</a>結果整合性を受け入れる</h2>
-<p>強い整合性はスケールで高価です。「これは本当に即座に整合性が必要ですか？」と問うことを学びました。多くの場合、答えはノーです。</p>
-<p>Seekersでは、同期API呼び出しからメッセージキューを使用したイベント駆動アーキテクチャに移行しました。結果？応答時間が40％削減され、信頼性が大幅に向上しました。</p>
-<h2 id="システム設計の人間的要素"><a class="anchor" href="#システム設計の人間的要素" aria-hidden="true" tabindex="-1">#</a>システム設計の人間的要素</h2>
-<p>技術的な意思決定は真空では行われません。最良のアーキテクチャは、チームが理解しメンテナンスできるものです。私は以下を学びました：</p>
-<ul>
-<li><strong>「なぜ」を文書化する</strong>：アーキテクチャ決定レコード（ADR）は、6ヶ月後に決定を振り返る際に何度も助けてくれました。</li>
-<li><strong>チームを早期に関与させる</strong>：ジュニアエンジニアは、シニアエンジニアが見落とす単純さを発見することがよくあります。</li>
-<li><strong>オンボーディングを計画する</strong>：複雑なシステムは参加しにくいです。ドキュメントとランブックへの投資を行ってください。</li>
-</ul>
-<h2 id="結論"><a class="anchor" href="#結論" aria-hidden="true" tabindex="-1">#</a>結論</h2>
-<p>システム設計は、正しい技術を選択することだけではありません—トレードオフを理解し、意図的な意思決定を行うことです。私が構築した最良のシステムは、技術的に最も印象的なものではありませんでした。それらは、実際の問題を確実に解決し、私が去った後もチームによってメンテナンスできるものでした。</p>
-<p>システムをスケーリングすることからの最大の教訓は何ですか？あなたの経験を聞きたいです。</p>
+<figcaption>それぞれ異なる負荷への対策です。実際の処理を確認して選びます。</figcaption>
+</figure>
+
+<h2 id="すぐに完了する必要があるかを確認する"><a class="anchor" href="#すぐに完了する必要があるかを確認する" aria-hidden="true" tabindex="-1">#</a>すぐに完了する必要があるかを確認する</h2>
+<p>すべての処理に強い整合性を求めると、規模が大きくなるほど負担が増えます。私は、それぞれの結果がすぐに必要かを確認します。</p>
+<p>Seekersでは、同期API呼び出しから、メッセージキューを使うイベント駆動の構成へ移行しました。その結果、応答時間が40%短くなり、信頼性も向上しました。これは当時の構成と負荷で得た結果です。</p>
+<h2 id="チームが理解できる設計を残す"><a class="anchor" href="#チームが理解できる設計を残す" aria-hidden="true" tabindex="-1">#</a>チームが理解できる設計を残す</h2>
+<p>設計を選んだ理由は、アーキテクチャ決定記録（ADR）に残します。半年後に判断を見直すとき、コードだけでは分からない背景を確認できます。</p>
+<p>検討にはチームを早くから参加させます。経験の浅いメンバーが、他の人が見落とした単純な方法に気付くこともあります。文書と運用手順書は、新しく参加する人を助けます。</p>
+<p>私が良かったと思うシステムは、必要な問題を確実に解決し、私が離れた後もチームが保守できるものでした。設計では、その状態を目指しています。</p>
 
     </div>
   </article>
   <nav class="pager" aria-label="More notes">
     <a class="pg pg-older" href="/ja/blog/technical-decision-making/" rel="prev">
       <span class="label">← 古い</span>
-      <span class="pg-title">技術的意思決定の芸術</span>
+      <span class="pg-title">後から振り返れる技術判断の進め方</span>
     </a>
     <span class="pg pg-empty" aria-hidden="true"></span>
   </nav>

@@ -3,125 +3,84 @@ title: "iOS Won't Poll Your BLE Device Like Android Can"
 description: "A field-tested look at Core Bluetooth restoration, Android foreground services, and why locked-screen reconnect promises need evidence."
 date: 2026-07-04
 image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?q=80&w=1200&auto=format&fit=crop"
-minRead: 8
+minRead: 4
 ---
 
-One of the easier mistakes to make in mobile engineering is to treat background execution as a product requirement rather than an operating-system negotiation.
+In one locked-screen iOS test, I power-cycled a wearable after roughly 25 minutes. The phone did not reconnect or publish while it stayed locked. After I unlocked it, the app recovered and messages resumed.
 
-That mistake becomes expensive when the product depends on Bluetooth Low Energy. A realtime monitoring app can have perfectly reasonable product language like "the device should reconnect automatically," but Android and iOS do not give you the same tools to implement that sentence.
+The broker was an obvious suspect at first. Perhaps MQTT had a stale connection, or the WebSocket needed a better retry policy. But publishing resumed as soon as BLE samples returned. The long delay was earlier in the path.
 
-Android's model is direct: you can run a foreground service, hold a bounded wake lock, keep a native BLE runtime alive, and retry connection work in a controlled loop. You still have to respect Doze, App Standby, runtime BLE permissions, foreground-service restrictions, OEM kill policies, and user battery settings. But the runtime model is recognizable: your app has a visible long-running responsibility, and Android gives you mechanisms to keep doing that work under tested device policy.
+That result changed how I described automatic reconnect. The product wanted the same behavior on Android and iOS. The operating systems gave us different ways to attempt it.
 
-On iOS, the model is different. Core Bluetooth background mode is event-driven. It can wake your app for important Bluetooth events, preserve and restore central-manager state, and continue monitoring some pending connection work. It does not give you a permanent background process. It does not let you poll every few seconds while the phone is locked with the screen off. It does not let you make iOS behave like Android with a different retry loop.
+## Find the boundary before changing the retry loop
 
-That distinction changes both engineering strategy and product language.
+The workflow had a wearable connected to a phone over BLE, a publishing path from the phone to a broker, and a viewer consuming the live data.
 
-## The Shape Of The Problem
+When the viewer stopped receiving samples, I needed to separate those stages. In other iOS background cases, reconnect took tens of seconds to about a minute. In the longer locked-screen run, it did not recover until unlock.
 
-The monitoring workflow I was working on had three moving parts:
+Adding MQTT timers would not have solved the BLE wake delay. It would have added code around a different part of the system.
 
-- A phone connected to a wearable sensor over BLE.
-- A realtime publishing path from the phone to a message broker.
-- A viewer or downstream service consuming the live data.
+## Android gives the app more control over ongoing work
 
-When samples stopped appearing downstream, it was tempting to blame the transport layer. Maybe MQTT was stale. Maybe the WebSocket had not recovered. Maybe the broker client needed a more aggressive reconnect policy.
+For unattended monitoring, Android provides a foreground service with a persistent notification. A bounded wake lock and a native BLE runtime can support reconnect work while the app is in the background.
 
-That was not the real boundary.
+This still needs testing. Doze, App Standby, runtime BLE permissions, foreground-service restrictions, device vendor policies, and user battery settings all affect the result.
 
-In locked-screen iOS tests, the publishing path resumed as soon as BLE samples resumed. The delay was upstream: iOS decided when the app got enough runtime to process Bluetooth events and reconnect. In one long locked-screen run, the wearable was power-cycled after roughly 25 minutes and did not reconnect or publish while the phone remained locked; after unlock, the app recovered and messages resumed. In other background cases, reconnect could be delayed by tens of seconds to about a minute. The message broker was not the primary cause of the missing data.
+The design also needs to distinguish paused slots, unbound sensors, and intentional disconnections. A service should not keep trying to reconnect a device the user deliberately stopped.
 
-This matters because debugging the wrong layer leads to worse code. You can add more MQTT reconnect logic, more timers, and more state machines, and still not fix the locked-screen BLE behavior. The result is a larger app with the same platform limit.
+Under the tested service and battery-policy conditions, Android gave us a practical way to keep attempting a connection when a wearable returned after a long absence.
 
-## What Android Lets You Build
+<figure class="concept concept--split">
+<div class="concept-title">Who controls background reconnect?</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7a9 9 0 0 0-16 3 M4 3v7h7 M4 17a9 9 0 0 0 16-3 M20 21v-7h-7"/></svg><strong>Android</strong><span>A foreground service can run reconnect work under tested device policy.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18 M12 7v5l4 2"/></svg><strong>iOS</strong><span>Core Bluetooth delivers events; the OS controls wake timing and runtime.</span></li>
+</ol>
+<figcaption>Both need device tests. An Android result cannot establish iOS locked-screen behavior.</figcaption>
+</figure>
 
-Android is not effortless, but it is more explicit for unattended monitoring.
+## iOS controls when background work runs
 
-A reliable Android approach usually includes:
+Core Bluetooth background mode is event-driven. With `bluetooth-central`, the app can receive Bluetooth events in the background. State preservation and restoration can retain central-manager state and pending connection work.
 
-- A foreground service for long-running monitoring work.
-- A persistent notification that tells the user monitoring is active.
-- BLE reconnect logic in native code or a well-controlled runtime layer.
-- Battery optimization guidance for devices used in clinical or operational workflows.
-- Clear handling for paused slots, unbound sensors, and intentionally disconnected devices.
+That does not give the app a permanent process or a polling interval it can enforce while the screen is off.
 
-The important point is not that Android always reconnects instantly. It is that Android lets the app own more of the reconnect loop under the tested foreground-service and battery-policy conditions. If the wearable goes away for twenty minutes and comes back, the app has a credible way to keep trying in the background.
+Background scanning also differs from foreground scanning. Duplicate advertisements can be combined, and scan intervals can increase when scanning apps are in the background. The system controls suspension, wake timing, relaunch eligibility, and the execution time it grants.
 
-That makes Android the more practical choice for unattended monitoring in controlled deployments, especially when the user expects the phone to sit locked while the wearable continues to operate.
+Restoration has limits too. A force-quit app, a reboot, or certain Bluetooth states can affect whether the system relaunches the app. These belong in the operating procedure and the test plan.
 
-## What iOS Actually Promises
+For our locked-screen workflow, I treated recovery as best-effort unless the product could tolerate the observed delays and uncertainty.
 
-iOS offers useful Core Bluetooth mechanisms, but they are not equivalent to a foreground service.
+## A Live Activity changes the user experience too
 
-For central-mode BLE apps, the relevant mechanisms are:
+Apple's [Core Bluetooth documentation](https://developer.apple.com/documentation/corebluetooth) describes foreground-like Bluetooth privileges for an app with an instantiated Bluetooth manager and an active Live Activity.
 
-- `bluetooth-central` background mode.
-- State preservation and restoration through a restore identifier.
-- Restoration callbacks for known central managers and peripherals.
-- Pending connection requests that iOS may continue tracking.
-- Event delivery when iOS decides the app should be woken.
+That deserves investigation for a product that wants a Live Activity. It also introduces a visible surface on the Lock Screen or Dynamic Island. Activities have duration limits, users can dismiss them, and the system controls their presentation.
 
-Those are valuable tools. They are also bounded tools.
+For quiet monitoring, that is a product choice as well as an implementation choice. I would use it as a main reconnect strategy only if the product explicitly wanted the activity and testing supported the required behavior.
 
-Background scanning behaves differently from foreground scanning. Duplicate advertisements are coalesced. Scan intervals can become longer when scanner apps are backgrounded. The system controls wake timing, app suspension, relaunch eligibility, and how much background execution time your app receives.
+## Make restoration complete before calling the slot healthy
 
-State restoration also has hard caveats. If the user force-quits the app, or if the device goes through certain Bluetooth or reboot states, iOS may not relaunch the app for restoration. A robust design has to treat those as operational states, not edge cases a retry loop can erase.
+The iOS implementation still needs careful work. Create `CBCentralManager` with a restoration identifier and handle `centralManager(_:willRestoreState:)`. Reattach delegates to restored peripherals. If restored state is incomplete, rediscover services and subscribe again.
 
-The consequence is simple: iOS background BLE should be treated as best-effort for locked, screen-off operation unless your product can tolerate the delay and uncertainty.
+For a known peripheral, prefer a pending `connect` request where possible. If scanning is necessary, use service UUID filters. After the system wakes the app, keep the MQTT recovery path short.
 
-## The Live Activity Temptation
+These steps use the mechanisms iOS provides. Measure the delay that remains, and document the conditions in which it occurs.
 
-Newer iOS behavior around Live Activities can make Bluetooth background privileges look more promising. In some iOS versions, an app with an active Live Activity and an instantiated Bluetooth manager may get more foreground-like Bluetooth behavior in the background.
+## Turn the timeline into a useful requirement
 
-That does not make Live Activities a clean reliability primitive.
+For every reconnect case, record:
 
-Live Activities are user-visible system UI. They appear on the Lock Screen or Dynamic Island. They have duration limits. Users can dismiss them. The system controls presentation. Updates can surface in ways that are not appropriate for a quiet health-adjacent monitoring workflow.
+1. When the wearable becomes available.
+2. When the OS delivers a BLE event.
+3. When the app reconnects and subscribes.
+4. When samples resume.
+5. When the broker receives the next publish.
 
-If your background reliability mechanism creates visible system-managed UI that staff do not understand, you may have traded one failure mode for another. For this kind of monitoring app, I would not use Live Activities as the main reconnect strategy unless the product explicitly wants that visible activity surface.
+The measurements let us discuss a specific delay instead of one broad reconnect problem.
 
-## A Better Engineering Goal
+If the requirement is unattended reconnect within a few seconds while the phone stays locked overnight, I would favor Android under a tested device policy. If the product requires iOS, its operating procedure may need the app in the foreground, the screen on, and Auto-Lock disabled. Alternatively, it must accept best-effort recovery while locked. Neither choice should be presented as a guarantee without the corresponding tests.
 
-The realistic goal is not "make iOS behave like Android."
+Flutter can share UI, state, and domain logic across platforms. The BLE abstraction still needs to expose the background limits so the product team can choose a workflow that matches them.
 
-The better goal is:
-
-- Use Core Bluetooth restoration correctly.
-- Prefer pending connections to known peripherals when possible.
-- Use service UUID filters when scanning is unavoidable.
-- Reattach delegates and resubscribe after restoration.
-- Keep MQTT publish recovery short after iOS wakes the app.
-- Measure BLE wake time separately from broker publish time.
-- Document residual delay as a platform constraint, not an app defect.
-
-That last point is not a cop-out. It is what lets the team make honest product decisions.
-
-In practice, the implementation details worth checking are concrete: create the `CBCentralManager` with a restoration identifier, handle `centralManager(_:willRestoreState:)`, reattach delegates to restored peripherals, rediscover services when restored state is incomplete, and resubscribe before declaring the slot healthy. For known peripherals, a pending `connect` request is a stronger primitive than hoping repeated background scans will fire on your preferred schedule.
-
-For example, if the workflow requires unattended reconnect within a few seconds while the phone is locked overnight, Android should be the recommended platform. If iOS is required, the operational guidance may need to be screen-on, foregrounded, Auto-Lock disabled, or "best-effort while locked."
-
-Those are product decisions, not just engineering details.
-
-## The Debugging Lesson
-
-The most useful debugging move was separating the pipeline into timing boundaries:
-
-- When did the wearable become available again?
-- When did the OS deliver a BLE event?
-- When did the app reconnect and resubscribe?
-- When did samples resume?
-- When did the broker receive the next publish?
-
-Without that separation, every outage looks like one vague reconnect problem. With it, you can say where the time is actually going.
-
-That distinction changes the conversation with product managers and clients. Instead of promising "we will improve reconnect," you can say: "Android can own this retry loop. iOS can use restoration and pending connections, but locked-screen timing remains OS-controlled. Here is the measured range, and here is the workflow recommendation."
-
-That is a much more useful answer.
-
-## Takeaway
-
-Cross-platform does not mean platform-identical.
-
-Flutter can share a lot of UI, state, and domain logic across iOS and Android. BLE background execution is not one of the areas where you get identical behavior for free. The right abstraction is not one that hides the difference. It is one that exposes the difference early enough that the product can make a safe decision.
-
-For realtime monitoring, that usually means treating Android as the stronger unattended platform, treating iOS locked-screen reconnect as best-effort, and designing tests that prove which layer is actually responsible for delay.
-
-This article is part of a short series on realtime wearable monitoring. The companion pieces cover [designing telemetry around unreliable local infrastructure](/blog/realtime-telemetry-unreliable-local-infrastructure) and [building a BLE reconnect soak tester](/blog/building-a-ble-reconnect-soak-tester).
+This article is part of a series on realtime wearable monitoring. The companion pieces cover [designing telemetry around unreliable local infrastructure](/blog/realtime-telemetry-unreliable-local-infrastructure) and [building a BLE reconnect soak tester](/blog/building-a-ble-reconnect-soak-tester).

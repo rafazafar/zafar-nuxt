@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
-<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<link rel="stylesheet" href="/blog/blog.css?v=18a31658">
 <script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body class="is-post">
@@ -46,7 +46,7 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
   <a class="back" href="/blog/"><span aria-hidden="true">←</span> all notes</a>
   <article class="post">
     <header class="post-head">
-      <span class="label"><time datetime="2026-07-02">Jul 2, 2026</time> · 7 min read</span>
+      <span class="label"><time datetime="2026-07-02">Jul 2, 2026</time> · 4 min read</span>
       <h1>Building a BLE Reconnect Soak Tester</h1>
       <p class="sub">A practical testing approach for mobile apps that need evidence for Bluetooth reconnect behavior instead of another hopeful demo.</p>
     </header>
@@ -55,66 +55,36 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
       <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="">
     </figure>
     <div class="prose">
-<p>Bluetooth reconnect behavior is one of those features that looks fine in a short demo and then fails in the conditions users actually care about.</p>
-<p>The app connects. Data appears. You turn the peripheral off and on. It reconnects. Everyone feels good.</p>
-<p>Then the phone locks. The screen turns off. The wearable disappears for twenty minutes. The broker restarts. The app is backgrounded. Low Power Mode is on. A battery policy kills something. The user returns later and asks why monitoring stopped.</p>
-<p>That is why I like building a separate soak tester for BLE-heavy products.</p>
-<h2 id="why-a-separate-tester-helps"><a class="anchor" href="#why-a-separate-tester-helps" aria-hidden="true" tabindex="-1">#</a>Why A Separate Tester Helps</h2>
-<p>You can test reconnect behavior inside the main app, but the main app is full of product concerns: onboarding, permissions, naming, patient context, alerts, settings, and UI state. Those are important, but they make reliability testing harder to isolate.</p>
-<p>A soak tester can be narrower:</p>
-<ul>
-<li>Bind one or more known peripherals.</li>
-<li>Connect and disconnect slots independently.</li>
-<li>Publish a simple telemetry stream.</li>
-<li>Pause and resume reconnect behavior deliberately.</li>
-<li>Show connection and broker state plainly.</li>
-<li>Export timing and event data for analysis.</li>
-</ul>
-<p>The goal is not to replace the product app. The goal is to create a controlled harness where reconnect behavior is easy to provoke, observe, and measure.</p>
-<h2 id="use-mock-devices-when-real-devices-are-annoying"><a class="anchor" href="#use-mock-devices-when-real-devices-are-annoying" aria-hidden="true" tabindex="-1">#</a>Use Mock Devices When Real Devices Are Annoying</h2>
-<p>Real sensors are necessary eventually, but mock BLE peripherals are useful early.</p>
-<p>For testing, I used a second phone running nRF Connect as a mock heart-rate device. The mock advertised a known service, accepted connections, and replayed characteristic updates in a loop. That made it possible to test the mobile app&#39;s scanning, authorization, connection, reconnect, and publish paths without depending on scarce hardware for every run.</p>
-<p>The useful thing about a mock peripheral is repeatability. You can power the advertiser off, change advertising data, restart the macro loop, or run scripted scenarios without wondering whether the real device firmware is doing something undocumented.</p>
-<p>Mocks do not prove firmware compatibility, but they let you run dozens of controlled scenarios before pulling scarce hardware back onto the bench.</p>
-<h2 id="test-slots-not-just-a-single-connection"><a class="anchor" href="#test-slots-not-just-a-single-connection" aria-hidden="true" tabindex="-1">#</a>Test Slots, Not Just A Single Connection</h2>
-<p>A monitoring app often needs to handle more than one bound device. That means the test harness should not treat BLE as one global connection state.</p>
-<p>Each slot needs its own lifecycle:</p>
-<ul>
-<li>Not configured.</li>
-<li>Bound but disconnected.</li>
-<li>Connecting.</li>
-<li>Connected and publishing.</li>
-<li>Paused intentionally.</li>
-<li>Failed with a visible reason.</li>
-</ul>
-<p>Bulk controls are useful, but only if individual slots still remain understandable. &quot;Pause all&quot; should not erase the difference between a slot that is intentionally paused and a slot that failed to reconnect.</p>
-<p>This model also makes test results easier to read. If slot 1 reconnects and slot 3 does not, you want the export to preserve that fact.</p>
-<h2 id="measure-the-boundaries-separately"><a class="anchor" href="#measure-the-boundaries-separately" aria-hidden="true" tabindex="-1">#</a>Measure The Boundaries Separately</h2>
-<p>When downstream data stops, the cause can be anywhere in the chain:</p>
-<ul>
-<li>The peripheral is not advertising.</li>
-<li>The phone did not scan or wake.</li>
-<li>The app did not reconnect.</li>
-<li>The app reconnected but did not resubscribe.</li>
-<li>Samples resumed but publish failed.</li>
-<li>The broker connection was stale.</li>
-<li>The viewer was disconnected.</li>
-</ul>
-<p>A useful soak tester records enough events to separate those cases.</p>
-<p>At minimum, I want timestamps for:</p>
-<ul>
-<li>Peripheral selected or bound.</li>
-<li>Connect attempt started.</li>
-<li>Connected.</li>
-<li>Services discovered.</li>
-<li>Notifications subscribed.</li>
-<li>First sample received after reconnect.</li>
-<li>Broker connected.</li>
-<li>First publish after reconnect.</li>
-<li>Disconnect reason, when available.</li>
-</ul>
-<p>Without this timeline, every issue becomes &quot;reconnect is flaky.&quot; With it, you can tell whether the delay is BLE wake timing, GATT setup, broker recovery, or application state.</p>
-<p>A useful export can be boring JSON or CSV. The important part is that each row names the case, slot, event, and timestamp:</p>
+<p>A short Bluetooth demo can be reassuring. The app connects, data appears, and the sensor reconnects after a power cycle. Then someone locks the phone and leaves it alone for twenty minutes.</p>
+<p>That is the test I care about. Add a broker restart, Low Power Mode, or a battery policy that stops background work, and the result may be very different from the demo.</p>
+<p>For products that depend on BLE, I like to build a separate soak tester. It gives me a controlled place to leave the system running, interrupt it, and measure what happens next.</p>
+<h2 id="keep-the-tester-focused"><a class="anchor" href="#keep-the-tester-focused" aria-hidden="true" tabindex="-1">#</a>Keep the tester focused</h2>
+<p>The product app has onboarding, permissions, names, patient context, alerts, and settings to manage. Those features matter, but they make a reconnect failure harder to isolate.</p>
+<p>The tester needs a smaller set of controls: bind known peripherals, connect or disconnect each slot, publish a simple telemetry stream, pause reconnect work, and export events. Connection state and broker state should be visible throughout the run.</p>
+<p>The product app still needs testing. The separate tool makes repeated reliability experiments easier to set up and compare.</p>
+<h2 id="use-a-repeatable-peripheral"><a class="anchor" href="#use-a-repeatable-peripheral" aria-hidden="true" tabindex="-1">#</a>Use a repeatable peripheral</h2>
+<p>I used a second phone running nRF Connect as a mock heart-rate device. It advertised a known service, accepted connections, and replayed characteristic updates in a loop. That let me exercise scanning, authorization, connection, reconnect, and publishing without needing scarce sensor hardware for every run.</p>
+<p>I could stop the advertiser, change its data, restart the macro loop, or repeat a scripted case. That removed some uncertainty about what the peripheral was doing.</p>
+<p>Real sensors are still necessary for firmware compatibility tests. The mock lets me work through dozens of controlled cases first.</p>
+<h2 id="give-each-slot-its-own-state"><a class="anchor" href="#give-each-slot-its-own-state" aria-hidden="true" tabindex="-1">#</a>Give each slot its own state</h2>
+<p>A monitoring app can have several bound devices. One global BLE status cannot describe them all.</p>
+<p>For each slot, I need to distinguish unconfigured, bound but disconnected, connecting, connected and publishing, intentionally paused, and failed with a visible reason. A “pause all” control must preserve those differences.</p>
+<p>If slot 1 reconnects and slot 3 does not, the export must retain both results.</p>
+<h2 id="record-the-path-back-to-a-sample"><a class="anchor" href="#record-the-path-back-to-a-sample" aria-hidden="true" tabindex="-1">#</a>Record the path back to a sample</h2>
+<p>Missing data in a viewer can start at several points. The peripheral may not advertise. The phone may not scan or wake. The app may connect without subscribing again. Samples may resume while publishing fails. The broker or viewer connection may be stale.</p>
+<figure class="concept concept--timeline">
+<div class="concept-title">Measure each recovery boundary</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17v4 M9 12v9 M15 7v14 M21 2v19"/></svg><strong>Peripheral available</strong><span>Record the return of advertising.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7a9 9 0 0 0-16 3 M4 3v7h7 M4 17a9 9 0 0 0 16-3 M20 21v-7h-7"/></svg><strong>Connected and subscribed</strong><span>Separate connection from GATT setup.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18 M12 7v5l4 2"/></svg><strong>First sample</strong><span>Record when sensor data resumes.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 18a4 4 0 0 1-1-8 7 7 0 0 1 13-1 4.5 4.5 0 0 1 0 9z"/></svg><strong>First publish</strong><span>Measure broker recovery separately.</span></li>
+</ol>
+<figcaption>Use the same case ID and slot for the timeline. A gap between events identifies where to investigate.</figcaption>
+</figure>
+
+<p>At minimum, I record when a peripheral is selected or bound, when a connection attempt starts, and when it connects. I also record service discovery, notification subscription, the first sample after reconnect, broker connection, the first publish, and the disconnect reason when available.</p>
+<p>JSON or CSV is enough. Each record needs a case, slot, event, and timestamp:</p>
 <pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{</span></span>
 <span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  "caseId"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"ios-locked-power-cycle-025m"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
 <span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  "slot"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">3</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
@@ -122,51 +92,29 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
 <span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  "elapsedMs"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">61240</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
 <span class="line"><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">  "condition"</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"locked_screen_after_peripheral_power_cycle"</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre>
-<p>In one long locked-screen iOS case, the test showed the key product fact: after the wearable came back, no samples or publishes resumed while the phone stayed locked. Unlocking returned the app to the fast path. That result was more useful than another vague &quot;iOS background reconnect is flaky&quot; note because it separated BLE wake behavior from broker recovery.</p>
-<h2 id="design-for-long-boring-runs"><a class="anchor" href="#design-for-long-boring-runs" aria-hidden="true" tabindex="-1">#</a>Design For Long, Boring Runs</h2>
-<p>Soak testing is supposed to be boring. The app should sit there, keep running, and produce evidence.</p>
-<p>That changes the UI design. You do not need a beautiful product surface. You need a dense operational surface:</p>
+<p>One long iOS test made the result clear. The wearable returned, but samples and publishes did not resume while the phone stayed locked. Unlocking brought the app back to the fast path. Once BLE samples resumed, publishing resumed too.</p>
+<p>That timeline helped separate the Bluetooth wake delay from broker recovery. Without it, the report would have said little more than “reconnect is unreliable.”</p>
+<h2 id="make-long-runs-easy-to-read"><a class="anchor" href="#make-long-runs-easy-to-read" aria-hidden="true" tabindex="-1">#</a>Make long runs easy to read</h2>
+<p>The test screen should show current slot state, last sample time, last publish time, broker readiness, and reconnect attempts. Pause, resume, and export controls need to be easy to find.</p>
+<p>Give every run a case ID and a clear condition label. After several runs, an unlabeled screenshot is difficult to match to an export. Case IDs let me compare foreground use, background use, locked screens, Low Power Mode, broker restarts, sensor power cycles, and long idle periods.</p>
+<h2 id="keep-platform-results-separate"><a class="anchor" href="#keep-platform-results-separate" aria-hidden="true" tabindex="-1">#</a>Keep platform results separate</h2>
+<p>Android may continue reconnect work through a foreground service and a bounded wake lock. Results still depend on permissions, battery policy, device vendor behavior, and user settings. On iOS, event delivery can be delayed while the phone is locked with the screen off.</p>
+<p>I use a separate result for each platform and condition:</p>
 <ul>
-<li>Current slot state.</li>
-<li>Last sample time.</li>
-<li>Last publish time.</li>
-<li>Broker readiness.</li>
-<li>Reconnect attempts.</li>
-<li>Pause/resume controls.</li>
-<li>Export controls.</li>
-<li>Clear labels for test condition and case ID.</li>
+<li>Foreground operation.</li>
+<li>Background operation with the screen on.</li>
+<li>Background operation with the screen locked.</li>
+<li>Short and long peripheral outages.</li>
+<li>Broker outage followed by recovery.</li>
+<li>Force-quit app.</li>
+<li>Device reboot.</li>
 </ul>
-<p>The case ID matters more than it seems. Once you run multiple scenarios, screenshots and logs become hard to connect. A case ID lets you compare exports across conditions like foreground, background, locked screen, Low Power Mode, broker restart, peripheral power cycle, and long idle periods.</p>
-<h2 id="separate-platform-claims"><a class="anchor" href="#separate-platform-claims" aria-hidden="true" tabindex="-1">#</a>Separate Platform Claims</h2>
-<p>Do not let one platform&#39;s success become a cross-platform claim.</p>
-<p>Android and iOS have different background execution models. Android may continue reconnect work through a foreground service and bounded wake lock, subject to battery policy, permissions, OEM behavior, and user settings. iOS may defer Bluetooth event delivery while locked and screen-off. A soak tester should make that difference visible rather than hiding it behind one green checkmark.</p>
-<p>For a serious report, I want a matrix like:</p>
-<ul>
-<li>App in foreground.</li>
-<li>App backgrounded, screen on.</li>
-<li>App backgrounded, screen locked.</li>
-<li>Peripheral off for a short interval.</li>
-<li>Peripheral off for a long interval.</li>
-<li>Broker unavailable, then restored.</li>
-<li>App force-quit.</li>
-<li>Device rebooted.</li>
-</ul>
-<p>Each platform gets its own result. Each result needs a measured delay or a clear failure state.</p>
-<h2 id="the-product-value"><a class="anchor" href="#the-product-value" aria-hidden="true" tabindex="-1">#</a>The Product Value</h2>
-<p>The output of a soak tester is not just engineering confidence. It is better product language.</p>
-<p>Instead of saying &quot;auto reconnect is supported,&quot; you can say:</p>
-<ul>
-<li>In these tested Android foreground-service conditions, reconnect continued in the background.</li>
-<li>In these tested iOS foreground conditions, reconnect returned to the fast path.</li>
-<li>In locked-screen iOS conditions, reconnect was best-effort and could be delayed or absent until user interaction.</li>
-<li>In the observed failures, MQTT resumed when BLE samples resumed, so the delay was not primarily broker recovery.</li>
-<li>For unattended monitoring, the workflow should prefer Android under controlled device policy, or keep iOS foregrounded depending on the operational requirement.</li>
-</ul>
-<p>That is the kind of specificity that prevents support issues later.</p>
-<h2 id="takeaway"><a class="anchor" href="#takeaway" aria-hidden="true" tabindex="-1">#</a>Takeaway</h2>
-<p>BLE reconnect reliability is not a feature you can infer from a successful connection demo. You have to test the ugly states: locked phones, missing peripherals, stale brokers, long waits, and platform-specific background behavior.</p>
-<p>A focused soak tester gives you a place to do that without dragging the full product through every experiment. It turns &quot;seems flaky&quot; into measured behavior, and measured behavior is what lets engineering, product, and operations make a defensible decision.</p>
-<p>This article is part of a short series on realtime wearable monitoring. The companion pieces cover <a href="/blog/ios-background-ble-is-not-android-background-ble">why iOS background BLE is not Android background BLE</a> and <a href="/blog/realtime-telemetry-unreliable-local-infrastructure">designing telemetry around unreliable local infrastructure</a>.</p>
+<p>Each result needs a measured delay or a clear failure state. Success on one platform does not fill in the other platform&#39;s row.</p>
+<h2 id="use-the-results-in-the-product-description"><a class="anchor" href="#use-the-results-in-the-product-description" aria-hidden="true" tabindex="-1">#</a>Use the results in the product description</h2>
+<p>“Auto reconnect is supported” leaves too much unsaid. The test evidence allows more useful statements: reconnect continued under the tested Android foreground-service conditions; iOS foreground recovery used the fast path; locked-screen iOS recovery was delayed or absent until user interaction.</p>
+<p>In the failures we observed, MQTT resumed with BLE samples, which put the main delay upstream of the broker. For unattended operation, those results supported Android under controlled device policy. An iOS workflow could require the app to stay in the foreground, depending on its needs.</p>
+<p>A soak tester earns its place when it gives engineering, product, and operations enough evidence to make that choice. Leave it running through the states a short demo never reaches.</p>
+<p>This article is part of a series on realtime wearable monitoring. The companion pieces cover <a href="/blog/ios-background-ble-is-not-android-background-ble">why iOS background BLE is not Android background BLE</a> and <a href="/blog/realtime-telemetry-unreliable-local-infrastructure">designing telemetry around unreliable local infrastructure</a>.</p>
 
     </div>
   </article>

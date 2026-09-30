@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>System Design at Scale: Lessons from 7 Years of Building | Zafar.dev</title>
-<meta name="description" content="Key architectural decisions and patterns I've learned from scaling products from zero to hundreds of thousands of users.">
+<title>What seven years of scaling systems taught me | Zafar.dev</title>
+<meta name="description" content="The design choices I return to: clear boundaries, measured database load, and systems the team can maintain.">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://zafar.dev/blog/system-design-at-scale/">
 <link rel="alternate" hreflang="en" href="https://zafar.dev/blog/system-design-at-scale/">
 <link rel="alternate" hreflang="ja" href="https://zafar.dev/ja/blog/system-design-at-scale/">
 <link rel="alternate" hreflang="de" href="https://zafar.dev/de/blog/system-design-at-scale/">
 <meta property="og:type" content="article">
-<meta property="og:title" content="System Design at Scale: Lessons from 7 Years of Building | Zafar.dev">
-<meta property="og:description" content="Key architectural decisions and patterns I've learned from scaling products from zero to hundreds of thousands of users.">
+<meta property="og:title" content="What seven years of scaling systems taught me | Zafar.dev">
+<meta property="og:description" content="The design choices I return to: clear boundaries, measured database load, and systems the team can maintain.">
 <meta property="og:url" content="https://zafar.dev/blog/system-design-at-scale/">
 <meta property="og:image" content="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&amp;w=800">
 <meta property="article:published_time" content="2025-12-15">
@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
-<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<link rel="stylesheet" href="/blog/blog.css?v=18a31658">
 <script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body class="is-post">
@@ -48,57 +48,57 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
   <a class="back" href="/blog/"><span aria-hidden="true">←</span> all notes</a>
   <article class="post">
     <header class="post-head">
-      <span class="label"><time datetime="2025-12-15">Dec 15, 2025</time> · 8 min read</span>
-      <h1>System Design at Scale: Lessons from 7 Years of Building</h1>
-      <p class="sub">Key architectural decisions and patterns I've learned from scaling products from zero to hundreds of thousands of users.</p>
+      <span class="label"><time datetime="2025-12-15">Dec 15, 2025</time> · 2 min read</span>
+      <h1>What seven years of scaling systems taught me</h1>
+      <p class="sub">The design choices I return to: clear boundaries, measured database load, and systems the team can maintain.</p>
     </header>
     <figure class="cover">
       <span class="tape"></span>
       <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&amp;w=800" alt="">
     </figure>
     <div class="prose">
-<p>Over the past seven years, I&#39;ve had the privilege of building and scaling systems across multiple industries—from recruitment platforms to fintech and travel apps. Each project taught me valuable lessons about what works and what doesn&#39;t when your user base grows from hundreds to hundreds of thousands.</p>
-<h2 id="start-simple-but-plan-for-complexity"><a class="anchor" href="#start-simple-but-plan-for-complexity" aria-hidden="true" tabindex="-1">#</a>Start Simple, But Plan for Complexity</h2>
-<p>The biggest mistake I see junior engineers make is over-engineering from day one. I&#39;ve been guilty of this too. Early in my career, I spent weeks designing a microservices architecture for a product that didn&#39;t even have product-market fit yet.</p>
-<p><strong>Lesson:</strong> Start with a monolith. Focus on solving user problems first. But—and this is crucial—design your boundaries with future extraction in mind. Well-defined modules within a monolith can become services later without a complete rewrite.</p>
-<h2 id="the-database-will-be-your-bottleneck"><a class="anchor" href="#the-database-will-be-your-bottleneck" aria-hidden="true" tabindex="-1">#</a>The Database Will Be Your Bottleneck</h2>
-<p>Every. Single. Time. I&#39;ve learned this lesson the hard way on multiple projects. Your application code can scale horizontally easily. Your database? Not so much.</p>
-<h3 id="patterns-that-actually-work"><a class="anchor" href="#patterns-that-actually-work" aria-hidden="true" tabindex="-1">#</a>Patterns That Actually Work:</h3>
-<ol>
-<li><p><strong>Read Replicas for Analytics</strong>: Don&#39;t let your reporting queries slow down your main application. Offload them to read replicas from day one.</p>
-</li>
-<li><p><strong>Caching Strategy, Not Just Caching</strong>: Redis isn&#39;t magic. You need a strategy. Cache invalidation is indeed one of the hard problems in computer science. I&#39;ve found that TTL-based caching with background refresh works well for most read-heavy workloads.</p>
-</li>
-<li><p><strong>Connection Pooling</strong>: This seems obvious, but I&#39;ve seen production systems brought down because of connection exhaustion. Monitor your pool utilization.</p>
-</li>
+<p>Early in my career, I spent weeks designing microservices for a product that had not yet found its market. We had architecture work to show for it, but the product still needed to solve a useful problem.</p>
+<p>Over seven years of work on recruitment platforms, fintech products, and travel apps, I kept returning to that lesson. Growth from hundreds to hundreds of thousands of users creates real technical problems. It also makes unnecessary complexity harder to remove.</p>
+<h2 id="start-with-a-system-the-team-can-understand"><a class="anchor" href="#start-with-a-system-the-team-can-understand" aria-hidden="true" tabindex="-1">#</a>Start with a system the team can understand</h2>
+<p>I usually start with a monolith and clear module boundaries. The product gets a simpler deployment, and the team can focus on user problems. If a module later needs to become a service, a clear boundary makes that change easier.</p>
+<p>Planning for growth does not require building every future component now. It requires knowing where responsibilities begin and end.</p>
+<h2 id="watch-the-database-early"><a class="anchor" href="#watch-the-database-early" aria-hidden="true" tabindex="-1">#</a>Watch the database early</h2>
+<p>The database has repeatedly been the difficult part of scaling in my projects. Adding application instances is often easier than increasing database capacity.</p>
+<p>Reporting queries deserve particular attention. Read replicas can keep analytics work away from the database serving the main application. Plan that separation early when reporting is part of the workload.</p>
+<p>Caching also needs a policy. Adding Redis leaves questions about expiry and stale data unanswered. For many read-heavy workloads, I have found that a time-to-live (TTL) policy with background refresh works well.</p>
+<p>Connection pools need monitoring too. I have seen production systems fail because they ran out of connections. A pool setting is not something I want to configure once and forget.</p>
+<figure class="concept concept--split">
+<div class="concept-title">Separate sources of database load</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6c0-4 18-4 18 0s-18 4-18 0v12c0 4 18 4 18 0V6 M3 12c0 4 18 4 18 0"/></svg><strong>Reporting</strong><span>Read replicas for analytics.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18 M12 7v5l4 2"/></svg><strong>Repeated reads</strong><span>Cache with an expiry policy.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17v4 M9 12v9 M15 7v14 M21 2v19"/></svg><strong>Connections</strong><span>Monitor pool use and limits.</span></li>
 </ol>
-<h2 id="embrace-eventual-consistency"><a class="anchor" href="#embrace-eventual-consistency" aria-hidden="true" tabindex="-1">#</a>Embrace Eventual Consistency</h2>
-<p>Strong consistency is expensive at scale. I&#39;ve learned to ask: &quot;Does this really need to be immediately consistent?&quot; More often than not, the answer is no.</p>
-<p>At Seekers, we moved from synchronous API calls to an event-driven architecture using message queues. The result? 40% reduction in response times and significantly improved reliability.</p>
-<h2 id="the-human-element-of-system-design"><a class="anchor" href="#the-human-element-of-system-design" aria-hidden="true" tabindex="-1">#</a>The Human Element of System Design</h2>
-<p>Technical decisions don&#39;t happen in a vacuum. The best architecture is one your team can understand and maintain. I&#39;ve learned to:</p>
+<figcaption>These address different pressures. Choose them from the workload you observe.</figcaption>
+</figure>
+
+<h2 id="decide-which-work-can-wait"><a class="anchor" href="#decide-which-work-can-wait" aria-hidden="true" tabindex="-1">#</a>Decide which work can wait</h2>
+<p>Before requiring strong consistency everywhere, I ask whether each operation needs an immediate result. That question often reveals work we can handle asynchronously.</p>
+<p>At Seekers, we replaced synchronous API calls with an event-driven architecture using message queues. Response times fell by 40%, and reliability improved. That was the result for our workload, not a forecast for every system that adds a queue.</p>
+<h2 id="leave-the-reasoning-with-the-team"><a class="anchor" href="#leave-the-reasoning-with-the-team" aria-hidden="true" tabindex="-1">#</a>Leave the reasoning with the team</h2>
+<p>A design has to make sense to the people who will maintain it. I write ADRs because, six months later, remembering why we made a decision is harder than finding the code.</p>
+<p>I also involve the team early. Junior engineers can see a simpler approach that someone with more experience has overlooked. Documentation and runbooks make the system easier to join, especially when its original authors are no longer available.</p>
+<h2 id="check-more-than-server-health"><a class="anchor" href="#check-more-than-server-health" aria-hidden="true" tabindex="-1">#</a>Check more than server health</h2>
+<p>Before a major launch, I want monitoring at three levels:</p>
 <ul>
-<li><strong>Document the &quot;Why&quot;</strong>: Architecture Decision Records (ADRs) have saved me countless times when revisiting decisions six months later.</li>
-<li><strong>Involve the Team Early</strong>: Junior engineers often spot simplicity that senior engineers miss.</li>
-<li><strong>Plan for Onboarding</strong>: Complex systems are hard to join. Invest in documentation and runbooks.</li>
+<li>Business results: sign-ups, conversions, and effects on revenue.</li>
+<li>Application behavior: response times, error rates, and throughput.</li>
+<li>Infrastructure: CPU use, memory use, and disk I/O.</li>
 </ul>
-<h2 id="monitoring-your-production-safety-net"><a class="anchor" href="#monitoring-your-production-safety-net" aria-hidden="true" tabindex="-1">#</a>Monitoring: Your Production Safety Net</h2>
-<p>You can&#39;t improve what you don&#39;t measure. I&#39;ve made it a rule to have three levels of monitoring before any major launch:</p>
-<ol>
-<li><strong>Business Metrics</strong>: Sign-ups, conversions, revenue impact</li>
-<li><strong>Application Metrics</strong>: Response times, error rates, throughput</li>
-<li><strong>Infrastructure Metrics</strong>: CPU, memory, disk I/O</li>
-</ol>
-<h2 id="conclusion"><a class="anchor" href="#conclusion" aria-hidden="true" tabindex="-1">#</a>Conclusion</h2>
-<p>System design isn&#39;t just about choosing the right technologies—it&#39;s about understanding trade-offs and making intentional decisions. The best systems I&#39;ve built weren&#39;t the most technically impressive; they were the ones that solved real problems reliably and could be maintained by the team long after I moved on.</p>
-<p>What&#39;s your biggest lesson from scaling systems? I&#39;d love to hear your experiences.</p>
+<p>These measurements answer different questions. A healthy server does not tell me whether users can finish what they came to do.</p>
+<p>The systems I value most from those seven years solved their problems reliably and remained understandable after I moved on. That is the standard I try to design for.</p>
 
     </div>
   </article>
   <nav class="pager" aria-label="More notes">
     <a class="pg pg-older" href="/blog/technical-decision-making/" rel="prev">
       <span class="label">← older</span>
-      <span class="pg-title">The Art of Technical Decision Making</span>
+      <span class="pg-title">How I make technical decisions I can live with</span>
     </a>
     <a class="pg pg-newer" href="/blog/stop-chasing-better-models-build-harnesses/" rel="next">
       <span class="label">newer →</span>

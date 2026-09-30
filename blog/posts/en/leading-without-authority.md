@@ -1,9 +1,9 @@
 ---
-title: "Leading Without Authority: Engineering Leadership Lessons"
-description: "How to drive technical initiatives and influence decisions when you're not the boss."
+title: "Leading before you have the title"
+description: "What helped me earn trust, discuss technical choices, and support other engineers without being their manager."
 date: 2025-09-20
 image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=800"
-minRead: 7
+minRead: 3
 tags:
   - Leadership
   - Teamwork
@@ -11,128 +11,60 @@ tags:
   - Career Growth
 ---
 
-One of the hardest transitions in an engineering career is moving from "doer" to "influencer." As a senior engineer, you're expected to drive technical direction, mentor junior developers, and influence decisions—often without direct authority over the people involved.
+Early in my career, I waited for someone to call me a tech lead before I started acting like one. Looking back, I wish I had spent that time helping the team instead.
 
-## The Myth of Authority
+As a senior engineer, you often have responsibility for technical direction without authority over the people doing the work. You still need to move a proposal forward, help a colleague, or resolve a disagreement. A title can make those conversations easier. It cannot earn trust for you.
 
-Early in my career, I thought leadership required a title. I waited to be made "Tech Lead" before acting like one. This was a mistake. The best leaders I know started leading long before they had the title.
+## Give people reasons to trust your judgment
 
-**Key insight:** Authority is given; influence is earned. Focus on the latter.
+Trust starts with ordinary work. Ship code that is clear, tested, and documented. Review other people's changes carefully. When you make a mistake, explain what happened and what you learned.
 
-## Building Technical Credibility
+You do not need to know everything. It helps to know one part of the system well. At Seekers, I owned the search infrastructure. People came to me because I understood it better than anyone else. That gave me a useful way to contribute to decisions.
 
-Before you can influence technical decisions, people need to trust your technical judgment. This isn't about knowing everything—it's about demonstrating competence consistently.
+## Make the proposal easy to examine
 
-### Strategies That Work:
+A technical opinion is easier to discuss when people can check it. Bring benchmark results, relevant examples from similar companies, and estimates of the effect on performance, maintenance, or hiring.
 
-1. **Ship Quality Code**: Your code is your resume. Write clean, well-tested, well-documented code. Be the engineer others want to review their PRs.
+Explain what those numbers mean for the team. If a case study reports that a migration saved Company X 20 hours a week, connect that result to the work it removed. Present it as someone else's result, with its context, rather than a promise about your own project.
 
-2. **Own Your Mistakes**: Nothing builds credibility faster than admitting when you're wrong. "I made a mistake here, here's what I learned" is powerful.
+Start with a goal people already share: reducing page load time, for example. Then discuss which approach serves that goal. People can disagree about the method while still working toward the same result.
 
-3. **Know Your Domain Deeply**: Pick an area and become the expert. At Seekers, I owned the search infrastructure. People came to me because I knew it better than anyone.
+<figure class="concept concept--flow">
+<div class="concept-title">How a proposal earns support</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 6l-6 6 6 6 M16 6l6 6-6 6 M14 3l-4 18"/></svg><strong>Do the work</strong><span>Build technical trust.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3h7l5 5v13H7z M14 3v6h5 M10 13h6 M10 17h6"/></svg><strong>Show the evidence</strong><span>Make the reasoning visible.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3a3 3 0 1 0 0 6 3 3 0 1 0 0-6 M2 21v-4a6 6 0 0 1 12 0v4 M17 4a3 3 0 0 1 0 6 M17 13a5 5 0 0 1 5 5v3"/></svg><strong>Discuss the choice</strong><span>Give others room to contribute.</span></li>
+</ol>
+<figcaption>Support grows when people can understand and examine the proposal.</figcaption>
+</figure>
 
-## The Art of Persuasion
+## Talk before the meeting
 
-Technical leadership is fundamentally about persuasion. Here's what I've learned works:
+I prefer to share a proposal before a formal decision meeting. Informal conversations give people time to raise concerns and give me time to improve the proposal. They also make it easier to discuss an objection without turning the meeting into a contest.
 
-### Lead with Data
+By the time everyone meets, the important questions should be familiar. The meeting can then settle the remaining issues and confirm the decision.
 
-Opinions are cheap; data is convincing. When proposing a technical change:
-- Show benchmark results
-- Reference case studies from similar companies
-- Estimate impact (performance, maintenance, hiring)
+Written documents help beyond that one conversation. I use architecture decision records (ADRs) to explain why we chose an approach, requests for comments (RFCs) to collect feedback, and runbooks to help others solve problems without waiting for me.
 
-### Tell Stories
+## Help someone else do the work
 
-Data convinces the mind; stories convince the heart. When proposing that migration to a new framework:
-- "Here's the benchmark data" (logic)
-- "Here's how it saved Company X 20 hours per week" (story)
+Mentoring is one of the parts of leadership I enjoy most. It also helps the team depend less on any one person.
 
-### Find Common Ground
+Questions such as “What have you tried?” and “What do you think would happen if…?” help a colleague work through a problem. Pair programming gives us a real task to discuss instead of an abstract lesson.
 
-Start with agreement. "We all want to reduce page load times..." establishes shared goals before discussing methods.
+Give people credit where the team can see it. Be specific: a query improvement of 40%, for example, is more useful feedback than a general compliment. The person who did the work should get the recognition.
 
-## Communication Strategies
+## Handle disagreement without making it personal
 
-### The Pre-Meeting
+I start with the assumption that everyone wants the project to succeed. Most disagreements concern how to get there.
 
-Never let important technical discussions happen for the first time in a formal meeting. Have informal conversations beforehand:
-- Share your proposal early
-- Gather feedback and concerns
-- Address objections privately
-- Build allies
+Sometimes the team chooses an approach I would not have chosen. Once we have made the decision, I put my effort into making it work. Continuing to argue through comments or side conversations only makes that harder.
 
-By the time the meeting happens, the decision is already made.
+Management input is useful when a decision affects several teams, carries significant risk, or remains blocked after the team has tried to resolve it. Leading without authority does not mean solving every disagreement alone.
 
-### Documentation as Influence
+## Keep showing up
 
-Well-written documentation is a force multiplier:
-- **Architecture Decision Records (ADRs)**: Capture the "why" behind decisions
-- **RFCs (Requests for Comments)**: Propose changes and gather feedback
-- **Runbooks**: Enable others to solve problems without you
+Prompt reviews, answers in Slack, useful articles, and help with a production issue all contribute to trust. These are small actions. Their value comes from doing them consistently over months and years.
 
-Good documentation scales your influence beyond your direct interactions.
-
-## Mentoring as Leadership
-
-One of the most effective ways to lead is by growing others. I've found mentoring to be incredibly rewarding—and strategically valuable.
-
-### Effective Mentoring Approaches:
-
-1. **Socratic Method**: Ask questions rather than give answers. "What have you tried?" "What do you think would happen if...?"
-
-2. **Pair Programming**: Work together on real problems. It's the fastest way to transfer knowledge.
-
-3. **Public Recognition**: Celebrate mentees' wins publicly. "Great work by Sarah on optimizing that query—40% improvement!"
-
-## Navigating Conflict
-
-Technical decisions often involve disagreement. Here's how I handle it:
-
-### Assume Positive Intent
-
-Start by assuming everyone wants what's best for the project. Most conflicts are about methods, not goals.
-
-### Disagree and Commit
-
-Sometimes you'll disagree with the final decision. Once it's made, commit fully:
-- "I still think X would be better, but let's make Y work"
-- Don't undermine decisions after they're made
-- Put your energy into making the chosen path successful
-
-### Know When to Escalate
-
-Some decisions do need management input:
-- When the decision affects multiple teams
-- When there's significant risk
-- When consensus can't be reached
-
-But exhaust other options first.
-
-## The Long Game
-
-Leadership without authority is a long game. You're building relationships and credibility that pay off over months and years, not days.
-
-### Consistency Wins
-
-Show up consistently:
-- Review PRs promptly
-- Answer questions in Slack
-- Share interesting articles
-- Help debug production issues
-
-Small, consistent actions compound over time.
-
-### Give Credit, Take Blame
-
-When things go well, highlight the team's contribution. When things go wrong, take responsibility:
-- ✅ "The team did an amazing job shipping this feature"
-- ✅ "I should have caught that in review—my mistake"
-
-## Conclusion
-
-Leading without authority is one of the most valuable skills you can develop as a senior engineer. It amplifies your impact, builds your network, and prepares you for formal leadership roles.
-
-Remember: Leadership isn't about telling people what to do. It's about creating an environment where great work happens—and helping others grow along the way.
-
-What's your experience with leading without authority? I'd love to hear your stories and strategies.
+When the team succeeds, give the team credit. When you miss something in review, say so. That combination has helped me more than waiting for a title ever did.

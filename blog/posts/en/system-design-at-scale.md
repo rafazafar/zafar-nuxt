@@ -1,9 +1,9 @@
 ---
-title: "System Design at Scale: Lessons from 7 Years of Building"
-description: "Key architectural decisions and patterns I've learned from scaling products from zero to hundreds of thousands of users."
+title: "What seven years of scaling systems taught me"
+description: "The design choices I return to: clear boundaries, measured database load, and systems the team can maintain."
 date: 2025-12-15
 image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800"
-minRead: 8
+minRead: 2
 tags:
   - Architecture
   - System Design
@@ -11,50 +11,56 @@ tags:
   - Lessons Learned
 ---
 
-Over the past seven years, I've had the privilege of building and scaling systems across multiple industries—from recruitment platforms to fintech and travel apps. Each project taught me valuable lessons about what works and what doesn't when your user base grows from hundreds to hundreds of thousands.
+Early in my career, I spent weeks designing microservices for a product that had not yet found its market. We had architecture work to show for it, but the product still needed to solve a useful problem.
 
-## Start Simple, But Plan for Complexity
+Over seven years of work on recruitment platforms, fintech products, and travel apps, I kept returning to that lesson. Growth from hundreds to hundreds of thousands of users creates real technical problems. It also makes unnecessary complexity harder to remove.
 
-The biggest mistake I see junior engineers make is over-engineering from day one. I've been guilty of this too. Early in my career, I spent weeks designing a microservices architecture for a product that didn't even have product-market fit yet.
+## Start with a system the team can understand
 
-**Lesson:** Start with a monolith. Focus on solving user problems first. But—and this is crucial—design your boundaries with future extraction in mind. Well-defined modules within a monolith can become services later without a complete rewrite.
+I usually start with a monolith and clear module boundaries. The product gets a simpler deployment, and the team can focus on user problems. If a module later needs to become a service, a clear boundary makes that change easier.
 
-## The Database Will Be Your Bottleneck
+Planning for growth does not require building every future component now. It requires knowing where responsibilities begin and end.
 
-Every. Single. Time. I've learned this lesson the hard way on multiple projects. Your application code can scale horizontally easily. Your database? Not so much.
+## Watch the database early
 
-### Patterns That Actually Work:
+The database has repeatedly been the difficult part of scaling in my projects. Adding application instances is often easier than increasing database capacity.
 
-1. **Read Replicas for Analytics**: Don't let your reporting queries slow down your main application. Offload them to read replicas from day one.
+Reporting queries deserve particular attention. Read replicas can keep analytics work away from the database serving the main application. Plan that separation early when reporting is part of the workload.
 
-2. **Caching Strategy, Not Just Caching**: Redis isn't magic. You need a strategy. Cache invalidation is indeed one of the hard problems in computer science. I've found that TTL-based caching with background refresh works well for most read-heavy workloads.
+Caching also needs a policy. Adding Redis leaves questions about expiry and stale data unanswered. For many read-heavy workloads, I have found that a time-to-live (TTL) policy with background refresh works well.
 
-3. **Connection Pooling**: This seems obvious, but I've seen production systems brought down because of connection exhaustion. Monitor your pool utilization.
+Connection pools need monitoring too. I have seen production systems fail because they ran out of connections. A pool setting is not something I want to configure once and forget.
 
-## Embrace Eventual Consistency
+<figure class="concept concept--split">
+<div class="concept-title">Separate sources of database load</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6c0-4 18-4 18 0s-18 4-18 0v12c0 4 18 4 18 0V6 M3 12c0 4 18 4 18 0"/></svg><strong>Reporting</strong><span>Read replicas for analytics.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18 M12 7v5l4 2"/></svg><strong>Repeated reads</strong><span>Cache with an expiry policy.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17v4 M9 12v9 M15 7v14 M21 2v19"/></svg><strong>Connections</strong><span>Monitor pool use and limits.</span></li>
+</ol>
+<figcaption>These address different pressures. Choose them from the workload you observe.</figcaption>
+</figure>
 
-Strong consistency is expensive at scale. I've learned to ask: "Does this really need to be immediately consistent?" More often than not, the answer is no.
+## Decide which work can wait
 
-At Seekers, we moved from synchronous API calls to an event-driven architecture using message queues. The result? 40% reduction in response times and significantly improved reliability.
+Before requiring strong consistency everywhere, I ask whether each operation needs an immediate result. That question often reveals work we can handle asynchronously.
 
-## The Human Element of System Design
+At Seekers, we replaced synchronous API calls with an event-driven architecture using message queues. Response times fell by 40%, and reliability improved. That was the result for our workload, not a forecast for every system that adds a queue.
 
-Technical decisions don't happen in a vacuum. The best architecture is one your team can understand and maintain. I've learned to:
+## Leave the reasoning with the team
 
-- **Document the "Why"**: Architecture Decision Records (ADRs) have saved me countless times when revisiting decisions six months later.
-- **Involve the Team Early**: Junior engineers often spot simplicity that senior engineers miss.
-- **Plan for Onboarding**: Complex systems are hard to join. Invest in documentation and runbooks.
+A design has to make sense to the people who will maintain it. I write ADRs because, six months later, remembering why we made a decision is harder than finding the code.
 
-## Monitoring: Your Production Safety Net
+I also involve the team early. Junior engineers can see a simpler approach that someone with more experience has overlooked. Documentation and runbooks make the system easier to join, especially when its original authors are no longer available.
 
-You can't improve what you don't measure. I've made it a rule to have three levels of monitoring before any major launch:
+## Check more than server health
 
-1. **Business Metrics**: Sign-ups, conversions, revenue impact
-2. **Application Metrics**: Response times, error rates, throughput
-3. **Infrastructure Metrics**: CPU, memory, disk I/O
+Before a major launch, I want monitoring at three levels:
 
-## Conclusion
+- Business results: sign-ups, conversions, and effects on revenue.
+- Application behavior: response times, error rates, and throughput.
+- Infrastructure: CPU use, memory use, and disk I/O.
 
-System design isn't just about choosing the right technologies—it's about understanding trade-offs and making intentional decisions. The best systems I've built weren't the most technically impressive; they were the ones that solved real problems reliably and could be maintained by the team long after I moved on.
+These measurements answer different questions. A healthy server does not tell me whether users can finish what they came to do.
 
-What's your biggest lesson from scaling systems? I'd love to hear your experiences.
+The systems I value most from those seven years solved their problems reliably and remained understandable after I moved on. That is the standard I try to design for.

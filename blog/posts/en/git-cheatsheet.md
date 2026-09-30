@@ -1,79 +1,71 @@
 ---
-title: "Git Cheatsheet: Essential Commands for Developers"
-description: A comprehensive reference guide to Git commands and workflows for developers of all experience levels, with tips to avoid common mistakes.
+title: "The Git commands I keep close by"
+description: "A short reference for everyday changes, branches, temporary work, and undoing a shared commit."
 date: 2022-04-23
 image: https://images.unsplash.com/photo-1556075798-4825dfaaf498?q=80&w=800
-minRead: 5
+minRead: 2
 ---
 
-## Basic Commands
+Most everyday Git work follows a short path: edit files, choose what belongs in a commit, record it, and share it. I find the commands easier to remember when I keep those steps separate.
 
-- `git init`: Initialize a new Git repository
-- `git clone <repository>`: Clone an existing repository
-- `git add <file>`: Add a file to the staging area
-- `git commit -m "<message>"`: Commit changes with a message
-- `git push`: Push changes to the remote repository
-- `git pull`: Pull changes from the remote repository
-- `git status`: Check the status of the repository
+<figure class="concept concept--flow">
+<div class="concept-title">Where your changes go</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3h7l5 5v13H7z M14 3v6h5 M10 13h6 M10 17h6"/></svg><strong>Working files</strong><span>Edit your files.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12l5 5L20 6"/></svg><strong>Staging area</strong><span>git add selects changes.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6c0-4 18-4 18 0s-18 4-18 0v12c0 4 18 4 18 0V6 M3 12c0 4 18 4 18 0"/></svg><strong>Local history</strong><span>git commit records them.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 18a4 4 0 0 1-1-8 7 7 0 0 1 13-1 4.5 4.5 0 0 1 0 9z"/></svg><strong>Remote</strong><span>git push shares commits.</span></li>
+</ol>
+<figcaption>Staging selects the next snapshot. A local commit does not send it to the remote.</figcaption>
+</figure>
 
-## Branching
+## Start a repository and check your work
 
-- `git branch <branch>`: Create a new branch
-- `git checkout <branch>`: Switch to a different branch
-- `git merge <branch>`: Merge a branch into the current branch
-- `git branch -d <branch>`: Delete a branch
+- `git init`: Create a repository in the current directory.
+- `git clone <repository>`: Copy an existing repository.
+- `git status`: Check the current branch and file states.
+- `git diff`: Read changes in tracked files that you have not staged.
+- `git log`: Read the commit history.
 
-## Other Useful Commands
+Check the state before making a commit or changing branches. It is easier to choose the next command when you know where your changes are.
 
-- `git log`: View the commit history
-- `git diff`: View the changes made in the repository
-- `git reset <file>`: Unstage a file
-- `git stash`: Save changes temporarily
-- `git stash pop`: Restore the most recently stashed changes
+## Record and share a change
 
-## Basic Workflow
+Use `git add <file>` to stage the changes you want in the next commit. Then use `git commit -m "<message>"` to record them locally. `git push` sends your commits to the remote repository.
 
-1. Make changes to your local repository: Create or edit files, add them to the staging area using `git add`, and then commit the changes using `git commit`.
-2. Push your changes to the remote repository: Use `git push` to send your committed changes to the remote repository.
-3. Update your local repository with changes from the remote repository: Use `git pull` to fetch and merge changes from the remote repository into your local repository.
+To bring remote changes into your current branch, use `git pull`. It fetches and integrates changes; the integration method depends on your configuration and options.
 
-## Branching Workflow
+The normal workflow is to edit, stage, commit, and push. Keep your branch up to date with the team's work as you go.
 
-1. Create a new branch: Use `git branch <branch>` to create a new branch.
-2. Switch to the new branch: Use `git checkout <branch>` to switch to the new branch.
-3. Make changes and commit them as usual.
-4. Merge the branch into the main branch: When you are ready to incorporate the changes from your new branch into the main branch (usually master), switch back to the main branch using `git checkout <branch>` and then use `git merge <branch>` to merge the changes from your new branch into the main branch.
+## Work on a branch
 
-## Undo a Commit That's Already Pushed
+- `git branch <branch>`: Create a branch.
+- `git checkout <branch>`: Switch to that branch.
+- `git merge <branch>`: Merge the named branch into your current branch.
+- `git branch -d <branch>`: Delete a branch when Git's merge checks allow it.
 
-If you want to leave the original commit in place, but just undo the changes it made, you can use the `git revert` command to create a new commit that undoes the changes made by the original commit. For example:
+For a feature, create a branch and switch to it. Make and commit the changes there. When the work is ready, switch back to your project's main branch and merge the feature branch into it.
+
+The current branch matters: `git merge` changes the branch you are on.
+
+## Set unfinished work aside
+
+`git reset <file>` removes a file's changes from the staging area while keeping the working copy. It is useful when you staged more than you intended.
+
+`git stash` temporarily stores local changes. `git stash pop` applies the most recent stash and removes it if the application succeeds. These commands help when you need to interrupt one piece of work for another.
+
+## Undo a commit that is already shared
+
+Use `git revert` when you want a new commit that reverses an earlier commit while keeping the history:
 
 ```
 git revert <commit-hash>
 ```
 
-This will create a new commit that undoes the changes made in the original commit. You can then push the revert commit to the remote repository to undo the changes on the remote.
+Push the revert commit to share that reversal with the team. The original commit remains in the history, along with the explanation of how it was undone.
 
-## Common Developer Mistakes When Using Git
+## Keep commits small enough to review
 
-### Forgetting to Commit Changes
+Uncommitted work has no commit history to return to. I try to commit at least once an hour while working, but a useful commit should also describe one coherent change. Large batches make review and fault finding harder.
 
-It's important to commit your changes regularly so that you have a record of the progress you have made. If you forget to commit your changes, you may lose your work if something goes wrong.
-
-### Not Committing Often Enough
-
-On the other hand, it's also important to commit your changes often enough so that you don't have too many changes in a single commit. Large commits can be harder to review and troubleshoot if there are problems.
-
-Try to commit at least once per hour.
-
-### Not Branching
-
-It's a good idea to use branches when working on new features or making significant changes to your codebase. This helps to keep your main branch (usually master) stable and allows you to work on multiple features at the same time.
-
-### Not Keeping the Main Branch Clean
-
-It's important to keep your main branch (usually master) clean and only include well-tested code. This makes it easier to roll back changes if necessary and reduces the risk of introducing bugs into your codebase.
-
-### Not Reviewing Changes Before Merging
-
-It's a good idea to review changes before merging them into the main branch, especially if you are working with a team. This helps to ensure that the code is of high quality and does not introduce any issues.
+Use branches for features and significant changes. Review and test the work before merging it into the main branch. Keeping that branch stable makes a later rollback easier and gives teammates a reliable starting point.

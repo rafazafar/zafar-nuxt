@@ -1,9 +1,9 @@
 ---
-title: "Systemdesign im Maßstab: Lektionen aus 7 Jahren Entwicklung"
-description: "Wichtige architektonische Entscheidungen und Muster, die ich beim Skalieren von Produkten von null auf Hunderttausende Nutzer gelernt habe."
+title: "Was ich in sieben Jahren über Skalierung gelernt habe"
+description: "Klare Modulgrenzen, beobachtete Datenbanklast und Systeme, die das Team langfristig warten kann."
 date: 2025-12-15
 image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800"
-minRead: 8
+minRead: 2
 tags:
   - Architektur
   - Systemdesign
@@ -11,50 +11,46 @@ tags:
   - Erfahrungen
 ---
 
-In den vergangenen sieben Jahren hatte ich das Privileg, Systeme in verschiedenen Branchen zu entwickeln und zu skalieren – von Recruiting-Plattformen über Fintech bis hin zu Reise-Apps. Jedes Projekt lehrte mich wertvolle Lektionen darüber, was funktioniert und was nicht, wenn die Nutzerbasis von Hunderten auf Hunderttausende wächst.
+Früh in meiner Laufbahn habe ich wochenlang Microservices für ein Produkt entworfen, das noch keinen Product-Market-Fit hatte. Heute würde ich diese Zeit zuerst in das Problem der Nutzer stecken.
 
-## Beginne einfach, aber plane für Komplexität
+In sieben Jahren mit Recruiting-Plattformen, Fintech-Produkten und Reise-Apps habe ich Systeme von Hunderten auf Hunderttausende Nutzer wachsen sehen. Dabei wurde mir immer deutlicher, wie teuer unnötige Komplexität später wird.
 
-Der größte Fehler, den ich bei Junior-Entwicklern sehe, ist das Over-Engineering vom ersten Tag an. Ich habe mich auch schuldig gemacht. Früh in meiner Karriere verbrachte ich Wochen mit dem Design einer Microservices-Architektur für ein Produkt, das noch nicht einmal Product-Market-Fit hatte.
+## Einfach anfangen, Grenzen bewusst ziehen
 
-**Lektion:** Beginne mit einem Monolithen. Konzentriere dich zuerst auf die Lösung von Nutzerproblemen. Aber – und das ist entscheidend – gestalte deine Grenzen mit zukünftiger Extraktion im Hinterkopf. Gut definierte Module innerhalb eines Monolithen können später zu Services werden, ohne eine komplette Neuentwicklung.
+Ich beginne gern mit einem Monolithen und klar abgegrenzten Modulen. So kann das Team am Produkt arbeiten, ohne sofort mehrere Dienste betreiben zu müssen. Wenn ein Modul später einen eigenen Dienst braucht, erleichtert die Grenze die Trennung.
 
-## Die Datenbank wird dein Engpass sein
+Für Wachstum zu planen heißt nicht, jede spätere Komponente schon heute zu bauen.
 
-Jedes. Einzelne. Mal. Ich habe diese Lektion auf mehreren Projekten auf die harte Tour gelernt. Dein Anwendungscode kann horizontal einfach skalieren. Deine Datenbank? Nicht so sehr.
+## Die Datenbank früh beobachten
 
-### Muster, die tatsächlich funktionieren:
+In meinen Projekten wurde die Datenbank wiederholt zum Engpass. Zusätzliche Anwendungsinstanzen waren oft leichter bereitzustellen als zusätzliche Datenbankkapazität.
 
-1. **Leserepliken für Analytics**: Lass deine Reporting-Queries deine Hauptanwendung nicht verlangsamen. Lagere sie von Tag eins an auf Leserepliken aus.
+Reporting-Abfragen sollten die Hauptanwendung nicht ausbremsen. Wenn Analytics zum Produkt gehört, plane ich Leserepliken früh ein. Für viele leselastige Anwendungen hat sich bei mir ein Cache mit TTL und Aktualisierung im Hintergrund bewährt. Redis allein beantwortet noch nicht, wann Daten veralten dürfen.
 
-2. **Caching-Strategie, nicht nur Caching**: Redis ist keine Magie. Du brauchst eine Strategie. Cache-Invalidierung ist in der Tat eines der schwierigen Probleme in der Informatik. Ich habe festgestellt, dass TTL-basiertes Caching mit Hintergrundaktualisierung für die meisten leseintensiven Workloads gut funktioniert.
+Auch Verbindungspools brauchen Überwachung. Ich habe Produktionsausfälle erlebt, weil keine Verbindungen mehr frei waren.
 
-3. **Connection Pooling**: Das scheint offensichtlich, aber ich habe Produktionssysteme gesehen, die wegen Verbindungserschöpfung ausgefallen sind. Überwache deine Pool-Nutzung.
+<figure class="concept concept--split">
+<div class="concept-title">Datenbanklast getrennt betrachten</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6c0-4 18-4 18 0s-18 4-18 0v12c0 4 18 4 18 0V6 M3 12c0 4 18 4 18 0"/></svg><strong>Reporting</strong><span>Leserepliken für Analytics.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18 M12 7v5l4 2"/></svg><strong>Wiederholte Abfragen</strong><span>Cache mit Ablaufregeln.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17v4 M9 12v9 M15 7v14 M21 2v19"/></svg><strong>Verbindungen</strong><span>Pool und Grenzen beobachten.</span></li>
+</ol>
+<figcaption>Jede Maßnahme löst ein anderes Problem. Entscheidend ist die tatsächliche Last.</figcaption>
+</figure>
 
-## Akzeptiere die schlussendliche Konsistenz
+## Prüfen, welche Arbeit warten kann
 
-Starke Konsistenz ist im großen Maßstab teuer. Ich habe gelernt zu fragen: "Muss das wirklich sofort konsistent sein?" Meistens ist die Antwort nein.
+Starke Konsistenz hat Kosten. Ich frage deshalb bei jeder Operation, ob ihr Ergebnis sofort überall verfügbar sein muss.
 
-Bei Seekers wechselten wir von synchronen API-Aufrufen zu einer event-driven Architektur mit Message Queues. Das Ergebnis? 40% Reduzierung der Antwortzeiten und deutlich verbesserte Zuverlässigkeit.
+Bei Seekers wechselten wir von synchronen API-Aufrufen zu einer ereignisgesteuerten Architektur mit Message Queues. Unsere Antwortzeiten sanken um 40%, und die Zuverlässigkeit stieg. Das war das Ergebnis für unsere Last und unsere Anwendung, keine allgemeine Zusage für jede Queue.
 
-## Das menschliche Element des Systemdesigns
+## Die Entscheidung für das Team nachvollziehbar machen
 
-Technische Entscheidungen passieren nicht im Vakuum. Die beste Architektur ist die, die dein Team verstehen und warten kann. Ich habe gelernt:
+ADRs halten fest, warum wir eine Architektur gewählt haben. Nach sechs Monaten hilft mir diese Begründung oft mehr als die Erinnerung an das damalige Gespräch.
 
-- **Dokumentiere das "Warum"**: Architecture Decision Records (ADRs) haben mir unzählige Male geholfen, wenn ich Entscheidungen sechs Monate später noch einmal betrachtete.
-- **Beteilige das Team früh**: Junior-Entwickler erkennen oft Einfachheit, die Senior-Entwickler übersehen.
-- **Plane für Onboarding**: Komplexe Systeme sind schwer zu betreten. Investiere in Dokumentation und Runbooks.
+Ich beziehe das Team früh ein. Gerade weniger erfahrene Entwickler sehen manchmal eine einfache Lösung, die andere übersehen. Dokumentation und Runbooks helfen neuen Kollegen, sich im System zurechtzufinden.
 
-## Monitoring: Dein Sicherheitsnetz in Produktion
+Vor einem größeren Start möchte ich drei Ebenen beobachten: Geschäftsergebnisse wie Anmeldungen und Umsatz, Anwendungsverhalten wie Antwortzeiten und Fehlerraten sowie CPU, Speicher und Datenträger-I/O. Ein gesunder Server allein sagt noch nicht, ob Nutzer ihre Aufgabe erledigen können.
 
-Du kannst nicht verbessern, was du nicht misst. Ich habe es mir zur Regel gemacht, drei Ebenen des Monitorings vor jedem großen Launch zu haben:
-
-1. **Geschäftsmetriken**: Anmeldungen, Conversions, Umsatzauswirkungen
-2. **Anwendungsmetriken**: Antwortzeiten, Fehlerraten, Durchsatz
-3. **Infrastrukturmetriken**: CPU, Speicher, Festplatten-I/O
-
-## Fazit
-
-Systemdesign geht nicht nur darum, die richtigen Technologien auszuwählen – es geht darum, Kompromisse zu verstehen und bewusste Entscheidungen zu treffen. Die besten Systeme, die ich gebaut habe, waren nicht die technisch beeindruckendsten; sie waren diejenigen, die echte Probleme zuverlässig lösten und vom Team auch nach meinem Weggang gewartet werden konnten.
-
-Was ist deine größte Lektion aus dem Skalieren von Systemen? Ich würde gerne deine Erfahrungen hören.
+Die Systeme, auf die ich am liebsten zurückblicke, haben ihre Aufgabe zuverlässig erfüllt. Das Team konnte sie auch nach meinem Weggang verstehen und warten. Daran messe ich einen guten Entwurf.

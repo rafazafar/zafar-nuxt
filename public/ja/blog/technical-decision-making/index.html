@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>技術的意思決定の芸術 | Zafar.dev</title>
-<meta name="description" content="シニアエンジニアがトレードオフを評価し、時間の試練に耐える意思決定を行う方法">
+<title>後から振り返れる技術判断の進め方 | Zafar.dev</title>
+<meta name="description" content="時間がたった後の負担と、選択を変える難しさを確認してから、技術を選びます。">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://zafar.dev/ja/blog/technical-decision-making/">
 <link rel="alternate" hreflang="en" href="https://zafar.dev/blog/technical-decision-making/">
 <link rel="alternate" hreflang="ja" href="https://zafar.dev/ja/blog/technical-decision-making/">
 <link rel="alternate" hreflang="de" href="https://zafar.dev/de/blog/technical-decision-making/">
 <meta property="og:type" content="article">
-<meta property="og:title" content="技術的意思決定の芸術 | Zafar.dev">
-<meta property="og:description" content="シニアエンジニアがトレードオフを評価し、時間の試練に耐える意思決定を行う方法">
+<meta property="og:title" content="後から振り返れる技術判断の進め方 | Zafar.dev">
+<meta property="og:description" content="時間がたった後の負担と、選択を変える難しさを確認してから、技術を選びます。">
 <meta property="og:url" content="https://zafar.dev/ja/blog/technical-decision-making/">
 <meta property="og:image" content="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&amp;w=800">
 <meta property="article:published_time" content="2025-11-28">
@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
-<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<link rel="stylesheet" href="/blog/blog.css?v=18a31658">
 <script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body class="is-post">
@@ -48,60 +48,51 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
   <a class="back" href="/ja/blog/"><span aria-hidden="true">←</span> すべてのノート</a>
   <article class="post">
     <header class="post-head">
-      <span class="label"><time datetime="2025-11-28">2025年11月28日</time> · 6分で読めます</span>
-      <h1>技術的意思決定の芸術</h1>
-      <p class="sub">シニアエンジニアがトレードオフを評価し、時間の試練に耐える意思決定を行う方法</p>
+      <span class="label"><time datetime="2025-11-28">2025年11月28日</time> · 2分で読めます</span>
+      <h1>後から振り返れる技術判断の進め方</h1>
+      <p class="sub">時間がたった後の負担と、選択を変える難しさを確認してから、技術を選びます。</p>
     </header>
     <figure class="cover">
       <span class="tape"></span>
       <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&amp;w=800" alt="">
     </figure>
     <div class="prose">
-<p>エンジニアがキャリアを進めるにつれて、仕事の性質が変化します。初期はコードを書き、技術的な問題を解決することです。しかし、シニアになるにつれて、影響力はますます決定から生まれます—アーキテクチャ上の選択、技術の選択、チーム全体や製品に影響を与えるトレードオフの評価。</p>
-<h2 id="実際に機能する意思決定フレームワーク"><a class="anchor" href="#実際に機能する意思決定フレームワーク" aria-hidden="true" tabindex="-1">#</a>実際に機能する意思決定フレームワーク</h2>
-<p>技術的意思決定を行い（時に後悔し）た年々を経て、オプションをより体系的に評価するのに役立つフレームワークを開発しました。</p>
-<h3 id="3ヶ月-1年-3年のテスト"><a class="anchor" href="#3ヶ月-1年-3年のテスト" aria-hidden="true" tabindex="-1">#</a>3ヶ月、1年、3年のテスト</h3>
-<p>重要な決定ごとに、私は尋ねます：これは3ヶ月後、1年後、3年後にどう見えるでしょうか？</p>
-<ul>
-<li><strong>3ヶ月</strong>：短期的な苦痛と学習曲線</li>
-<li><strong>1年</strong>：運用上のオーバーヘッドとチームの採用</li>
-<li><strong>3年</strong>：技術的負債または利点、スケーラビリティ</li>
-</ul>
-<p>この単純な演習が、後で問題を引き起こす魅力的な新技術を選択するのを防いでくれました。</p>
-<h3 id="可逆性の原則"><a class="anchor" href="#可逆性の原則" aria-hidden="true" tabindex="-1">#</a>可逆性の原則</h3>
-<p>すべての決定が同じというわけではありません。Jeff Bezosのタイプ1（不可逆）とタイプ2（可逆）の決定のフレームワークは、エンジニアリングに完璧に適用されます。</p>
-<p><strong>タイプ1の決定</strong>（元に戻すのが難しい）：</p>
-<ul>
-<li>データベースの移行</li>
-<li>コアアーキテクチャの選択</li>
-<li>ベンダーロックインの状況</li>
-</ul>
-<p><strong>タイプ2の決定</strong>（簡単に元に戻せる）：</p>
-<ul>
-<li>類似の代替案があるライブラリの選択</li>
-<li>UIフレームワークの選択</li>
-<li>内部ツール</li>
-</ul>
-<p>タイプ2の決定では、速度と学習を最適化します。どちらでも機能する場合にReactとVueを評価するのに数週間を費やさないでください。1つ選んで出荷してください。</p>
-<h2 id="よくある意思決定の罠"><a class="anchor" href="#よくある意思決定の罠" aria-hidden="true" tabindex="-1">#</a>よくある意思決定の罠</h2>
-<h3 id="googleがやっている-誤謬"><a class="anchor" href="#googleがやっている-誤謬" aria-hidden="true" tabindex="-1">#</a>「Googleがやっている」誤謬</h3>
-<p>私はこの罠に落ちました。「Netflixはマイクロサービスを使用しているので、私たちもそうすべきです。」いいえ。Netflixには数千人のエンジニアがいます。あなたは5人のチームです。制約が異なるため、最適な解決策も異なります。</p>
-<h3 id="分析麻痺"><a class="anchor" href="#分析麻痺" aria-hidden="true" tabindex="-1">#</a>分析麻痺</h3>
-<p>ある時点で、より多くの研究はただの先延ばしです。自分に「決定期限」を設けることを学びました。その日付以降、利用可能な情報で最善の判断を下します。</p>
-<h2 id="結論"><a class="anchor" href="#結論" aria-hidden="true" tabindex="-1">#</a>結論</h2>
-<p>技術的意思決定は、練習と反省で向上するスキルです。目標は完璧であることではなく—意図的であること、失敗から学び、時間とともに組織的な知識を構築することです。</p>
-<p>技術的意思決定にどのようにアプローチしていますか？あなたのフレームワークと学んだ教訓を聞きたいです。</p>
+<p>導入時には良いと思った技術を、後で見直したくなることがあります。機能は理解していても、運用するチームの負担まで考えられていなかったためです。</p>
+<p>経験を重ねると、コードを書く仕事に加えて、チームや製品全体に関わる選択が増えます。私は、いくつかの質問を使って選択肢を整理しています。</p>
+<h2 id="3つの時点で考える"><a class="anchor" href="#3つの時点で考える" aria-hidden="true" tabindex="-1">#</a>3つの時点で考える</h2>
+<p>大きな判断では、3か月後、1年後、3年後を考えます。</p>
+<figure class="concept concept--horizon">
+<div class="concept-title">一つの判断を、3つの時点で確認する</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18 M12 7v5l4 2"/></svg><strong>3か月後</strong><span>学習と移行の負担</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3a3 3 0 1 0 0 6 3 3 0 1 0 0-6 M2 21v-4a6 6 0 0 1 12 0v4 M17 4a3 3 0 0 1 0 6 M17 13a5 5 0 0 1 5 5v3"/></svg><strong>1年後</strong><span>運用とチームへの定着</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7a9 9 0 0 0-16 3 M4 3v7h7 M4 17a9 9 0 0 0 16-3 M20 21v-7h-7"/></svg><strong>3年後</strong><span>拡張性、負債、残る利点</span></li>
+</ol>
+<figcaption>導入の負担に加えて、使い続ける負担も考えます。</figcaption>
+</figure>
+
+<p>3か月後は、学習と移行の負担を確認します。1年後は、運用の手間とチームへの定着を考えます。3年後は、拡張しやすさと、残る利点や技術的負債を確認します。</p>
+<p>この方法で、新しい技術を試したいという理由だけで選ぶことが減りました。</p>
+<h2 id="元に戻す難しさを確認する"><a class="anchor" href="#元に戻す難しさを確認する" aria-hidden="true" tabindex="-1">#</a>元に戻す難しさを確認する</h2>
+<p>Jeff Bezosの、戻しにくい判断をタイプ1、戻しやすい判断をタイプ2とする考え方が参考になります。</p>
+<p>データベースの移行、基本構成の選択、特定ベンダーへの強い依存は、後から変える負担が大きくなります。一方、代替品があるライブラリや社内ツールは、比較的変えやすい場合があります。</p>
+<p>UIフレームワークは、すでに作ったコードの量によって変わります。新規開発でReactとVueのどちらも要件を満たすなら、何週間も比較するより、一方を選んで学ぶ方が有効なことがあります。大きな既存アプリの移行は、同じようには扱えません。</p>
+<h2 id="自分たちの条件で判断する"><a class="anchor" href="#自分たちの条件で判断する" aria-hidden="true" tabindex="-1">#</a>自分たちの条件で判断する</h2>
+<p>私も「Netflixがマイクロサービスを使っているから」と考えたことがあります。しかし、数千人の開発者がいる組織と、5人のチームでは条件が違います。</p>
+<p>他社の選択を知ることは役立ちます。その理由を、自分たちの人数や運用能力に照らして考える必要があります。</p>
+<p>調査には期限も設けます。情報を集め続けることが、決断の先延ばしになる場合があるためです。期限になったら、得られた情報で判断します。</p>
+<p>毎回正しい選択ができるわけではありません。判断の理由と、その後に分かったことを残すと、次の検討に経験を使えます。</p>
 
     </div>
   </article>
   <nav class="pager" aria-label="More notes">
     <a class="pg pg-older" href="/ja/blog/resilient-architecture/" rel="prev">
       <span class="label">← 古い</span>
-      <span class="pg-title">レジリエントアーキテクチャの構築：実践ガイド</span>
+      <span class="pg-title">依存先が停止したとき、どう動くか</span>
     </a>
     <a class="pg pg-newer" href="/ja/blog/system-design-at-scale/" rel="next">
       <span class="label">新しい →</span>
-      <span class="pg-title">スケールでのシステム設計：7年間の構築からの教訓</span>
+      <span class="pg-title">システムの成長に向き合った7年間で学んだこと</span>
     </a>
   </nav>
 </main>

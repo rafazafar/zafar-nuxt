@@ -1,9 +1,9 @@
 ---
-title: "Die Kunst der technischen Entscheidungsfindung"
-description: "Wie Senior-Engineering Trade-offs evaluieren und Entscheidungen treffen, die den Test der Zeit bestehen."
+title: "Technische Entscheidungen, mit denen das Team arbeiten kann"
+description: "Fragen zu Zeit, Umkehrbarkeit und den Menschen, die das Ergebnis betreiben werden."
 date: 2025-11-28
 image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800"
-minRead: 6
+minRead: 2
 tags:
   - Führung
   - Entscheidungsfindung
@@ -11,57 +11,42 @@ tags:
   - Best Practices
 ---
 
-Wenn sich Ingenieure in ihrer Karriere weiterentwickeln, verändert sich die Natur ihrer Arbeit. Am Anfang geht es darum, Code zu schreiben und technische Probleme zu lösen. Aber mit zunehmender Seniorität kommt dein Impact zunehmend aus Entscheidungen – architektonische Entscheidungen, Technologieauswahlen und Trade-off-Bewertungen, die ganze Teams und Produkte betreffen.
+Manche technische Entscheidung bereue ich erst lange nach der Einführung. Am Anfang war das Werkzeug interessant und das Beispiel überzeugend. Später musste das Team mit den Folgen arbeiten.
 
-## Entscheidungsframeworks, die tatsächlich funktionieren
+Mit zunehmender Erfahrung besteht ein größerer Teil meiner Arbeit aus solchen Entscheidungen. Ein paar feste Fragen helfen mir, Optionen gründlicher zu prüfen.
 
-Nach Jahren des Treffens (und manchmal Bereuens) technischer Entscheidungen habe ich ein Framework entwickelt, das mir hilft, Optionen systematischer zu bewerten.
+## Drei Zeitpunkte betrachten
 
-### Der 3-Monate-, 1-Jahr-, 3-Jahre-Test
+Bei einer größeren Entscheidung denke ich an drei Monate, ein Jahr und drei Jahre.
 
-Für jede bedeutende Entscheidung frage ich: Wie wird das in 3 Monaten, 1 Jahr und 3 Jahren aussehen?
+<figure class="concept concept--horizon">
+<div class="concept-title">Eine Entscheidung, drei Zeitpunkte</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18 M12 7v5l4 2"/></svg><strong>3 Monate</strong><span>Lernen und umstellen.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3a3 3 0 1 0 0 6 3 3 0 1 0 0-6 M2 21v-4a6 6 0 0 1 12 0v4 M17 4a3 3 0 0 1 0 6 M17 13a5 5 0 0 1 5 5v3"/></svg><strong>1 Jahr</strong><span>Betreiben und im Team nutzen.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7a9 9 0 0 0-16 3 M4 3v7h7 M4 17a9 9 0 0 0 16-3 M20 21v-7h-7"/></svg><strong>3 Jahre</strong><span>Skalierung, Schulden, Nutzen.</span></li>
+</ol>
+<figcaption>Neben der Einführung zählt auch der spätere Betrieb.</figcaption>
+</figure>
 
-- **3 Monate**: Kurzfristiger Schmerz und Lernkurven
-- **1 Jahr**: Betrieblicher Overhead und Team-Adoption
-- **3 Jahre**: Technische Schulden oder Vorteile, Skalierbarkeit
+Nach drei Monaten interessieren mich Lernaufwand und Umstellung. Nach einem Jahr frage ich nach Betrieb und Akzeptanz im Team. Nach drei Jahren geht es um Skalierung, technische Schulden und den Nutzen, der geblieben ist.
 
-Diese einfache Übung hat mich vor der Wahl glänzender neuer Technologien bewahrt, die später Probleme verursacht hätten.
+Diese Fragen haben mich schon davon abgehalten, eine neue Technologie nur deshalb zu wählen, weil ich sie ausprobieren wollte.
 
-### Das Reversibilitätsprinzip
+## Wie aufwendig wäre der Rückweg?
 
-Nicht alle Entscheidungen sind gleich. Jeff Bezos' Framework von Typ-1 (irreversibel) und Typ-2 (reversibel) Entscheidungen lässt sich perfekt auf Engineering übertragen.
+Jeff Bezos unterscheidet zwischen schwer umkehrbaren Entscheidungen vom Typ 1 und leicht umkehrbaren Entscheidungen vom Typ 2. Das finde ich auch in der Softwareentwicklung hilfreich.
 
-**Typ-1-Entscheidungen** (schwer rückgängig zu machen):
-- Datenbankmigrationen
-- Kernarchitekturentscheidungen
-- Vendor-Lock-in-Situationen
+Datenbankmigrationen, grundlegende Architekturentscheidungen und eine starke Bindung an einen Anbieter können schwer rückgängig zu machen sein. Eine austauschbare Bibliothek oder ein internes Werkzeug lässt sich oft leichter ersetzen. Bei einem UI-Framework hängt das stark davon ab, wie viel Code bereits darauf aufbaut.
 
-**Typ-2-Entscheidungen** (leicht rückgängig zu machen):
-- Bibliotheksauswahlen mit ähnlichen Alternativen
-- UI-Framework-Auswahlen
-- Interne Tools
+Wenn React und Vue für ein neues Projekt gleichermaßen passen, bringt ein erster Versuch oft mehr als wochenlanges Vergleichen. Für einen späteren Austausch einer großen Anwendung gilt diese Annahme nicht automatisch.
 
-Bei Typ-2-Entscheidungen optimiere ich für Geschwindigkeit und Lernen. Verbringe keine Wochen mit der Evaluierung von React vs. Vue, wenn beides funktionieren würde. Wähle eines aus und shippe.
+## Mit den eigenen Bedingungen entscheiden
 
-## Häufige Entscheidungsfallen
+Ich habe selbst schon mit „Netflix macht das auch“ argumentiert. Doch eine Organisation mit Tausenden Entwicklern hat andere Möglichkeiten als ein Team von fünf Personen.
 
-### Der „Google macht es“-Fehlschluss
+Prüfe deshalb die vorhandenen Kenntnisse, den Lernaufwand, die Dokumentation und die Chancen, später passende Mitarbeiter zu finden. Das Team muss die Entscheidung umsetzen und das Ergebnis betreiben können.
 
-Ich bin in diese Falle getappt. „Netflix verwendet Microservices, also sollten wir das auch.“ Nein. Netflix hat Tausende von Ingenieuren. Du bist ein Team von fünf. Die Rahmenbedingungen sind anders, also ist auch die optimale Lösung anders.
+Recherche braucht außerdem ein Ende. Ich setze mir eine Frist und entscheide dann anhand der verfügbaren Informationen. Sonst wird der nächste Vergleich irgendwann zum Aufschub.
 
-### Analyse-Paralyse
-
-Irgendwann ist mehr Forschung nur noch Prokrastination. Ich habe gelernt, mir selbst eine „Entscheidungsfrist" zu setzen. Nach diesem Datum treffe ich die beste Entscheidung mit verfügbaren Informationen.
-
-### Das Team ignorieren
-
-Die beste technische Entscheidung ist wertlos, wenn dein Team sie nicht umsetzen kann. Ich habe gelernt, Entscheidungen basierend auf zu bewerten:
-- Aktuelles Team-Know-how
-- Lernkurve und Dokumentation
-- Hiring-Auswirkungen (können wir Leute finden, die das können?)
-
-## Fazit
-
-Technische Entscheidungsfindung ist eine Fähigkeit, die durch Übung und Reflexion verbessert wird. Das Ziel ist nicht, perfekt zu sein – es ist, bewusst zu sein, aus Fehlern zu lernen und im Laufe der Zeit organisationales Wissen aufzubauen.
-
-Wie gehst du mit technischen Entscheidungen um? Ich würde gerne deine Frameworks und gelernten Lektionen hören.
+Eine schlechte Entscheidung lässt sich nicht immer vermeiden. Hilfreich ist, ihre Gründe zu verstehen und daraus etwas für die nächste Entscheidung mitzunehmen. So bleibt die Erfahrung auch für andere im Team nutzbar.

@@ -1,44 +1,34 @@
 ---
 title: "Stop Chasing Better Models, Build Harnesses Instead"
-description: "Every AI coding session starts from zero. Here's how I built a persistent context system that makes the AI arrive pre-onboarded — every single time."
+description: "How I use project rules, workflows, tools, and permissions to reduce repeated explanations in AI coding sessions."
 date: 2026-06-12
 image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800"
-minRead: 8
+minRead: 5
 ---
 
-Six months ago, I was copy-pasting code from ChatGPT into my terminal like everyone else. Then I realized I'd spent more time correcting AI suggestions than I would have saved by writing the code myself. The tool wasn't the problem. The harness was.
+Six months before writing this, I was copying code from ChatGPT into my terminal. I eventually noticed that correcting its suggestions was taking more time than I expected to save.
 
-### The Onboarding Problem Nobody Talks About
+Many corrections had little to do with the task. I was explaining the project again: which test runner we used, where business logic belonged, and how files should be named. I wanted those details to survive the end of a chat.
 
-Here's what actually happens when you use an AI coding assistant on a real project. It's Tuesday morning. You open your AI tool to fix a bug in your payment flow. You paste the error. It suggests a fix using `stripe.charges.create()` — but your project migrated to the Payment Intents API two years ago. You correct it. It suggests putting business logic in the controller — but your team uses a service layer pattern. You explain that. It generates a test with Jest — but you use Vitest. You tell it. It names the file `paymentService.ts` — but your convention is `payment.service.ts`.
+## The repeated briefing
 
-Twenty minutes in, you've written six messages just teaching it things it should already know. And tomorrow? It forgets all of it. You'll repeat the same onboarding dance from scratch.
+Consider a payment bug. The assistant suggests `stripe.charges.create()`, but the project moved to Payment Intents two years ago. Then it puts business logic in a controller instead of the service layer. It writes Jest tests for a Vitest project and names the file `paymentService.ts` instead of `payment.service.ts`.
 
-This is pair programming with a brilliant developer who has anterograde amnesia.
+Twenty minutes and six messages later, the assistant knows enough to begin. The next session needs the same explanations.
 
-Every other complaint about AI coding tools traces back to this root cause. "Inconsistent output" — it has no memory of what consistent means for your project. "Doesn't follow conventions" — nobody told it what they are. "Blank prompt problem" — you're compensating for its amnesia every time. "Fear of losing control" — you can't trust someone who forgets everything daily.
+Missing context helps explain inconsistent output, ignored conventions, and the effort of starting from a blank prompt. It also makes delegation uncomfortable: the assistant may be working from assumptions you have not noticed yet.
 
-### The False Fixes
+## What I tried first
 
-I tried the obvious things first. Better prompts helped marginally but didn't scale — I was still the bottleneck, crafting the perfect incantation each session. Copilot was faster at the keystroke level but had zero concept of "this project uses the repository pattern" or "we decided against that ORM because of a specific bug." Custom GPTs were brittle, with no filesystem access and no way to enforce process.
+Better prompts helped, but I still had to prepare them each time. In the setup I used, Copilot made typing faster without retaining the architecture decisions I needed. Custom GPTs were awkward for this work because I lacked the filesystem access and process controls I wanted.
 
-Each "solution" hit the same wall: no persistent project context. The AI treats your project as a collection of files rather than a living system with conventions, decisions, and culture.
+I needed a place for project rules, file conventions, reusable workflows, and access to the tools I actually used. I call that surrounding system a harness.
 
-### The Shift
+I built mine with [OpenCode](https://opencode.ai), an open-source terminal coding agent. Its agents, skills, and integrations suited the structure I wanted. The useful question for me was how well the setup carried project knowledge into the next task.
 
-The breakthrough wasn't finding a better AI model. Models are commodities now — Claude, GPT, Gemini, they're all smart enough. The problem is the interface layer between you and the AI. The AI needs four things that raw chat interfaces don't provide: project rules, file conventions, reusable workflows, and access to your actual tools.
+## Put project context in version control
 
-This layer — the infrastructure around the AI, not the AI itself — is what I call the harness. Think of it like a test harness: it doesn't run your tests, it provides the environment, fixtures, and assertions that make tests reliable and repeatable. A development harness does the same for AI agents.
-
-I built mine with [OpenCode](https://opencode.ai), an open-source AI coding agent that runs in your terminal. It has 173k GitHub stars and, more importantly, it was designed from the ground up for exactly this kind of structured AI interaction. Not as a chatbot bolted onto an editor, but as a composable system of agents, skills, and integrations.
-
-### Building the Harness
-
-The harness has four layers. Each one solves a specific part of the onboarding problem.
-
-#### Layer 1: Context — Teaching the AI Your Project's Personality
-
-The foundation is an `AGENTS.md` file committed to your project root. This isn't a README — it's a briefing document for the AI. It contains your conventions, architecture decisions, test commands, directory structure, and the reasoning behind your choices.
+An `AGENTS.md` file in the repository gives the assistant a briefing it can read each session. Mine includes conventions, architecture choices, test commands, directories, and the reasons behind important rules.
 
 ```markdown
 # AGENTS.md
@@ -55,17 +45,24 @@ The foundation is an `AGENTS.md` file committed to your project root. This isn't
 - Always follow existing patterns in neighboring files before creating new ones
 ```
 
-OpenCode reads this file at the start of every session. The AI arrives already knowing your project. No more explaining that you use Vitest, not Jest. No more correcting file naming conventions. The context persists because it lives in git, not in the AI's ephemeral memory.
+Because the file lives in Git, the team can review a convention change in a pull request. The next session can read the updated rule. I no longer have to find the prompt where I last explained it.
 
-The key insight: AGENTS.md is reviewed in pull requests. When your conventions change, you update it in a PR. The AI adapts automatically. Try doing that with "the prompt I used last time."
+<figure class="concept concept--layers">
+<div class="concept-title">The context around a coding task</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3h7l5 5v13H7z M14 3v6h5 M10 13h6 M10 17h6"/></svg><strong>Project briefing</strong><span>Conventions and decisions in AGENTS.md.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3a3 3 0 1 0 0 6 3 3 0 1 0 0-6 M2 21v-4a6 6 0 0 1 12 0v4 M17 4a3 3 0 0 1 0 6 M17 13a5 5 0 0 1 5 5v3"/></svg><strong>Roles and workflows</strong><span>Agents set roles; skills describe the process.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 18a4 4 0 0 1-1-8 7 7 0 0 1 13-1 4.5 4.5 0 0 1 0 9z"/></svg><strong>Tool access</strong><span>Read traces, documentation, and source.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2l9 4v6c0 5-9 10-9 10S3 17 3 12V6z M8 12l3 3 5-6"/></svg><strong>Permissions</strong><span>Control actions and review the result.</span></li>
+</ol>
+<figcaption>Keep these layers with the project so each session can use them again.</figcaption>
+</figure>
 
-#### Layer 2: Specialization — Agents as Roles, Skills as Playbooks
+## Separate roles from workflows
 
-Not every task needs the same AI behavior. Sometimes you want full-access coding. Sometimes you want read-only analysis. OpenCode handles this with agents and skills.
+An agent defines a role and its permissions. I use implementation access for build work and restricted access for analysis. OpenCode provides build and plan roles, with a Tab shortcut to switch in the terminal interface. Custom roles can narrow access further, such as an auditor that only reads the repository.
 
-**Agents** are roles. The `build` agent has write permissions for implementation work. The `plan` agent is read-only — it analyzes code and suggests changes without touching anything. You switch between them with the Tab key. You can create custom agents too, like a `security-auditor` that can read everything but write nothing.
-
-**Skills** are reusable workflows defined in `SKILL.md` files. They encode process discipline that humans skip under pressure. A TDD skill enforces red-green-refactor even when you're rushing. A debugging skill prevents the AI from proposing fixes before understanding the root cause. A code review skill checks your diff against your team's actual conventions.
+A skill describes a repeatable process in a `SKILL.md` file. A test-driven workflow asks for a failing test before implementation. A debugging workflow asks the assistant to establish the cause before proposing a fix. A review workflow checks the diff against team conventions.
 
 ```
 .opencode/skills/
@@ -75,11 +72,11 @@ Not every task needs the same AI behavior. Sometimes you want full-access coding
   brainstorming/SKILL.md
 ```
 
-These are discovered automatically from your project or global config. The critical thing about skills is that they enforce the process you already believe in but don't always follow. You know you should write the test first. The skill makes the AI do it, even when you're tempted to skip.
+Project and global skill directories make these instructions available to the agent. They help it follow a process, but written instructions alone cannot enforce every step. I still check the test results and the diff.
 
-#### Layer 3: Integration — Connecting to Your Real Tools
+## Connect the tools that hold the evidence
 
-Without external integrations, the AI is a smart stranger. With them, it becomes a team member with access to your monitoring, docs, and codebase. OpenCode uses the Model Context Protocol (MCP) to connect to external tools.
+Through Model Context Protocol (MCP), the agent can use external tools. This example connects a Sentry service and Context7:
 
 ```json
 {
@@ -97,11 +94,13 @@ Without external integrations, the AI is a smart stranger. With them, it becomes
 }
 ```
 
-Now when a Sentry alert fires, the AI can pull the full stack trace directly — not your paraphrased version. When it needs to look up documentation, it fetches current docs via Context7 instead of hallucinating from training data. You can connect GitHub code search, internal APIs, databases — anything that speaks MCP.
+That lets the assistant read the actual stack trace instead of my shortened description. It can also retrieve documentation when it needs it. GitHub search, internal APIs, and databases can be connected through compatible servers.
 
-#### Layer 4: Governance — Trust the Harness, Not the AI
+Tool access improves the evidence available to the assistant. It still has to choose the relevant evidence and interpret it correctly.
 
-This is what makes it safe to give an AI write access to your codebase. Permissions in OpenCode are fine-grained: you control what each agent can do, down to individual bash commands.
+## Set permissions around the work
+
+I want editing and routine tests to be easy, while pushes require review. The configuration used for this example expresses that policy:
 
 ```json
 {
@@ -120,34 +119,25 @@ This is what makes it safe to give an AI write access to your codebase. Permissi
 }
 ```
 
-The `build` agent can edit files and run tests, but asks before pushing to git and can never run destructive commands. The `plan` agent is fully read-only. You're not trusting the AI — you're trusting the harness.
+This is a version-specific example, so check the [OpenCode permissions documentation](https://opencode.ai/docs/permissions/) against your installation. The listed rules permit edits and `npm test`, ask before matching `git push` commands, and deny commands matching `rm *`.
 
-### The New Monday Morning
+That last rule is not a general ban on destructive actions. Other commands can also remove or overwrite files. Likewise, a plan role should not be assumed to be fully read-only without checking its effective permissions. Access controls need review in the same way code does.
 
-Here's what this looks like in practice. A Sentry alert fires at 9 AM: `TypeError in /api/checkout, line 142`.
+## What a working session can look like
 
-**9:01** — You open OpenCode and switch to the `plan` agent (read-only). Ask it to investigate. The plan agent uses the Sentry MCP to pull the full stack trace, reads the relevant source files, checks AGENTS.md for error handling conventions. It returns: "Missing null check on `user.address` after the migration in PR #847. Fix should go in `validateCheckout()`."
+Suppose Sentry reports `TypeError in /api/checkout, line 142` at 9 AM. A possible sequence is:
 
-**9:05** — Switch to the `build` agent. The TDD skill activates. It writes a failing test that reproduces the null address case. Test fails (red). Then implements the fix. Test passes (green). Then refactors. Runs `bun lint` and `bun typecheck` — both pass.
+1. At 9:01, investigate in the restricted role. Read the trace, source, and project rules. Identify a missing check for `user.address` after a migration, such as the example PR #847.
+2. At 9:05, switch to implementation. Write a failing test for the null address, apply the fix in `validateCheckout()`, and run the test again. Then refactor and run `bun lint` and `bun typecheck`.
+3. At 9:12, review the diff. Correct an error message that does not follow the project rule.
+4. At 9:15, review the commit and approve the push.
 
-**9:12** — The code review skill compares the diff against your team's conventions. Flags one issue: error message doesn't match the pattern in AGENTS.md. Quick fix.
+This is an illustrative fifteen-minute workflow, not a benchmark. Comparing it with a 45-to-90-minute manual session only makes sense as an example of where repeated context work can go. Actual savings need measurement on real tasks.
 
-**9:15** — Commit with a clean conventional commit message. Review, approve, push.
+## Keep the setup proportionate
 
-Total time: 15 minutes. Without the harness: 45 to 90 minutes of context-switching, manual debugging, test-writing-you'll-skip, and self-review.
+The harness takes maintenance. Someone has to update the project briefing and skills. For a throwaway script, that cost may exceed the benefit. For open-ended brainstorming, I still find ordinary chat useful.
 
-### What This Doesn't Fix
+The assistant also continues to make mistakes. Context reduces mistakes caused by incorrect assumptions about the project; it does not remove the need for tests and review.
 
-Let me be honest about the parts the harness doesn't solve. Raw AI chat is still better for open-ended brainstorming where you don't want constraints. The harness adds overhead — you need to write and maintain AGENTS.md and skill files. For one-off scripts or throwaway prototypes, the setup cost isn't worth it.
-
-And the AI still makes mistakes. The harness doesn't make it infallible. It makes it *informed*. There's a big difference. An informed AI that knows your project makes mistakes you can catch in code review. An uninformed AI makes mistakes you can't predict because they come from wrong assumptions about your codebase.
-
-### The Real Takeaway
-
-The AI isn't the bottleneck. The context gap is.
-
-Raw AI models are commodities. The real leverage is in the system you build around the model — project context files, reusable workflows, tool integrations, permission guardrails. That's the moat. Not which model you use, but how well you've taught it your world.
-
-This reframes AI from "magic autocomplete" to "junior engineer you onboard once." The harness is the onboarding document. And unlike a human, the AI re-reads it every single session.
-
-Stop chasing better models. Start building harnesses.
+I would start with the corrections you keep repeating. Put the stable ones in a short project briefing, give the assistant the tools it needs, and check the result. That is a more useful first improvement than changing models without changing what the next model knows.

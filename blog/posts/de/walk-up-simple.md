@@ -1,26 +1,47 @@
 ---
-title: Walk-up Simple
-description: Eine Anleitung zur Walk-Up-Simple-Methode von Tesla und zum Gesetz der zwei Füße
+title: "Walk-up Simple: schnell in die Arbeit finden"
+description: "Gemeinsamer Kontext, klare Startbedingungen und eine Definition of Done erleichtern den Einstieg."
 date: 2025-04-20
 image: https://images.unsplash.com/photo-1663008519747-9da38bbfd132?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
-minRead: 3
+minRead: 2
 ---
 
-## Hyperflexible Teams / Dynamische Skalierung
+Du kommst zu einem Team, dessen Prioritäten sich stündlich ändern. Bevor du helfen kannst, brauchst du Antworten: Was ist das Ziel? Welche Arbeit kann beginnen? Wann ist sie fertig?
 
-Eine Umgebung, in der sich Arbeit und Ziele stündlich drastisch ändern. Was macht das möglich? Das Konzept von „Walk-up Simple“. Das Ziel ist es, innerhalb von 5 Minuten nach Ankunft am Tatort vollständig zu verstehen, wie man beitragen kann. Für Start-ups ist die Verdichtung von Informationen und Kontext, sodass jeder sofort darauf zugreifen kann, entscheidend, um alle auf eine Linie zu bringen. In jungen Unternehmen mit begrenzten Ressourcen können sich Teams ohne ein klares, gemeinsames Verständnis nicht schnell bewegen und verlieren wertvolle Zeit und Möglichkeiten. Proaktiver Rollenwechsel, interne Geschäftsagilität und konzentrierte Problemlösungsfähigkeiten können es sogar ermöglichen, 10.000 Menschen innerhalb von Minuten auf ein Problem zu konzentrieren.
+„Walk-up Simple“ setzt dafür einen greifbaren Maßstab. Wer zur Arbeit dazukommt, soll nach ungefähr fünf Minuten verstehen, wie er beitragen kann. Gerade in einem Startup mit wenig Zeit und Personal ist das hilfreich.
 
-## Genchi Genbutsu optimal nutzen
+## Informationen am Ort der Arbeit bereitstellen
 
-„Genba“ ist ein japanisches Wort, das den Ort bedeutet, an dem Wert geschaffen wird. In der Lean-Praxis bezieht es sich auf den „Ort, an dem Wert geschaffen wird“, wie z. B. die Fabrikhalle in der Fertigung, der Operationssaal in einem Krankenhaus, die Baustelle, die Küche eines Restaurants oder der Arbeitsplatz eines Softwareprogrammierers. In einem Startup mag der Genba ein kleines Büro oder ein Remote-Slack-Kanal sein, aber es ist immer noch der Ort der Wertschöpfung. Ein Genchi-Genbutsu-Spaziergang, ähnlich wie MBWA (Management By Walking Around), ist eine Aktivität, bei der das Management oder die Teamleiter an die Front gehen, um Verschwendung zu finden und Möglichkeiten für die Genchi-Genbutsu-Praxis zur Verbesserung zu suchen. In einem Startup können wichtige Informationen (Ziele, Prioritäten, Fortschritt) zentralisiert werden, sodass jeder sie auf einen Blick erfassen kann, sodass auch neue Mitarbeiter oder externe Partner sofort mitwirken können.
+Das japanische Wort Gemba bezeichnet den Ort, an dem Wert entsteht. Das kann eine Fabrikhalle, ein Operationssaal, eine Baustelle, eine Küche oder der Arbeitsplatz eines Entwicklers sein. In einem kleinen Unternehmen ist es vielleicht ein Büro oder ein gemeinsamer Slack-Kanal.
 
-## Warum sind verdichtete Informationen für Start-ups wichtig?
+Bei einem Gemba-Walk gehen Führungskräfte dorthin, um die Arbeit zu beobachten, Verschwendung zu erkennen und Verbesserungen zu finden. Ähnlich wie bei Management By Walking Around (MBWA) entsteht Verständnis durch direkten Kontakt mit der Arbeit.
 
-- **Schnelles Onboarding**: Start-ups wachsen schnell und Teammitglieder können häufig wechseln. Wenn wichtiger Kontext (z. B. Projektziele, Aufgabenprioritäten) kurz und bündig zusammengefasst wird, können neue Mitglieder die Situation in wenigen Minuten erfassen und sofort einen Mehrwert schaffen.
-- **Vermeidung von Verwirrung**: Wenn Informationen verstreut sind, führt dies zu Missverständnissen und doppelter Arbeit, wodurch begrenzte Ressourcen verschwendet werden. Ein klares Informationszentrum (Board, Dokument, Chat) stellt sicher, dass alle auf der Grundlage derselben Informationen arbeiten.
-- **Grundlage für Skalierbarkeit**: Wenn ein Startup wächst, nehmen Teams und Projekte zu. Die frühzeitige Etablierung eines einfachen und zugänglichen Informationssystems trägt dazu bei, die Effizienz auch bei der Expansion aufrechtzuerhalten.
-- **Stärkung der Zusammenarbeit**: Wenn alle auf dem gleichen Stand sind, werden der Austausch von Ideen und die Problemlösung reibungsloser, was die Kreativität und Produktivität des Teams verbessert.
+Ziele, Prioritäten und Fortschritt sollten dort gemeinsam sichtbar sein. So können auch neue Kollegen oder externe Partner den nötigen Kontext finden.
 
-## Praxisbeispiel
+## Das Board muss Fragen beantworten
 
-Das Ziel ist es, innerhalb von 5-7 Minuten nach Ankunft am Tatort vollständig zu verstehen, wie man beitragen kann. Man kann sich vorstellen, auf ein hundertmal abgewischtes Brett zu schauen und zu sehen, wie viele Menschen an der Lösung eines Problems arbeiten. Verwendung der Definition of Done (DoD) und der Definition of Ready (DoR): „Wenn xxx passiert, sind wir fertig.“ Wenn Sie am Tatort ankommen, sehen Sie die Säulen von DoD und DoR, Sie sehen, wie Wünsche eingehen und Wünsche gelöst werden. Und dann schauen Sie in die Mitte und fragen sich basierend auf dem „Gesetz der zwei Füße“: „Ist es das Wertvollste, jetzt hier zu stehen?“ Wenn ja, bleiben Sie, wenn nicht, folgen Sie dem „Gesetz der zwei Füße“ und gehen Sie an einen anderen Ort, an dem Sie einen Mehrwert schaffen können. Die Idee ist, Sie in sehr kurzer Zeit mit dem Tatort zu verbinden. In einem Startup können sich Menschen schnell von Ort zu Ort bewegen und sich an Veränderungen anpassen, wenn Informationen klar und zugänglich sind.
+Ein Board zeigt eingehende Anfragen, laufende Arbeit und erledigte Aufgaben. Die Definition of Ready (DoR) beschreibt, wann eine Aufgabe beginnen kann. Die Definition of Done (DoD) beschreibt, wann sie abgeschlossen ist.
+
+<figure class="concept concept--board">
+<div class="concept-title">Ein Board für den schnellen Einstieg</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 3h7l5 5v13H7z M14 3v6h5 M10 13h6 M10 17h6"/></svg><strong>Bereit</strong><span>Die Startbedingungen sind erfüllt.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3a3 3 0 1 0 0 6 3 3 0 1 0 0-6 M2 21v-4a6 6 0 0 1 12 0v4 M17 4a3 3 0 0 1 0 6 M17 13a5 5 0 0 1 5 5v3"/></svg><strong>In Arbeit</strong><span>Hier wird Unterstützung sichtbar.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12l5 5L20 6"/></svg><strong>Erledigt</strong><span>Das vereinbarte Ziel ist erreicht.</span></li>
+</ol>
+<figcaption>DoR klärt den Start. DoD klärt den Abschluss.</figcaption>
+</figure>
+
+Formuliere das Ende konkret: „Wir sind fertig, wenn …“ Wer zum Board kommt, soll innerhalb von etwa fünf bis sieben Minuten eine sinnvolle Aufgabe erkennen können.
+
+## Dorthin gehen, wo man helfen kann
+
+Das Gesetz der zwei Füße fordert dazu auf, die eigene Anwesenheit zu prüfen. Kannst du hier beitragen oder lernen? Dann bleib. Bist du an anderer Stelle hilfreicher, geh dorthin.
+
+Dafür muss der Kontext zugänglich sein. Wenn jeder Wechsel ein langes Briefing braucht, lässt sich die Arbeit nur schwer umverteilen. Die Vorstellung, 10.000 Menschen innerhalb weniger Minuten auf ein Problem auszurichten, beschreibt dieses Ziel besonders zugespitzt. Sie ist eine Ambition für die Koordination, kein gemessenes Ergebnis.
+
+## Beim Wachstum verständlich bleiben
+
+Gemeinsame Informationen erleichtern die Einarbeitung, reduzieren Missverständnisse und doppelte Arbeit und helfen wachsenden Teams, sich abzustimmen. Auch Ideen lassen sich leichter teilen, wenn alle vom gleichen Stand ausgehen.
+
+Teste das am eigenen Board: Kann eine neue Person das Ziel erklären, eine Aufgabe wählen und sagen, wann sie fertig ist? Wenn du alles mündlich ergänzen musst, fehlt dem Board noch Kontext.

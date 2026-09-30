@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>レジリエントアーキテクチャの構築：実践ガイド | Zafar.dev</title>
-<meta name="description" content="障害を優雅に乗り越え、迅速に回復するシステムを構築するための実践的パターン">
+<title>依存先が停止したとき、どう動くか | Zafar.dev</title>
+<meta name="description" content="サーキットブレーカー、資源の分離、代替処理を使い、障害の影響と復旧方法を考えます。">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://zafar.dev/ja/blog/resilient-architecture/">
 <link rel="alternate" hreflang="en" href="https://zafar.dev/blog/resilient-architecture/">
 <link rel="alternate" hreflang="ja" href="https://zafar.dev/ja/blog/resilient-architecture/">
 <link rel="alternate" hreflang="de" href="https://zafar.dev/de/blog/resilient-architecture/">
 <meta property="og:type" content="article">
-<meta property="og:title" content="レジリエントアーキテクチャの構築：実践ガイド | Zafar.dev">
-<meta property="og:description" content="障害を優雅に乗り越え、迅速に回復するシステムを構築するための実践的パターン">
+<meta property="og:title" content="依存先が停止したとき、どう動くか | Zafar.dev">
+<meta property="og:description" content="サーキットブレーカー、資源の分離、代替処理を使い、障害の影響と復旧方法を考えます。">
 <meta property="og:url" content="https://zafar.dev/ja/blog/resilient-architecture/">
 <meta property="og:image" content="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&amp;w=800">
 <meta property="article:published_time" content="2025-10-15">
@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
-<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<link rel="stylesheet" href="/blog/blog.css?v=18a31658">
 <script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body class="is-post">
@@ -48,62 +48,50 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
   <a class="back" href="/ja/blog/"><span aria-hidden="true">←</span> すべてのノート</a>
   <article class="post">
     <header class="post-head">
-      <span class="label"><time datetime="2025-10-15">2025年10月15日</time> · 7分で読めます</span>
-      <h1>レジリエントアーキテクチャの構築：実践ガイド</h1>
-      <p class="sub">障害を優雅に乗り越え、迅速に回復するシステムを構築するための実践的パターン</p>
+      <span class="label"><time datetime="2025-10-15">2025年10月15日</time> · 2分で読めます</span>
+      <h1>依存先が停止したとき、どう動くか</h1>
+      <p class="sub">サーキットブレーカー、資源の分離、代替処理を使い、障害の影響と復旧方法を考えます。</p>
     </header>
     <figure class="cover">
       <span class="tape"></span>
       <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&amp;w=800" alt="">
     </figure>
     <div class="prose">
-<p>理想的な世界では、サービスは決して失敗せず、ネットワークは常に信頼でき、データベースは決してダウンしません。現実の世界では、最終的にすべてが失敗します。優れたシステムと素晴らしいシステムの違いは、避けられない障害をどのように処理するかにあります。</p>
-<h2 id="実際に機能するレジリエンスパターン"><a class="anchor" href="#実際に機能するレジリエンスパターン" aria-hidden="true" tabindex="-1">#</a>実際に機能するレジリエンスパターン</h2>
-<h3 id="サーキットブレーカー"><a class="anchor" href="#サーキットブレーカー" aria-hidden="true" tabindex="-1">#</a>サーキットブレーカー</h3>
-<p>サーキットブレーカーパターンは、私のレジリエンスツールキットで最も効果的なツールの1つです。失敗しているサービスを繰り返し呼び出して事態を悪化させるのではなく、サーキットブレーカーは障害を検出し、一時的にリクエストをブロックします。</p>
-<p><strong>実装のヒント：</strong></p>
-<ul>
-<li>観察された障害率に基づいて閾値を設定する</li>
-<li>段階的な回復検出のために半開状態を含める</li>
-<li>常にフォールバックを用意する—決して静かに失敗しない</li>
-</ul>
-<h3 id="バルクヘッド"><a class="anchor" href="#バルクヘッド" aria-hidden="true" tabindex="-1">#</a>バルクヘッド</h3>
-<p>船体の隔壁にちなんで名付けられたバルクヘッドは、障害の拡散を防ぐために障害を隔離します。ソフトウェアでは、これは以下を意味します：</p>
-<ul>
-<li>クリティカル操作と非クリティカル操作のための別々のスレッドプール</li>
-<li>異なるサービス領域のための分離されたリソース</li>
-<li>テナントまたはエンドポイントごとのレート制限</li>
-</ul>
-<h3 id="タイムアウトと再試行"><a class="anchor" href="#タイムアウトと再試行" aria-hidden="true" tabindex="-1">#</a>タイムアウトと再試行</h3>
-<p>決して無限に待たないでください。積極的なタイムアウトを設定し、インテリジェントな再試行戦略を実装してください：</p>
-<p><strong>再試行のガイドライン：</strong></p>
-<ul>
-<li>4xxエラー（クライアントエラー）は再試行しない</li>
-<li>サンダリングハードを避けるために指数関数的バックオフを使用する</li>
-<li>同期された再試行を防ぐためにジッターを追加する</li>
-<li>再試行を実装する前に冪等性を検討する</li>
-</ul>
-<h3 id="優雅な劣化"><a class="anchor" href="#優雅な劣化" aria-hidden="true" tabindex="-1">#</a>優雅な劣化</h3>
-<p>システムの一部が失敗するとき、残りは機能し続ける必要があります：</p>
-<ul>
-<li><strong>レコメンデーションなしの製品リスト</strong>：製品は引き続き表示されるが、パーソナライズされた提案はなし</li>
-<li><strong>不正スコアリングなしのチェックアウト</strong>：手動レビューキューで注文を処理する</li>
-<li><strong>リアルタイムデータなしのアナリティクス</strong>：「最終更新」タイムスタンプ付きのキャッシュデータを表示する</li>
-</ul>
-<h2 id="結論"><a class="anchor" href="#結論" aria-hidden="true" tabindex="-1">#</a>結論</h2>
-<p>レジリエントなアーキテクチャは、障害を防ぐことではなく—それを乗り越えることです。サーキットブレーカー、バルクヘッド、優雅な劣化などのパターンを実装することで、障害を優雅に処理し、迅速に回復するシステムを構築できます。</p>
-<p>覚えておいてください：目標はゼロダウンタイム（不可能）ではなく、ダウンタイムが発生したときの影響を最小限に抑えることです。</p>
+<p>依存先のサービスが停止したとき、利用者は何を続けられるでしょうか。画面が待ち続けるのか、同じ要求を繰り返すのか、機能を一部制限して使えるのか。私は、この点から障害対策を考えます。</p>
+<p>停止を想定し、要求の処理方法と復旧の確認方法を先に決めておきます。</p>
+<h2 id="失敗する呼び出しを一時的に止める"><a class="anchor" href="#失敗する呼び出しを一時的に止める" aria-hidden="true" tabindex="-1">#</a>失敗する呼び出しを一時的に止める</h2>
+<p>サーキットブレーカーは、失敗が一定の基準に達すると、依存先への呼び出しを止めます。基準は、実際に観測した失敗率などを基に設定します。</p>
+<p>一定時間後には、半開状態で少数の要求を送り、回復したかを確認します。呼び出しを止めている間は、代替処理か明確なエラー表示が必要です。</p>
+<figure class="concept concept--flow">
+<div class="concept-title">サーキットブレーカーの状態</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17v4 M9 12v9 M15 7v14 M21 2v19"/></svg><strong>閉状態</strong><span>要求を通常どおり送る</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4v16 M17 4v16"/></svg><strong>開状態</strong><span>失敗が基準に達したら呼び出しを止める</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7a9 9 0 0 0-16 3 M4 3v7h7 M4 17a9 9 0 0 0 16-3 M20 21v-7h-7"/></svg><strong>半開状態</strong><span>少数の要求で回復を確認する</span></li>
+</ol>
+<figcaption>確認に成功したら閉状態へ、失敗したら開状態へ戻ります。開状態では代替処理を使います。</figcaption>
+</figure>
+
+<h2 id="障害が広がらないように資源を分ける"><a class="anchor" href="#障害が広がらないように資源を分ける" aria-hidden="true" tabindex="-1">#</a>障害が広がらないように資源を分ける</h2>
+<p>バルクヘッドは、船の隔壁に由来する考え方です。一部の処理が、他の処理に必要な資源まで使い切らないようにします。</p>
+<p>重要な処理とそれ以外でスレッドプールを分ける、サービスごとに資源を分離する、テナントやエンドポイントごとに要求数を制限する、といった方法があります。</p>
+<h2 id="待機時間と再試行を制限する"><a class="anchor" href="#待機時間と再試行を制限する" aria-hidden="true" tabindex="-1">#</a>待機時間と再試行を制限する</h2>
+<p>外部への呼び出しには、タイムアウトを設定します。再試行では、待機時間を段階的に増やす指数バックオフを使います。さらに待機時間にばらつき（ジッター）を加えると、多数のクライアントが同時に再試行する状況を減らせます。</p>
+<p>同じ操作を繰り返しても結果が変わらないか、つまり冪等性も確認します。クライアントエラーを無条件に再試行せず、エラーの内容とAPIの仕様に基づいて判断します。</p>
+<h2 id="機能を制限した場合の動作を決める"><a class="anchor" href="#機能を制限した場合の動作を決める" aria-hidden="true" tabindex="-1">#</a>機能を制限した場合の動作を決める</h2>
+<p>商品一覧は、おすすめ機能が停止しても表示できます。分析画面は、最終更新時刻を付けてキャッシュ済みのデータを表示できます。不正検知が使えない場合に注文を手動確認へ回す方法もありますが、その運用を事前に合意しておく必要があります。</p>
+<p>目標は、停止したときの影響を小さくし、回復できる状態をつくることです。次に依存先が応答しなくなった場合、処理中の要求がどうなるかを順に確認してみてください。</p>
 
     </div>
   </article>
   <nav class="pager" aria-label="More notes">
     <a class="pg pg-older" href="/ja/blog/leading-without-authority/" rel="prev">
       <span class="label">← 古い</span>
-      <span class="pg-title">権威なきリーダーシップ：エンジニアリングリーダーシップの教訓</span>
+      <span class="pg-title">肩書がなくても、チームを支える</span>
     </a>
     <a class="pg pg-newer" href="/ja/blog/technical-decision-making/" rel="next">
       <span class="label">新しい →</span>
-      <span class="pg-title">技術的意思決定の芸術</span>
+      <span class="pg-title">後から振り返れる技術判断の進め方</span>
     </a>
   </nav>
 </main>

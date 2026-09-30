@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Resiliente Architektur aufbauen: Ein praktischer Leitfaden | Zafar.dev</title>
-<meta name="description" content="Praktische Muster für den Aufbau von Systemen, die Ausfälle elegant überstehen und sich schnell erholen.">
+<title>Was passiert, wenn eine Abhängigkeit ausfällt? | Zafar.dev</title>
+<meta name="description" content="Circuit Breaker, getrennte Ressourcen und geplante Fallbacks begrenzen die Folgen eines Ausfalls.">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://zafar.dev/de/blog/resilient-architecture/">
 <link rel="alternate" hreflang="en" href="https://zafar.dev/blog/resilient-architecture/">
 <link rel="alternate" hreflang="ja" href="https://zafar.dev/ja/blog/resilient-architecture/">
 <link rel="alternate" hreflang="de" href="https://zafar.dev/de/blog/resilient-architecture/">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Resiliente Architektur aufbauen: Ein praktischer Leitfaden | Zafar.dev">
-<meta property="og:description" content="Praktische Muster für den Aufbau von Systemen, die Ausfälle elegant überstehen und sich schnell erholen.">
+<meta property="og:title" content="Was passiert, wenn eine Abhängigkeit ausfällt? | Zafar.dev">
+<meta property="og:description" content="Circuit Breaker, getrennte Ressourcen und geplante Fallbacks begrenzen die Folgen eines Ausfalls.">
 <meta property="og:url" content="https://zafar.dev/de/blog/resilient-architecture/">
 <meta property="og:image" content="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&amp;w=800">
 <meta property="article:published_time" content="2025-10-15">
@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
-<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<link rel="stylesheet" href="/blog/blog.css?v=18a31658">
 <script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body class="is-post">
@@ -48,74 +48,54 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
   <a class="back" href="/de/blog/"><span aria-hidden="true">←</span> alle Notizen</a>
   <article class="post">
     <header class="post-head">
-      <span class="label"><time datetime="2025-10-15">15. Okt. 2025</time> · 7 Min. Lesezeit</span>
-      <h1>Resiliente Architektur aufbauen: Ein praktischer Leitfaden</h1>
-      <p class="sub">Praktische Muster für den Aufbau von Systemen, die Ausfälle elegant überstehen und sich schnell erholen.</p>
+      <span class="label"><time datetime="2025-10-15">15. Okt. 2025</time> · 2 Min. Lesezeit</span>
+      <h1>Was passiert, wenn eine Abhängigkeit ausfällt?</h1>
+      <p class="sub">Circuit Breaker, getrennte Ressourcen und geplante Fallbacks begrenzen die Folgen eines Ausfalls.</p>
     </header>
     <figure class="cover">
       <span class="tape"></span>
       <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&amp;w=800" alt="">
     </figure>
     <div class="prose">
-<p>In einer idealen Welt versagen Services nie, Netzwerke sind immer zuverlässig und Datenbanken gehen niemals offline. In der realen Welt versagt irgendwann alles. Der Unterschied zwischen guten und großartigen Systemen liegt darin, wie sie mit diesen unvermeidlichen Ausfällen umgehen.</p>
-<h2 id="resilienz-muster-die-tatsächlich-funktionieren"><a class="anchor" href="#resilienz-muster-die-tatsächlich-funktionieren" aria-hidden="true" tabindex="-1">#</a>Resilienz-Muster, die tatsächlich funktionieren</h2>
-<h3 id="circuit-breaker"><a class="anchor" href="#circuit-breaker" aria-hidden="true" tabindex="-1">#</a>Circuit Breaker</h3>
-<p>Das Circuit-Breaker-Muster ist eines der effektivsten Tools in meinem Resilienz-Werkzeugkasten. Anstatt wiederholt einen fehlenden Service aufzurufen und die Dinge zu verschlimmern, erkennt der Circuit Breaker Fehler und blockiert temporär Anfragen.</p>
-<p><strong>Implementierungstipps:</strong></p>
-<ul>
-<li>Setze Schwellenwerte basierend auf beobachteten Fehlerraten</li>
-<li>Füge einen Half-Open-Zustand für die schrittweise Erholungserkennung hinzu</li>
-<li>Hab immer einen Fallback – versage niemals stillschweigend</li>
-</ul>
-<h3 id="bulkheads"><a class="anchor" href="#bulkheads" aria-hidden="true" tabindex="-1">#</a>Bulkheads</h3>
-<p>Benannt nach den Schotten in einem Schiffsrumpf, isolieren Bulkheads Fehler, um deren Ausbreitung zu verhindern. In Software bedeutet das:</p>
-<ul>
-<li>Separate Thread-Pools für kritische vs. nicht-kritische Operationen</li>
-<li>Isolierte Ressourcen für verschiedene Service-Bereiche</li>
-<li>Rate Limiting pro Tenant oder Endpunkt</li>
-</ul>
-<h3 id="timeouts-und-retries"><a class="anchor" href="#timeouts-und-retries" aria-hidden="true" tabindex="-1">#</a>Timeouts und Retries</h3>
-<p>Warte niemals unendlich. Setze aggressive Timeouts und implementiere intelligente Retry-Strategien:</p>
-<p><strong>Retry-Richtlinien:</strong></p>
-<ul>
-<li>Wiederhole keine 4xx-Fehler (Client-Fehler)</li>
-<li>Verwende exponentielles Backoff, um Stampeding Herds zu vermeiden</li>
-<li>Füge Jitter hinzu, um synchronisierte Retries zu verhindern</li>
-<li>Erwäge Idempotenz, bevor du Retries implementierst</li>
-</ul>
-<h3 id="graceful-degradation"><a class="anchor" href="#graceful-degradation" aria-hidden="true" tabindex="-1">#</a>Graceful Degradation</h3>
-<p>Wenn Teile deines Systems ausfallen, sollte der Rest weiter funktionieren:</p>
-<ul>
-<li><strong>Produktlistings ohne Empfehlungen</strong>: Zeige weiterhin Produkte, nur ohne personalisierte Vorschläge</li>
-<li><strong>Checkout ohne Fraud-Scoring</strong>: Verarbeite Bestellungen mit manueller Review-Queue</li>
-<li><strong>Analytics ohne Echtzeitdaten</strong>: Zeige gecachte Daten mit einem „Zuletzt aktualisiert“ Zeitstempel</li>
-</ul>
-<h2 id="resilienz-testen"><a class="anchor" href="#resilienz-testen" aria-hidden="true" tabindex="-1">#</a>Resilienz testen</h2>
-<p>Du kannst keine Resilienz beanspruchen, bis du sie getestet hast:</p>
-<h3 id="chaos-engineering"><a class="anchor" href="#chaos-engineering" aria-hidden="true" tabindex="-1">#</a>Chaos Engineering</h3>
-<p>Führe absichtlich Fehler ein. Tools wie Chaos Monkey beenden zufällig Instanzen und zwingen dein System, mit unerwarteten Ausfällen umzugehen.</p>
-<h3 id="load-testing"><a class="anchor" href="#load-testing" aria-hidden="true" tabindex="-1">#</a>Load Testing</h3>
-<p>Kenne deine Grenzen, bevor du sie erreichst. Ich teste mit Last, um:</p>
-<ul>
-<li>Breaking Points zu identifizieren</li>
-<li>Auto-Scaling-Richtlinien zu validieren</li>
-<li>Ressourcenlecks zu entdecken</li>
-<li>Circuit-Breaker-Schwellen zu testen</li>
-</ul>
-<h2 id="fazit"><a class="anchor" href="#fazit" aria-hidden="true" tabindex="-1">#</a>Fazit</h2>
-<p>Resiliente Architektur geht nicht darum, Ausfälle zu verhindern – es geht darum, sie zu überstehen. Durch die Implementierung von Mustern wie Circuit Breakers, Bulkheads und Graceful Degradation kannst du Systeme aufbauen, die Ausfälle elegant handhaben und sich schnell erholen.</p>
-<p>Denk daran: Das Ziel ist nicht Null-Downtime (unmöglich), sondern die Minimierung der Auswirkungen von Downtime, wenn sie auftritt.</p>
+<p>Wenn ein Dienst ausfällt, interessiert mich zuerst, was ein Nutzer noch tun kann. Wartet die Anwendung unbegrenzt? Wiederholt sie den gleichen Fehler? Oder kann sie mit eingeschränkter Funktion weiterarbeiten?</p>
+<p>Diese Fragen machen Zuverlässigkeit für mich konkret. Die folgenden Muster helfen, die Antworten im Voraus festzulegen.</p>
+<h2 id="aufrufe-bei-wiederholten-fehlern-stoppen"><a class="anchor" href="#aufrufe-bei-wiederholten-fehlern-stoppen" aria-hidden="true" tabindex="-1">#</a>Aufrufe bei wiederholten Fehlern stoppen</h2>
+<p>Ein Circuit Breaker unterbricht Aufrufe an einen fehlerhaften Dienst vorübergehend. Lege die Schwelle anhand beobachteter Fehlerraten fest. Ein Half-Open-Zustand erlaubt später einzelne Versuche, um die Erholung zu prüfen.</p>
+<p>Der Aufrufer braucht währenddessen einen Fallback oder eine sichtbare Fehlermeldung.</p>
+<figure class="concept concept--flow">
+<div class="concept-title">Ein Circuit Breaker prüft die Erholung</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17v4 M9 12v9 M15 7v14 M21 2v19"/></svg><strong>Closed</strong><span>Anfragen werden zugelassen.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4v16 M17 4v16"/></svg><strong>Open</strong><span>Nach der Fehlerschwelle stoppen.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7a9 9 0 0 0-16 3 M4 3v7h7 M4 17a9 9 0 0 0 16-3 M20 21v-7h-7"/></svg><strong>Half-open</strong><span>Mit wenigen Aufrufen prüfen.</span></li>
+</ol>
+<figcaption>Nach dem Test: bei Erfolg schließen, bei Fehlern wieder öffnen. Währenddessen einen Fallback anbieten.</figcaption>
+</figure>
+
+<h2 id="ressourcen-voneinander-trennen"><a class="anchor" href="#ressourcen-voneinander-trennen" aria-hidden="true" tabindex="-1">#</a>Ressourcen voneinander trennen</h2>
+<p>Bulkheads heißen nach den Schotten eines Schiffes. In einer Anwendung sollen sie verhindern, dass ein Fehler alle verfügbaren Ressourcen belegt.</p>
+<p>Dazu eignen sich getrennte Thread-Pools für kritische und weniger kritische Aufgaben, isolierte Ressourcen für verschiedene Dienste und Limits pro Mandant oder Endpunkt.</p>
+<h2 id="warten-und-wiederholen-begrenzen"><a class="anchor" href="#warten-und-wiederholen-begrenzen" aria-hidden="true" tabindex="-1">#</a>Warten und Wiederholen begrenzen</h2>
+<p>Jeder externe Aufruf braucht ein Zeitlimit. Für Wiederholungen helfen exponentielles Backoff und Jitter, damit Clients nicht gleichzeitig erneut anfragen.</p>
+<p>Prüfe vor einem Retry, ob die Operation idempotent ist. Wiederhole Clientfehler nicht blind; der konkrete Fehler und der API-Vertrag müssen einen weiteren Versuch rechtfertigen.</p>
+<h2 id="den-fallback-bewusst-wählen"><a class="anchor" href="#den-fallback-bewusst-wählen" aria-hidden="true" tabindex="-1">#</a>Den Fallback bewusst wählen</h2>
+<p>Ein Produktkatalog kann auch ohne Empfehlungen weiterarbeiten. Analytics können ältere Daten mit dem Zeitpunkt der letzten Aktualisierung zeigen. Fällt das Fraud-Scoring aus, können Bestellungen in eine manuelle Prüfung gehen, sofern dieser Ablauf vereinbart ist.</p>
+<p>Solche Entscheidungen betreffen den Betrieb und die Nutzer. Sie gehören vor den Ausfall.</p>
+<h2 id="die-fehlerpfade-testen"><a class="anchor" href="#die-fehlerpfade-testen" aria-hidden="true" tabindex="-1">#</a>Die Fehlerpfade testen</h2>
+<p>Chaos Engineering führt Fehler absichtlich herbei. Chaos Monkey kann beispielsweise Instanzen beenden. Damit lässt sich beobachten, ob die Anwendung den Ausfall wie vorgesehen behandelt.</p>
+<p>Lasttests zeigen Belastungsgrenzen, prüfen Auto-Scaling-Regeln, decken Ressourcenlecks auf und helfen, die Schwellen des Circuit Breakers zu prüfen.</p>
+<p>Ein Muster im Architekturdiagramm ist noch kein Nachweis. Erst der Test zeigt, welche Funktion bei einem Ausfall verfügbar bleibt und wie die Anwendung zurückkehrt.</p>
 
     </div>
   </article>
   <nav class="pager" aria-label="More notes">
     <a class="pg pg-older" href="/de/blog/leading-without-authority/" rel="prev">
       <span class="label">← älter</span>
-      <span class="pg-title">Führen ohne Autorität: Engineering Leadership Lektionen</span>
+      <span class="pg-title">Führen, bevor der Titel kommt</span>
     </a>
     <a class="pg pg-newer" href="/de/blog/technical-decision-making/" rel="next">
       <span class="label">neuer →</span>
-      <span class="pg-title">Die Kunst der technischen Entscheidungsfindung</span>
+      <span class="pg-title">Technische Entscheidungen, mit denen das Team arbeiten kann</span>
     </a>
   </nav>
 </main>

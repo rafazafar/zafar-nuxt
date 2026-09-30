@@ -1,33 +1,32 @@
 ---
-title: Write better Typescript and less Unit Testing
-description: Why designing digital experiences that encourage users to slow down
-  and engage deeply can lead to more meaningful interactions and better
-  outcomes.
+title: "Better TypeScript, more useful tests"
+description: "Use types to reduce duplicate checks while keeping runtime validation and tests for behavior."
 date: 2025-01-28
 image: https://images.pexels.com/photos/4050314/pexels-photo-4050314.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1
-minRead: 7
+minRead: 3
 ---
 
-I’ve found that using strong and well-defined TypeScript typings can greatly reduce the need for extensive unit testing. While testing is an essential part of software development, it can, no, it will often be time-consuming and can slow down the development process tremendously. With well-typed code, we prevent many errors before they even happen.
+I prefer to let TypeScript catch a wrong argument before I need to write a test for it. Clear types reduce repetitive checks and make refactoring easier. They also leave more time for tests that exercise behavior.
 
-By doing so, we can catch a lot of errors at compile-time, before they make it to testing/production. This not only saves time and effort, but it also makes our code more reliable and easier to maintain.
-
-That being said, I don’t want to suggest that testing is not important. On the contrary, unit testing is still a crucial part of software development. However, by using TypeScript, we can reduce the amount of testing that needs to be done.
-
-Remember, the ratio between the production code and the test code could be anywhere between 1:1 and 1:3.
+That matters when test code can be as large as production code, or even three times its size. Maintaining a test suite is real work. I want each test to tell me something the compiler cannot.
 
 > *Tests are good; impossible states are better — Richard Feldman*
 
-In addition, TypeScript allows us to use the concept of “impossible states.” Impossible states are states that are impossible to reach because they are prevented by our typings. By using it, we can eliminate a lot of unnecessary testing, as we know that these states can never happen, and therefore, don’t need to be tested.
+The useful idea here is to design types that exclude invalid combinations. Within correctly typed code, there are then fewer states to handle. Data arriving from outside the application still needs validation.
 
----
+<figure class="concept concept--split">
+<div class="concept-title">Three checks with different jobs</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 6l-6 6 6 6 M16 6l6 6-6 6 M14 3l-4 18"/></svg><strong>Type checking</strong><span>Are typed values used consistently?</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2l9 4v6c0 5-9 10-9 10S3 17 3 12V6z M8 12l3 3 5-6"/></svg><strong>Runtime validation</strong><span>Does incoming data match the contract?</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12l5 5L20 6"/></svg><strong>Behavior tests</strong><span>Does the program do the right thing?</span></li>
+</ol>
+<figcaption>Use each check for the question it can answer.</figcaption>
+</figure>
 
-Heres common examples of how using better TypeScript typings in React can be more efficient than extensive unit testing:
+## Give props and state clear shapes
 
-## 1. Type-checking props and state
-In React, components often receive props and manage their own state. Without TypeScript, it can be difficult to ensure that the correct data types are being used for props and state. This can lead to runtime errors and a need for extensive unit testing.
-
-With TypeScript, however, we can define interfaces for our props and state, which can catch errors at compile-time and eliminate the need for some unit tests. For example:
+React components receive props and keep state. Interfaces let the compiler check the types used at those boundaries:
 
 ```ts
 interface Props {
@@ -45,9 +44,9 @@ class MyComponent extends React.Component<Props, State> {
 }
 ```
 
-By defining these interfaces, we can ensure that the correct data types are being used for our props and state, which can catch errors at compile-time and make our code more reliable.
+These types require a string for `name`, a number for `age`, a boolean for `isMale`, and a number for `count`. Tests do not need to repeat those declarations just to check their types.
 
-Instead of :
+But the following tests ask different questions:
 
 ```ts
 it('renders with correct props', () => {
@@ -61,11 +60,11 @@ it('renders with correct state', () => {
 });
 ```
 
-## 2. Defining event handlers
+A type declaration does not prove that the component renders or that `count` starts at zero. Keep tests for behavior that matters. The opportunity is to remove duplicate type checks, not every test near a typed interface.
 
-Event handlers are often used to handle user interactions, such as clicks or form submissions. Without TypeScript, it can be difficult to ensure that event handlers are defined correctly and handle the correct types of events.
+## Describe the event a handler accepts
 
-With TypeScript, however, we can define types for our event handlers, which can catch errors at compile-time and eliminate the need for some unit tests. For example:
+An event handler type makes the callback contract clear:
 
 ```ts
 interface MyComponentProps {
@@ -79,9 +78,9 @@ function MyComponent(props: MyComponentProps) {
 }
 ```
 
-By defining the onClick prop with a type that includes the React.MouseEvent type, we can ensure that the event handler is defined correctly and handles the correct types of events, which can make our code more reliable and reduce the need for unit tests.
+The callback accepts a mouse event from a button. TypeScript can check that signature at a typed call site. It cannot prove that a user action actually invokes the callback.
 
-Without TypeScript typings, we would need to write unit tests to ensure that event handlers are defined correctly and handle the correct types of events.
+That is why this behavior test can still be useful:
 
 ```ts
 it('calls onClick handler when button is clicked', () => {
@@ -92,13 +91,14 @@ it('calls onClick handler when button is clicked', () => {
 });
 ```
 
-## 3. Type-checking external APIs
+It checks the connection between the button and the callback. The function's type alone does not check that connection at runtime.
 
-For any app/webapp it’s common to use external APIs, such as REST APIs or GraphQL APIs, to retrieve data for our components. Without TypeScript, it can be difficult to ensure that the correct data types are being used throughout the app. This makes refactoring code an absolute nightmare.
+## Treat an API response as a separate boundary
 
-Using types, Backend/API developers will also be less restricted knowing the frontend can quickly grab the new DTO and quckly update frontend code. This ensure less legacy bloat and faster development cycle.
+Shared data transfer object (DTO) types help frontend and backend developers change an API together. When a field changes, the compiler can identify affected typed code. That makes refactoring easier and reduces the pressure to retain obsolete shapes.
 
-For example:
+This example shows the intended response type, but it also shows a limit of assertions:
+
 ```ts
 interface UserDto {
   id: number;
@@ -113,9 +113,9 @@ async function fetchUser(id: number): Promise<UserDto> {
 }
 ```
 
-By defining the User interface for the API response, we can ensure that the correct data types are being used for the API response, which can catch errors at compile-time and make our code more reliable.
+The declaration names `UserDto`, while the assertion names `User`. Those names should refer to the intended contract. More importantly, neither the return annotation nor `as User` validates the JSON. TypeScript removes assertions during compilation; they do not perform a runtime check. The [TypeScript handbook](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-assertions) explains this limit.
 
-Without TS , we would need to write unit tests to ensure that the correct data types are being used for the API responses. For example:
+Keep a validation step at the boundary when the response cannot be trusted to match the type. A test with a known response remains useful too:
 
 ```ts
 it('fetches user data and returns the correct object', async () => {
@@ -126,11 +126,11 @@ it('fetches user data and returns the correct object', async () => {
 });
 ```
 
+This test checks one expected response. It does not establish how the function handles malformed data or a failed request.
 
-## 4. Type-checking Redux actions
-When using Redux to manage state in a web application, it’s important to ensure that the actions are well-typed and consistent. Without TypeScript, we might need to write extensive unit tests to ensure that the actions are being dispatched correctly and handling errors appropriately.
+## Restrict the shapes of Redux actions
 
-Instead, we can define interfaces for our Redux actions. For example:
+A union of action types lets each action carry the payload it needs:
 
 ```ts
 interface User {
@@ -161,8 +161,12 @@ function fetchUser(id: number): UserAction {
 }
 ```
 
-By defining the UserAction interface for the Redux actions, we can ensure that the actions are well-typed and consistent, which can catch errors at compile-time and make our code more reliable.
+`FETCH_USER` carries an ID. `RECEIVE_USER` carries a user. The `UserAction` union lets the compiler distinguish those cases and reject mismatched payloads in checked code.
 
-In summary, using better TypeScript typings will help catch errors at compile-time, make our code more reliable, and eliminate the need for some unit tests. By ensuring that the correct data types are being used for props, state, event handlers, and API responses, we can reduce cost and make ship happen faster
+Tests still have work to do: checking dispatch, state changes, and error handling. Clear types narrow that work to behavior rather than repeating the permitted object shapes.
 
-Important Note: Please dont block testing/preview CICD just because of Type errors. Blocking main or production sure but dont slowdown developers testing prematurely. Happy coding!
+## Keep feedback available during development
+
+My preference is to let developers run tests and use previews while they resolve type errors, where the project allows it. The main branch and production release should still have the required type checks.
+
+Use the compiler for the rules it can check. Use runtime validation for incoming data. Use tests to check what the program does. That division makes the suite more useful without asking types to prove more than they can.

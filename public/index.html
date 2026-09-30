@@ -158,6 +158,12 @@ h1 {
 .clock-row .time { font-size: 1.15rem; font-weight: 600; font-variant-numeric: tabular-nums; display: block; }
 .clock-row .tip { font-size: .92rem; color: var(--hero-soft); }
 .clock-row .wx { display: block; font-size: 1rem; color: var(--hero-soft); }
+.clock-row .moment { font-style: italic; }
+.me-tag {
+  position: absolute; z-index: 2; left: 0; top: 0; pointer-events: none; white-space: nowrap;
+  font-family: var(--f-hand); font-size: .9rem; color: #1c2a4d; background: #ffe98a; padding: 2px 10px 3px;
+  box-shadow: 0 8px 12px -8px rgba(0,0,0,.45); transform: translate(-50%, calc(-100% - 12px)) rotate(-4deg);
+}
 .hero .sky-fallback { filter: saturate(calc(1 - var(--overcast, 0) * .75)) brightness(calc(1 - var(--overcast, 0) * .12)); }
 
 .pinned { position: absolute; z-index: 2; right: max(16px, calc((100vw - 1120px) / 2 + 30px)); bottom: -90px; width: 300px; height: 300px; }
@@ -431,7 +437,7 @@ footer path { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap:
           <circle class="dot" r="3"/>
         </svg>
       </button>
-      <span><span class="time" id="timeText">Tokyo · --:--</span><span class="wx" id="wxText" hidden></span><span class="tip" id="tipText">hold the clock to fast-forward</span></span>
+      <span><span class="time" id="timeText">Tokyo · --:--</span><span class="wx" id="wxText" hidden></span><span class="wx moment" id="momentText" hidden></span><span class="tip" id="tipText">hold the clock to fast-forward</span></span>
     </div>
   </div>
 
@@ -440,6 +446,7 @@ footer path { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap:
     <figure class="me"><span class="tape"></span><img src="/home/profile.jpg" alt="Zafar, with short dark hair and round glasses"><figcaption>me</figcaption></figure>
     <div class="note">don't stop <u>building</u></div>
   </div>
+  <span class="me-tag" id="meTag" aria-hidden="true" hidden>me, probably</span>
 </section>
 
 <div class="page">
@@ -692,12 +699,17 @@ footer path { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap:
     state.skyTop = mixc(a[1], b[1], t); state.skyBot = mixc(a[2], b[2], t);
     state.far = mixc(a[3], b[3], t); state.near = mixc(a[4], b[4], t);
     state.glow = mixc(a[5], b[5], t); state.night = lerp(a[6], b[6], t);
-    const st = (h - 6) / 12, mt = (((h - 18) + 24) % 24) / 12;
+    // the moon rises ~50 minutes later each day: with the sun at new moon, at sunset when full
+    const st = (h - 6) / 12, mt = (((h - (6 + cal.phase * 24)) % 24 + 24) % 24) / 12;
     state.sun = [0.08 + 0.84 * st, 0.2 + Math.sin(Math.PI * Math.min(Math.max(st, 0), 1)) * 0.6];
     state.sunUp = st > -0.04 && st < 1.04 ? 1 : 0;
     state.moon = [0.08 + 0.84 * mt, 0.2 + Math.sin(Math.PI * Math.min(Math.max(mt, 0), 1)) * 0.58];
     state.moonUp = mt < 1.04 ? 1 : 0;
+    state.hour = h;
+    // Tokyo Tower and Skytree switch their lights off at midnight
+    state.towerLit = h >= 12 ? 1 : Math.max(0, 1 - h / 0.05);
     hero.classList.toggle('is-night', state.night > 0.5);
+    showMoment(h);
     hero.style.setProperty('--sky-top', css(state.skyTop)); hero.style.setProperty('--sky-bot', css(state.skyBot));
     const hr = Math.floor(h), mn = Math.floor((h - hr) * 60);
     document.getElementById('hh').setAttribute('transform', `rotate(${(h % 12) * 30})`);
@@ -708,6 +720,53 @@ footer path { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap:
   const ticks = document.getElementById('ticks');
   for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6, r1 = i % 3 ? 25 : 21; const l = document.createElementNS('http://www.w3.org/2000/svg', 'line'); l.setAttribute('x1', Math.sin(a) * r1); l.setAttribute('y1', -Math.cos(a) * r1); l.setAttribute('x2', Math.sin(a) * 27); l.setAttribute('y2', -Math.cos(a) * 27); ticks.appendChild(l); }
 
+  // ---------- the calendar: season, tonight's moon, and the scene's little captions ----------
+  // ?d=2026-04-01 previews another date (and ?h=22 another hour)
+  const qd = new URLSearchParams(location.search).get('d');
+  const smooth01 = (a, b, x) => { const k = Math.min(1, Math.max(0, (x - a) / (b - a))); return k * k * (3 - 2 * k); };
+  const bump = (d, a, b, c, e) => smooth01(a, b, d) * (1 - smooth01(c, e, d));
+  const within = (h, a, b) => a <= b ? h >= a && h < b : h >= a || h < b;
+  const cal = { phase: 0.5, illum: 1, doy: 180, miyabi: 0, petals: 0, leaves: 0, heat: 0, rainy: 0, fujiClear: 1, haze: 0 };
+  const refreshCalendar = () => {
+    const iso = /^\d{4}-\d\d-\d\d$/.test(qd || '') ? qd : new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Tokyo' }).format(new Date());
+    const [y, m, d] = iso.split('-').map(Number);
+    const day = Date.UTC(y, m - 1, d) / 864e5;
+    const doy = day - Date.UTC(y, 0, 0) / 864e5;
+    // days since a known new moon (6 Jan 2000, 18:14 UTC), over the synodic month
+    const at = qd ? Date.UTC(y, m - 1, d, 3) : Date.now();
+    cal.phase = ((((at - Date.UTC(2000, 0, 6, 18, 14)) / 864e5) / 29.530588853) % 1 + 1) % 1;
+    cal.illum = (1 - Math.cos(cal.phase * Math.PI * 2)) / 2;
+    cal.doy = doy;
+    cal.miyabi = Math.floor(day) % 2;
+    cal.petals = bump(doy, 78, 85, 97, 104);   // sakura, late March to early April
+    cal.rainy = bump(doy, 155, 160, 196, 201); // tsuyu, early June to mid July
+    cal.heat = bump(doy, 196, 203, 250, 258);  // mid July to mid September
+    cal.leaves = bump(doy, 306, 314, 336, 344); // momiji, November
+    const winter = Math.max(smooth01(315, 335, doy), 1 - smooth01(50, 80, doy));
+    cal.fujiClear = Math.max(0, 0.55 + 0.45 * winter - 0.4 * bump(doy, 150, 165, 245, 265) - 0.15 * cal.rainy);
+    cal.haze = 0.22 * cal.rainy + 0.12 * cal.heat;
+  };
+  refreshCalendar();
+
+  const momentEl = document.getElementById('momentText');
+  const showMoment = h => {
+    const text =
+      within(h, 0, 0.35) ? 'Tokyo Tower just went dark. make a wish' :
+      within(h, 0.83, 1.3) ? 'the last train has gone' :
+      within(h, 1.3, 4.3) ? 'night crew out on the tracks' :
+      within(h, 4.3, 4.9) ? 'first train any minute' :
+      within(h, 4.9, 6.6) ? 'crows heading out' :
+      within(h, 16.95, 17.2) ? "the 5 o'clock chime: time to go home" :
+      within(h, 16.4, 18.8) ? 'crows heading home' :
+      within(h, 7, 9.5) || within(h, 18.8, 19.5) ? 'rush hour on the Yamanote' :
+      cal.illum > 0.96 && state.night > 0.5 ? 'full moon tonight' :
+      cal.petals > 0.4 ? 'sakura season' :
+      cal.leaves > 0.4 ? 'the maples are turning' :
+      cal.rainy > 0.4 ? 'rainy season' :
+      cal.heat > 0.4 && state.night < 0.5 ? 'hot enough to shimmer' : '';
+    if (momentEl.textContent !== text) { momentEl.textContent = text; momentEl.hidden = !text; }
+  };
+
   let dirty = true, offset = 0;
   let clockHold = null, clockFrame = 0, clockSpeed = 0;
   // live weather (set from the artifact's store; cloud 0.3 is the original fair-weather look)
@@ -717,7 +776,7 @@ footer path { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap:
   if (!isNaN(qh)) offset = qh - tokyoHour();
   let shown = tokyoHour() + offset;
   setHour(shown);
-  setInterval(() => { if (!clockHold && !clockFrame) { shown = tokyoHour() + offset; setHour(shown); } }, 30000);
+  setInterval(() => { refreshCalendar(); if (!clockHold && !clockFrame) { shown = tokyoHour() + offset; setHour(shown); } }, 30000);
   const clock = document.getElementById('clock');
   const tip = document.getElementById('tipText');
   const startClock = input => {
@@ -799,7 +858,12 @@ struct U {
   skyTop: vec4f, skyBot: vec4f, far: vec4f, near: vec4f, glow: vec4f,
   shoot: vec4f,
   wx: vec4f,   // cloud cover, rain, snow, fog (0..1)
-  wx2: vec4f,  // thunder, -, -, -
+  wx2: vec4f,  // thunder, seasonal haze, -, -
+  trains: vec4f, // x of up to three trains (-9 = none), x of the night maintenance cart
+  birds: vec4f,  // flock centre xy, heading (-1/1), amount
+  cal: vec4f,    // hour, moon phase (0 new, 0.5 full), tower lights (0..1), Skytree colour (0 Iki, 1 Miyabi)
+  season: vec4f, // sakura petals, autumn leaves, summer heat, how clear the air is for Fuji
+  aux: vec4f,    // pointer in scene units (for the crows), -, -
 };
 @group(0) @binding(0) var<uniform> u: U;
 
@@ -842,14 +906,35 @@ fn bld(x: f32, y: f32, base: f32, w: f32, hmin: f32, hmax: f32, seed: f32, px: f
   return cov;
 }
 
-fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, night: f32, t: f32) -> f32 {
+// 1 while hour h is inside [a, b), wrapping past midnight
+fn during(h: f32, a: f32, b: f32) -> f32 {
+  return select(step(a, h) * step(h, b), max(step(a, h), step(h, b)), a > b);
+}
+fn seg(p: vec2f, a: vec2f, b: vec2f) -> f32 {
+  let pa = p - a; let ba = b - a;
+  return length(pa - ba * clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0));
+}
+
+// windows that keep a Tokyo day: offices fill up in the morning and empty out through the evening
+// (a few never do), homes light up after dusk, some flicker blue with the TV, and go dark by 1:30.
+// returns (lit, tv)
+fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, hour: f32, office: f32) -> vec2f {
   let g = vec2f(x / ww, (y - base) / wh);
   let c = floor(g); let f = fract(g);
   let inWin = step(0.26, f.x) * step(f.x, 0.74) * step(0.28, f.y) * step(f.y, 0.74);
-  let r = h21(c + seed);
-  let flick = h21(c + vec2f(floor(t * 0.12 + r * 9.0), 3.0));
-  let lit = step(1.0 - mix(0.04, 0.3, night), mix(r, flick, 0.3));
-  return inWin * lit;
+  let r = h21(c + seed); let r2 = h21(c + seed + 17.3); let r3 = h21(c + seed + 41.9);
+  var lit = 0.0; var tv = 0.0;
+  if (office > 0.5) {
+    let leave = 18.0 + r3 * r3 * 5.6;
+    lit = during(hour, 7.4 + r2 * 1.6, leave) * step(0.35, r);
+    lit = max(lit, step(0.985, r3));
+  } else {
+    let bed = (21.3 + r3 * 4.2) % 24.0;
+    let wake = 5.2 + r2 * 2.0;
+    lit = max(during(hour, 16.8 + r2 * 2.4, bed), during(hour, wake, wake + 0.7 + r3)) * step(0.62, r);
+    tv = lit * step(0.74, r2) * during(hour, 19.5, bed);
+  }
+  return vec2f(inWin * lit, inWin * tv);
 }
 
 @fragment fn fs(@builtin(position) fc: vec4f) -> @location(0) vec4f {
@@ -875,11 +960,21 @@ fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, night: f32, t: f
   let ds = length(uv - sunP);
   col += u.glow.rgb * (exp(-ds * 5.0) * 0.5 + exp(-ds * 1.4) * 0.16) * u.sunUp * clear;
   col = mix(col, vec3f(1.0, 0.96, 0.84), smoothstep(0.05, 0.046, ds) * u.sunUp * (1.0 - smoothstep(0.55, 0.95, cover)));
+  // the moon in tonight's real phase: lit from the right while waxing, from the left while waning
   let dm = length(uv - moonP);
-  col += vec3f(0.62, 0.7, 1.0) * exp(-dm * 8.0) * 0.22 * u.moonUp * clear;
-  let disk = smoothstep(0.034, 0.031, dm);
-  let bite = smoothstep(0.034, 0.031, length(uv - moonP - vec2f(0.016, 0.009)));
-  col = mix(col, vec3f(0.97, 0.95, 0.86), disk * (1.0 - bite * 0.88) * u.moonUp * (1.0 - smoothstep(0.55, 0.95, cover)));
+  let phase = u.cal.y;
+  let kx = cos(6.2831853 * phase);
+  let illum = (1.0 - kx) * 0.5;
+  let moonlight = illum * u.moonUp * night * clear;
+  col += vec3f(0.62, 0.7, 1.0) * exp(-dm * 8.0) * 0.3 * moonlight;
+  let mq = (uv - moonP) / 0.032;
+  let disk = smoothstep(1.06, 0.96, length(mq));
+  let side = select(-mq.x, mq.x, phase < 0.5);
+  let term = kx * sqrt(max(1.0 - mq.y * mq.y, 0.0));
+  let litM = smoothstep(term - 0.08, term + 0.08, side);
+  let moonVis = u.moonUp * (1.0 - smoothstep(0.55, 0.95, cover));
+  col = mix(col, vec3f(0.97, 0.95, 0.86), disk * litM * moonVis * mix(0.45, 1.0, night));
+  col = mix(col, col * 0.8 + vec3f(0.035, 0.045, 0.085), disk * (1.0 - litM) * moonVis * night * 0.6);
 
   // stars
   let sg = uv * 64.0;
@@ -912,7 +1007,30 @@ fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, night: f32, t: f
   let cLit = mix(vec3f(1.0), u.glow.rgb, 0.5) * (0.82 + 0.25 * n);
   let cDull = vec3f(0.58, 0.61, 0.67) * (0.78 + 0.3 * n);
   let cloudCol = mix(mix(cLit, cDull, max(rain, smoothstep(0.5, 1.0, cover) * 0.7)), vec3f(0.2, 0.24, 0.42) + u.skyBot.rgb * 0.2, night);
-  col = mix(col, cloudCol, ca * mix(mix(0.8, 0.95, smoothstep(0.5, 1.0, cover)), 0.5, night));
+  col = mix(col, cloudCol + vec3f(0.16, 0.17, 0.22) * moonlight * n, ca * mix(mix(0.8, 0.95, smoothstep(0.5, 1.0, cover)), 0.5, night));
+
+  // crows: out at dawn, home at dusk, and they swerve around the pointer
+  let fl = u.birds;
+  if (fl.w > 0.0 && abs(uv.x - fl.x) < 0.34 && abs(uv.y - fl.y) < 0.2) {
+    var bd = 1.0;
+    for (var i = 0; i < 11; i++) {
+      let fi = f32(i);
+      var bp = fl.xy + (vec2f(h11(fi * 3.1), h11(fi * 7.7)) - 0.5) * vec2f(0.36, 0.13);
+      bp.x -= fl.z * abs(bp.y - fl.y) * 0.6;
+      bp.y += sin(t * 0.9 + fi * 1.7) * 0.008;
+      let away = bp - u.aux.xy;
+      bp += normalize(away + vec2f(0.0001)) * 0.08 * exp(-length(away) * 12.0);
+      let sz = 0.009 + h11(fi * 5.3) * 0.005;
+      let lp = (uv - bp) / sz;
+      let flap = sin(t * (7.0 + h11(fi) * 3.0) + fi * 2.3);
+      let q = vec2f(abs(lp.x), lp.y);
+      let elbow = vec2f(0.45, 0.15 + flap * 0.25);
+      let tip = vec2f(1.0, -0.05 + flap * 0.6);
+      bd = min(bd, min(seg(q, vec2f(0.0), elbow), seg(q, elbow, tip)) * sz);
+    }
+    let crow = mix(vec3f(0.13, 0.14, 0.19), vec3f(0.03, 0.04, 0.09), night);
+    col = mix(col, crow, smoothstep(0.0021, 0.0007, bd) * fl.w);
+  }
 
   // Mt. Fuji, far away on a clear day
   let fx = asp * 0.22 - mx * 0.006;
@@ -923,7 +1041,7 @@ fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, night: f32, t: f
   let fujiCol = mix(u.far.rgb, u.skyBot.rgb, 0.55);
   let snowCol = mix(mix(vec3f(0.96, 0.97, 1.0), u.glow.rgb, 0.25), fujiCol * 1.25, night * 0.7);
   // Fuji only shows itself on a clear day
-  col = mix(col, select(fujiCol, snowCol, uv.y > snowLine), fuji * 0.9 * (1.0 - smoothstep(0.35, 0.8, max(cover, max(fog, rain)))));
+  col = mix(col, select(fujiCol, snowCol, uv.y > snowLine), fuji * 0.9 * u.season.w * (1.0 - smoothstep(0.35, 0.8, max(cover, max(fog, rain)))));
 
   // far city + Skytree
   let x3 = uv.x - mx * 0.012;
@@ -935,19 +1053,30 @@ fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, night: f32, t: f
   let tree = smoothstep(px, -px, abs(x3 - stx) - stw) * step(0.0, st) * step(st, 1.0);
   let spire = smoothstep(px, 0.0, abs(x3 - stx) - 0.001) * step(1.0, st) * step(st, 1.17);
   col = mix(col, farC, max(b3, max(tree, spire)));
-  col += vec3f(0.5, 0.62, 1.0) * tree * night * 0.45 * (0.55 + 0.45 * sin(st * 36.0 - t * 1.5));
-  col = mix(col, vec3f(1.0, 0.86, 0.58), wins(x3, uv.y, 0.29, 0.006, 0.009, 3.0, night, t) * b3 * night * 0.55);
+  // Skytree switches between Iki (sky blue) and Miyabi (purple) each night, and goes dark at midnight
+  let hour = u.cal.x;
+  let tLit = u.cal.z;
+  let skyC = mix(vec3f(0.5, 0.66, 1.0), vec3f(0.72, 0.42, 1.0), u.cal.w);
+  col += skyC * tree * night * 0.45 * tLit * (0.55 + 0.45 * sin(st * 36.0 - t * 1.5));
+  col += vec3f(1.0, 0.25, 0.2) * smoothstep(0.006, 0.0, length(vec2f(x3 - stx, uv.y - 0.7))) * step(0.5, fract(t * 0.7 + 0.3)) * night;
+  col = mix(col, vec3f(1.0, 0.86, 0.58), wins(x3, uv.y, 0.29, 0.006, 0.009, 3.0, hour, 1.0).x * b3 * night * 0.55);
   let haze = mix(u.skyBot.rgb, vec3f(dot(u.skyBot.rgb, vec3f(0.33))), 0.5);
-  col = mix(col, haze, max(fog, rain * 0.45) * 0.6);
+  let hazy = max(max(fog, rain * 0.45), u.wx2.y);
+  col = mix(col, haze, hazy * 0.6);
+
+  // summer afternoons: heat shimmer over the low city
+  let shim = u.season.z * (1.0 - night) * sin(uv.y * 260.0 + t * 4.0) * 0.0011 * smoothstep(0.36, 0.14, uv.y);
 
   // middle city + Tokyo Tower
-  let x2 = uv.x - mx * 0.025;
+  let x2 = uv.x - mx * 0.025 + shim;
   let b2 = bld(x2, uv.y, 0.22, 0.056, 0.035, 0.14, 23.0, px);
   let midC = mix(u.near.rgb, u.far.rgb, 0.5);
   col = mix(col, midC, b2);
-  let w2 = wins(x2, uv.y, 0.22, 0.008, 0.012, 5.0, night, t) * b2;
-  col = mix(col, mix(midC * 1.2 + 0.02, vec3f(1.0, 0.84, 0.52), night), w2 * mix(0.22, 0.9, night));
-  col = mix(col, haze, max(fog, rain * 0.4) * 0.3);
+  let wv2 = wins(x2, uv.y, 0.22, 0.008, 0.012, 5.0, hour, step(0.45, h11(floor(x2 / 0.056) + 7.0))) * b2;
+  let tv2 = vec3f(0.55, 0.72, 1.0) * (0.7 + 0.3 * h11(floor(t * 6.0) + floor(x2 / 0.008) * 3.7));
+  col = mix(col, mix(midC * 1.2 + 0.02, mix(vec3f(1.0, 0.84, 0.52), tv2, wv2.y), night), wv2.x * mix(0.22, 0.9, night));
+  col += vec3f(0.03, 0.035, 0.06) * moonlight * b2;
+  col = mix(col, haze, max(max(fog, rain * 0.4), u.wx2.y) * 0.3);
 
   let ttx = asp * 0.6;
   let k = (uv.y - 0.22) / 0.36;
@@ -961,10 +1090,11 @@ fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, night: f32, t: f
   tower = max(max(tower, ant), max(deck1, deck2));
   let white = step(0.8, fract(k * 7.0)) + deck1 + deck2;
   var tcol = mix(vec3f(0.89, 0.34, 0.2), vec3f(0.96, 0.95, 0.92), clamp(white, 0.0, 1.0));
-  tcol = mix(tcol, mix(vec3f(1.0, 0.55, 0.2), vec3f(1.0, 0.8, 0.5), clamp(white, 0.0, 1.0)), night);
+  let towerNight = mix(midC * 1.15 + 0.02, mix(vec3f(1.0, 0.55, 0.2), vec3f(1.0, 0.8, 0.5), clamp(white, 0.0, 1.0)), tLit);
+  tcol = mix(tcol, towerNight, night);
   col = mix(col, tcol, tower);
   let halo = length(vec2f(x2 - ttx, (uv.y - 0.36) * 0.45));
-  col += vec3f(1.0, 0.5, 0.18) * exp(-halo * 28.0) * night * 0.35;
+  col += vec3f(1.0, 0.5, 0.18) * exp(-halo * 28.0) * night * 0.35 * tLit;
   col += vec3f(1.0, 0.25, 0.2) * smoothstep(0.012, 0.0, length(vec2f(x2 - ttx, uv.y - 0.652))) * step(0.5, fract(t * 0.8)) * (0.4 + night);
 
   // elevated track and a Yamanote-green train
@@ -974,28 +1104,52 @@ fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, night: f32, t: f
   let pf = fract(x15 / 0.09);
   let pillar = step(uv.y, ty - 0.01) * smoothstep(px, -px, abs(pf - 0.5) * 0.09 - 0.0035);
   col = mix(col, mix(u.near.rgb, u.far.rgb, 0.3), max(deckL, pillar));
-  let loopLen = asp + 1.6;
-  let hd = (t * 0.07) % loopLen - 0.8;
-  let lx = x15 - hd;
-  let ci = floor(lx / 0.2);
-  let cf = lx - ci * 0.2;
-  let inCar = step(0.0, lx) * step(lx, 0.6) * step(cf, 0.192) * step(ty - 0.0015, uv.y) * step(uv.y, ty + 0.024);
-  var car = mix(vec3f(0.84, 0.86, 0.89), u.near.rgb * 1.6 + 0.05, night * 0.7);
-  car = mix(car, vec3f(0.5, 0.76, 0.25), step(ty + 0.003, uv.y) * step(uv.y, ty + 0.007));
-  let wf = fract(cf / 0.024);
-  let winM = step(ty + 0.011, uv.y) * step(uv.y, ty + 0.019) * step(0.18, wf) * step(wf, 0.82) * step(0.006, cf) * step(cf, 0.186);
-  car = mix(car, mix(vec3f(0.3, 0.36, 0.45), vec3f(1.0, 0.9, 0.62), night), winM);
-  col = mix(col, car, inCar);
-  let lamp = length(vec2f(x15 - (hd + 0.6), (uv.y - ty - 0.01) * 2.0));
-  col += vec3f(1.0, 0.9, 0.7) * exp(-lamp * 60.0) * night * 0.8;
+  // trains come from the timetable in the page script: none between the last train and the first
+  for (var i = 0; i < 3; i++) {
+    let hd = u.trains[i];
+    if (hd < -5.0) { continue; }
+    let lx = x15 - hd;
+    let ci = floor(lx / 0.2);
+    let cf = lx - ci * 0.2;
+    let inCar = step(0.0, lx) * step(lx, 0.6) * step(cf, 0.192) * step(ty - 0.0015, uv.y) * step(uv.y, ty + 0.024);
+    var car = mix(vec3f(0.84, 0.86, 0.89), u.near.rgb * 1.6 + 0.05, night * 0.7);
+    car = mix(car, vec3f(0.5, 0.76, 0.25), step(ty + 0.003, uv.y) * step(uv.y, ty + 0.007));
+    let wf = fract(cf / 0.024);
+    let winM = step(ty + 0.011, uv.y) * step(uv.y, ty + 0.019) * step(0.18, wf) * step(wf, 0.82) * step(0.006, cf) * step(cf, 0.186);
+    car = mix(car, mix(vec3f(0.3, 0.36, 0.45), vec3f(1.0, 0.9, 0.62), night), winM);
+    col = mix(col, car, inCar);
+    let lamp = length(vec2f(x15 - (hd + 0.6), (uv.y - ty - 0.01) * 2.0));
+    col += vec3f(1.0, 0.9, 0.7) * exp(-lamp * 60.0) * night * 0.8;
+  }
+  // after the last train, a yellow maintenance cart crawls along with its beacon turning
+  let cx = u.trains.w;
+  var cartGlow = vec3f(0.0);
+  if (cx > -5.0) {
+    let inCart = step(cx, x15) * step(x15, cx + 0.045) * step(ty - 0.0015, uv.y) * step(uv.y, ty + 0.013);
+    col = mix(col, mix(vec3f(0.95, 0.76, 0.2), vec3f(0.62, 0.5, 0.16), night * 0.6), inCart);
+    let beacon = length(vec2f(x15 - (cx + 0.022), (uv.y - ty - 0.016) * 1.4));
+    let blink = step(0.5, fract(t * 1.6));
+    col += vec3f(1.0, 0.6, 0.12) * smoothstep(0.004, 0.0, beacon) * blink * (0.5 + night);
+    cartGlow = vec3f(1.0, 0.6, 0.12) * (exp(-beacon * 90.0) * 0.6 + exp(-beacon * 22.0) * 0.18) * blink * (0.4 + night);
+  }
 
   // near city
-  let x1 = uv.x - mx * 0.05;
-  let b1 = bld(x1, uv.y, 0.1, 0.084, 0.05, 0.19, 41.0, px);
+  let x1 = uv.x - mx * 0.05 + shim;
+  // my building, with the one window that never goes dark (the page script knows where it is)
+  let mex = asp * 0.34;
+  let meB = smoothstep(px, -px, abs(x1 - mex) - 0.026) * smoothstep(px, -px, uv.y - 0.29) * step(0.09, uv.y);
+  let b1 = max(bld(x1, uv.y, 0.1, 0.084, 0.05, 0.19, 41.0, px), meB);
   let nearC = u.near.rgb;
   col = mix(col, nearC, b1);
-  let w1 = wins(x1, uv.y, 0.1, 0.012, 0.016, 9.0, night, t) * b1;
-  col = mix(col, mix(nearC * 1.3 + 0.03, vec3f(1.0, 0.82, 0.5), night), w1 * mix(0.3, 1.0, night));
+  let wv1 = wins(x1, uv.y, 0.1, 0.012, 0.016, 9.0, hour, 0.0) * b1 * (1.0 - meB);
+  let tv1 = vec3f(0.55, 0.72, 1.0) * (0.7 + 0.3 * h11(floor(t * 6.0) + floor(x1 / 0.012) * 3.7));
+  col = mix(col, mix(nearC * 1.3 + 0.03, mix(vec3f(1.0, 0.82, 0.5), tv1, wv1.y), night), wv1.x * mix(0.3, 1.0, night));
+  let meW = smoothstep(px, -px, abs(x1 - mex - 0.009) - 0.0045) * smoothstep(px, -px, abs(uv.y - 0.262) - 0.006);
+  let meGlow = mix(vec3f(1.0, 0.84, 0.52), vec3f(0.62, 0.78, 1.0), step(x1, mex + 0.009) * 0.6);
+  col = mix(col, mix(nearC * 1.3 + 0.03, meGlow, night), meW * mix(0.3, 1.0, night));
+  col += vec3f(1.0, 0.8, 0.5) * exp(-length(vec2f(x1 - mex - 0.009, uv.y - 0.262)) * 110.0) * night * 0.3;
+  col += vec3f(0.03, 0.035, 0.06) * moonlight * b1;
+  col += cartGlow;
 
   // rain: slanted streaks falling in lanes
   if (rain > 0.01) {
@@ -1015,6 +1169,28 @@ fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, night: f32, t: f
     let off2 = vec2f(h21(cid + 1.7), h21(cid + 4.2)) - 0.5;
     let d2 = length(fract(sg2) - 0.5 - off2 * 0.6);
     col = mix(col, vec3f(0.97, 0.98, 1.0), smoothstep(0.1, 0.035, d2) * step(1.0 - u.wx.z * 0.8, h21(cid)) * 0.9);
+  }
+  // sakura petals in spring, maple leaves in late autumn, tumbling on the breeze
+  let drift = max(u.season.x, u.season.y);
+  if (drift > 0.01) {
+    let leafy = step(u.season.x, u.season.y);
+    let cells = mix(24.0, 20.0, leafy);
+    let gp = vec2f((uv.x - t * 0.035) * cells + sin(uv.y * 5.0 + t * 0.7) * 0.4, (uv.y + t * mix(0.045, 0.06, leafy)) * cells);
+    let cid = floor(gp);
+    let r = h21(cid + 5.5);
+    if (r > 1.0 - drift * mix(0.09, 0.05, leafy)) {
+      var lp = fract(gp) - 0.5 - (vec2f(h21(cid + 1.3), h21(cid + 2.9)) - 0.5) * 0.5;
+      let an = t * (0.8 + r * 1.5) + r * 40.0;
+      lp = vec2f(lp.x * cos(an) - lp.y * sin(an), lp.x * sin(an) + lp.y * cos(an));
+      lp.x /= max(abs(cos(t * 1.9 + r * 17.0)), 0.25);
+      // petals are soft ovals, leaves come to a point at both ends
+      let sz = mix(vec2f(0.11, 0.065), vec2f(0.15, 0.08), leafy);
+      let e = lp / sz;
+      let shape = smoothstep(1.0, 0.8, mix(length(e), abs(e.x) + e.y * e.y, leafy * 0.7));
+      let petal = vec3f(1.0, 0.8, 0.86);
+      let leaf = mix(vec3f(0.86, 0.24, 0.14), vec3f(0.96, 0.58, 0.16), h21(cid + 8.8));
+      col = mix(col, mix(petal, leaf, leafy) * mix(1.0, 0.45, night), shape * 0.92);
+    }
   }
   // thunder: an occasional flash
   col += vec3f(0.8, 0.85, 1.0) * step(0.993, h11(floor(t * 3.0))) * u.wx2.x * 0.4 * smoothstep(0.25, 1.0, uv.y);
@@ -1047,9 +1223,9 @@ fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, night: f32, t: f
         fragment: { module, entryPoint: 'fs', targets: [{ format }] },
         primitive: { topology: 'triangle-list' }
       });
-      const ubuf = device.createBuffer({ size: 176, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
+      const ubuf = device.createBuffer({ size: 256, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
       const bind = device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [{ binding: 0, resource: { buffer: ubuf } }] });
-      const data = new Float32Array(44);
+      const data = new Float32Array(64);
 
       const resize = () => {
         const dpr = Math.min(devicePixelRatio || 1, 1.5);
@@ -1060,13 +1236,75 @@ fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, night: f32, t: f
       new ResizeObserver(resize).observe(canvas); resize();
 
       const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
-      addEventListener('pointermove', e => { mouse.tx = e.clientX / innerWidth * 2 - 1; mouse.ty = e.clientY / innerHeight * 2 - 1; }, { passive: true });
+      const pointer = { x: -9, y: -9, cx: -999, cy: -999 };
+      addEventListener('pointermove', e => {
+        mouse.tx = e.clientX / innerWidth * 2 - 1; mouse.ty = e.clientY / innerHeight * 2 - 1;
+        const r = canvas.getBoundingClientRect();
+        pointer.x = (e.clientX - r.left) / r.height; pointer.y = 1 - (e.clientY - r.top) / r.height;
+        pointer.cx = e.clientX - r.left; pointer.cy = e.clientY - r.top;
+      }, { passive: true });
+
+      // ---------- the timetable: Yamanote trains, the night maintenance cart, crows ----------
+      // positions are in scene units (1 = canvas height); trains run left to right
+      const headway = h => !within(h, 4.6, 0.83) ? 0          // no trains ~0:50 to ~4:36
+        : within(h, 7, 9.5) || within(h, 17.5, 19.5) ? 15   // rush hour, seconds between trains
+        : within(h, 22, 0.83) || within(h, 4.6, 6) ? 55 : 32;
+      const city = { trains: [], nextTrain: 0, cart: null, nextCart: 0, flock: null, nextFlock: 0, seen: false };
+      if (headway(state.hour)) city.trains.push({ x: canvas.width / canvas.height * 0.3 });
+      let lastT = 0;
+      const stepCity = t => {
+        const asp = canvas.width / canvas.height, h = state.hour;
+        const dawn = within(h, 4.9, 6.6), dusk = within(h, 16.4, 18.8), crew = within(h, 1.3, 4.3);
+        if (reduce) {
+          // a still picture of the same timetable
+          city.trains = headway(h) ? [{ x: asp * 0.3 }] : [];
+          city.cart = crew ? { x: asp * 0.5 } : null;
+          city.flock = dawn || dusk ? { x: asp * 0.55, y: 0.66, dir: dusk ? 1 : -1 } : null;
+          return;
+        }
+        const dt = Math.min(t - lastT, 0.1); lastT = t;
+        for (const tr of city.trains) tr.x += 0.07 * dt;
+        city.trains = city.trains.filter(tr => tr.x < asp + 0.3);
+        const hw = headway(h);
+        const last = city.trains[city.trains.length - 1];
+        if (hw && t >= city.nextTrain && city.trains.length < 3 && (!last || last.x > 0)) {
+          city.trains.push({ x: -0.8 });
+          city.nextTrain = t + hw * (0.8 + Math.random() * 0.4);
+        }
+        if (city.cart) { city.cart.x += 0.018 * dt; if (city.cart.x > asp + 0.1) { city.cart = null; city.nextCart = t + 20; } }
+        else if (crew && t >= city.nextCart) city.cart = { x: city.nextCart ? -0.1 : asp * 0.2 };
+        const f = city.flock;
+        if (f) { f.x += f.dir * 0.05 * dt; if (f.x < -0.5 || f.x > asp + 0.5) { city.flock = null; city.nextFlock = t + 10 + Math.random() * 20; } }
+        else if ((dawn || dusk) && t >= city.nextFlock) {
+          // the first flock is already in view when the page opens
+          const x = !city.seen ? asp * (dusk ? 0.25 : 0.75) : dusk ? -0.4 : asp + 0.4;
+          city.seen = true;
+          city.flock = { dir: dusk ? 1 : -1, x, y: 0.56 + Math.random() * 0.22 };
+        }
+      };
+
+      // my window in the near city (matches mex + 0.009, y 0.262 in the shader)
+      const meTag = document.getElementById('meTag');
+      let meUntil = 0;
+      const meSpot = () => {
+        const r = canvas.getBoundingClientRect();
+        return [(canvas.width / canvas.height * 0.34 + 0.009 + mouse.x * 0.05) * r.height, (1 - 0.262) * r.height];
+      };
+      const syncMe = now => {
+        const [x, y] = meSpot();
+        const near = Math.hypot(pointer.cx - x, pointer.cy - y) < 18 || now < meUntil;
+        const show = near && state.night > 0.35;
+        if (show) meTag.style.translate = `${x}px ${y}px`;
+        if (meTag.hidden === show) meTag.hidden = !show;
+      };
 
       let shoot = [0, 0, -99], t0 = performance.now(), nextShoot = 6;
       const time = () => reduce ? 0 : (performance.now() - t0) / 1000;
       hero.addEventListener('click', e => {
         if (e.target.closest('a, button, figure, .note')) return;
         const r = canvas.getBoundingClientRect();
+        const [mx0, my0] = meSpot();
+        if (state.night > 0.35 && Math.hypot(e.clientX - r.left - mx0, e.clientY - r.top - my0) < 22) { meUntil = performance.now() + 2500; return; }
         shoot = [(e.clientX - r.left) / r.height + 0.12, 1 - (e.clientY - r.top) / r.height + 0.05, time()];
         dirty = true;
       });
@@ -1083,10 +1321,20 @@ fn wins(x: f32, y: f32, base: f32, ww: f32, wh: f32, seed: f32, night: f32, t: f
           shoot = [asp * (0.35 + Math.random() * 0.6), 0.7 + Math.random() * 0.25, t];
           nextShoot = t + 7 + Math.random() * 9;
         }
+        stepCity(t);
+        syncMe(performance.now());
         if (!reduce || dirty) {
+          const tr = city.trains, fl = city.flock;
+          data.set([
+            tr[0] ? tr[0].x : -9, tr[1] ? tr[1].x : -9, tr[2] ? tr[2].x : -9, city.cart ? city.cart.x : -9,
+            fl ? fl.x : -9, fl ? fl.y : -9, fl ? fl.dir : 1, fl ? 1 : 0,
+            state.hour, cal.phase, state.towerLit, cal.miyabi,
+            cal.petals, cal.leaves, cal.heat, cal.fujiClear,
+            pointer.x, pointer.y, 0, 0
+          ], 44);
           data.set([canvas.width, canvas.height, t, state.night, mouse.x, mouse.y, state.sun[0], state.sun[1], state.moon[0], state.moon[1], state.sunUp, state.moonUp], 0);
           data.set([...state.skyTop, 1, ...state.skyBot, 1, ...state.far, 1, ...state.near, 1, ...state.glow, 1, ...shoot, 0], 12);
-          data.set([wx.cloud, wx.rain, wx.snow, wx.fog, wx.storm, 0, 0, 0], 36);
+          data.set([wx.cloud, wx.rain, wx.snow, wx.fog, wx.storm, cal.haze, 0, 0], 36);
           device.queue.writeBuffer(ubuf, 0, data);
           const enc = device.createCommandEncoder();
           const pass = enc.beginRenderPass({ colorAttachments: [{ view: ctx.getCurrentTexture().createView(), loadOp: 'clear', clearValue: { r: 0, g: 0, b: 0, a: 0 }, storeOp: 'store' }] });

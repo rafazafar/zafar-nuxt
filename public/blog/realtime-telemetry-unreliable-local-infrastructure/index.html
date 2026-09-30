@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
-<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<link rel="stylesheet" href="/blog/blog.css?v=18a31658">
 <script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body class="is-post">
@@ -46,7 +46,7 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
   <a class="back" href="/blog/"><span aria-hidden="true">←</span> all notes</a>
   <article class="post">
     <header class="post-head">
-      <span class="label"><time datetime="2026-07-03">Jul 3, 2026</time> · 9 min read</span>
+      <span class="label"><time datetime="2026-07-03">Jul 3, 2026</time> · 4 min read</span>
       <h1>Designing Realtime Telemetry When Local Infrastructure Disappears</h1>
       <p class="sub">BLE, MQTT5, local brokers, and product decisions for systems where the network path is allowed to go away.</p>
     </header>
@@ -55,102 +55,58 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
       <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&amp;w=1200&amp;auto=format&amp;fit=crop" alt="">
     </figure>
     <div class="prose">
-<p>The first uncomfortable requirement was simple: the local machine that received live telemetry might be turned off for hours, and that was allowed.</p>
-<p>Realtime systems are often described as if the infrastructure is always there and the only interesting question is how fast messages move through it.</p>
-<p>That is not always the real problem.</p>
-<p>In one health-adjacent monitoring project, the difficult constraint was not only that wearable devices produced live data. It was that parts of the local infrastructure could be unavailable by design. A local machine might host a broker and monitoring services during the day, then be powered down overnight. Phones and sensors could keep operating. Users still expected the system to recover cleanly when the local infrastructure returned.</p>
-<p>This kind of environment forces a useful discipline: you have to separate engineering problems from policy decisions.</p>
-<h2 id="the-architecture-sentence-is-not-enough"><a class="anchor" href="#the-architecture-sentence-is-not-enough" aria-hidden="true" tabindex="-1">#</a>The Architecture Sentence Is Not Enough</h2>
-<p>It is easy to say: &quot;phones publish telemetry over MQTT and viewers subscribe.&quot;</p>
-<p>That sentence hides the hard parts:</p>
-<ul>
-<li>What happens when the broker is offline?</li>
-<li>Is packet loss acceptable?</li>
-<li>Should the phone buffer data while disconnected?</li>
-<li>If buffered data arrives late, is it still clinically or operationally useful?</li>
-<li>How should viewers distinguish live data from delayed data?</li>
-<li>Which system owns identity, session state, and patient context?</li>
-<li>Does cloud access change the authority model or only the transport path?</li>
-</ul>
-<p>These are not implementation details. They are product and safety decisions.</p>
-<p>If the team does not answer them explicitly, engineers will answer them accidentally through code. A retry loop here, a local cache there, a hidden fallback somewhere else. That is how systems become hard to reason about.</p>
-<h2 id="reconnect-first-backfill-second"><a class="anchor" href="#reconnect-first-backfill-second" aria-hidden="true" tabindex="-1">#</a>Reconnect First, Backfill Second</h2>
-<p>For live monitoring, reconnect reliability is often more valuable than ambitious backfill.</p>
-<p>That sounds counterintuitive. Data loss feels bad, so the instinct is to buffer everything. But full backfill has real complexity:</p>
-<ul>
-<li>You need recorded-time ordering, not receive-time ordering.</li>
-<li>You need deduplication across reconnects.</li>
-<li>You need clear session ownership when the local authority was offline.</li>
-<li>You need limits for storage, battery, and memory.</li>
-<li>You need UI that does not confuse stale data with live monitoring.</li>
-<li>You need risk language around what delayed data means.</li>
-</ul>
-<p>If the product is primarily live monitoring, the first promise should be simpler: when infrastructure returns, the phone reconnects and live telemetry resumes visibly and predictably.</p>
-<p>Backfill can still be valuable, but it should be an explicit feature with explicit limits. &quot;Small bounded diagnostic buffer&quot; and &quot;full overnight lossless replay&quot; are not the same requirement.</p>
-<h2 id="mqtt-is-a-contract-not-just-a-library"><a class="anchor" href="#mqtt-is-a-contract-not-just-a-library" aria-hidden="true" tabindex="-1">#</a>MQTT Is A Contract, Not Just A Library</h2>
-<p>MQTT works well for this shape of system because it gives mobile apps, local services, cloud services, and viewers a shared messaging model. But the library choice is less important than the contract.</p>
-<p>The contract needs to define:</p>
-<ul>
-<li>Topic structure.</li>
-<li>Identifier meaning.</li>
-<li>Payload shape.</li>
-<li>QoS expectations.</li>
-<li>Retained-message policy.</li>
-<li>Protocol version.</li>
-<li>Failure behavior when a client cannot satisfy the contract.</li>
-</ul>
-<p>For this deployment shape, I prefer making MQTT5 over secure WebSockets the explicit platform requirement. WSS made sense because the same contract had to work through local and cloud-facing network paths that were friendlier to HTTPS-style routing than raw MQTT/TLS ports. Native mobile can absolutely use MQTT over TLS TCP in other deployments; the important choice here was to avoid supporting multiple transport personalities accidentally.</p>
-<p>If a client cannot complete an MQTT5 connection, it should fail visibly rather than quietly falling back to MQTT 3.1.1 and creating a second compatibility surface. Silent downgrade is where subtle differences in session behavior, reason codes, properties, and broker configuration become production mysteries.</p>
-<p>A sanitized topic contract looked roughly like this:</p>
+<p>The local machine that received live telemetry could be turned off for hours. That was an allowed use of the system.</p>
+<p>In this monitoring project, the machine might host a broker and monitoring services during the day, then shut down overnight. Phones and wearable sensors could keep running. When the machine returned, users expected monitoring to recover cleanly.</p>
+<p>The transport was only part of the problem. We also had to decide what the system should promise during the gap.</p>
+<h2 id="decide-what-an-outage-means"><a class="anchor" href="#decide-what-an-outage-means" aria-hidden="true" tabindex="-1">#</a>Decide what an outage means</h2>
+<p>“Phones publish over MQTT and viewers subscribe” describes the normal path. It leaves several product decisions open.</p>
+<p>Can the system lose packets? Should the phone store data while disconnected? Will delayed data still be useful? How will the viewer tell a current sample from an old one? Who owns identity, sessions, and patient context when the local authority is unavailable?</p>
+<p>Cloud access raises another question: does it change who controls the session, or just how messages travel?</p>
+<p>If the team leaves these questions unanswered, the implementation will still choose a behavior. A retry loop or cache can make a policy decision without anyone recognizing it as one.</p>
+<h2 id="restore-live-monitoring-before-adding-full-replay"><a class="anchor" href="#restore-live-monitoring-before-adding-full-replay" aria-hidden="true" tabindex="-1">#</a>Restore live monitoring before adding full replay</h2>
+<p>For this kind of live monitoring, I prefer to make recovery work first. When infrastructure returns, the phone should reconnect and visibly resume current telemetry.</p>
+<figure class="concept concept--split">
+<div class="concept-title">Two different recovery promises</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17v4 M9 12v9 M15 7v14 M21 2v19"/></svg><strong>Resume live data</strong><span>Reconnect and show current samples again.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 6c0-4 18-4 18 0s-18 4-18 0v12c0 4 18 4 18 0V6 M3 12c0 4 18 4 18 0"/></svg><strong>Replay history</strong><span>Store, order, deduplicate, and label older samples.</span></li>
+</ol>
+<figcaption>Restoring the live stream does not recover the data missed during an outage.</figcaption>
+</figure>
+
+<p>Backfill can be useful, but it needs its own requirements. Recorded time must take precedence over arrival time. Reconnects need deduplication. The system needs clear session ownership, storage limits, and limits on battery and memory use.</p>
+<p>The viewer must also show that replayed data is old. A delayed value must not look like a current measurement, and the team must agree on what delayed data means operationally.</p>
+<p>A small diagnostic buffer and lossless overnight replay are different features. Agree on which one the product needs before building either.</p>
+<h2 id="make-the-mqtt-contract-explicit"><a class="anchor" href="#make-the-mqtt-contract-explicit" aria-hidden="true" tabindex="-1">#</a>Make the MQTT contract explicit</h2>
+<p>MQTT gives phones, local services, cloud services, and viewers a shared messaging model. To use it consistently, the clients need to agree on topics, identifiers, payloads, QoS, retained messages, protocol version, and failure behavior.</p>
+<p>For this deployment, I preferred MQTT5 over secure WebSockets (WSS). The same contract had to pass through local and cloud routes that suited HTTPS-style traffic better than separate MQTT/TLS ports. Native mobile applications can use MQTT over TLS TCP in other deployments. Here, one transport requirement reduced accidental variation.</p>
+<p>A client that could not connect with MQTT5 needed to fail visibly. Quietly falling back to MQTT 3.1.1 would have added another set of session behavior, reason codes, properties, and broker settings to support.</p>
+<p>The sanitized topic structure was deliberately plain:</p>
 <pre class="shiki"><code>monitoring/{facility_id}/{room_id}/{device_id}/hrm
 monitoring/{facility_id}/{room_id}/{device_id}/device</code></pre>
-<p>That naming is not clever. That is the point. Device, room, and facility identifiers are shared concepts, so they belong in a shared contract rather than being rediscovered independently by every app.</p>
-<p>That sounds strict, but strictness at the wire-contract boundary keeps the rest of the system honest. A monitor app, a viewer app, and a backend service can evolve independently only if they agree on what crosses the network.</p>
-<h2 id="keep-deployment-profiles-out-of-feature-code"><a class="anchor" href="#keep-deployment-profiles-out-of-feature-code" aria-hidden="true" tabindex="-1">#</a>Keep Deployment Profiles Out Of Feature Code</h2>
-<p>The other big design pressure is deployment variation.</p>
-<p>Some environments want local-only operation. Some want local infrastructure with cloud access. Some smaller deployments may not have a central local machine at all. Those profiles should not leak into every screen and service class.</p>
-<p>The pattern I like is to define seams around responsibilities:</p>
+<p>Facility, room, and device identifiers are shared concepts. Their meaning belongs in the contract, so every application does not need to infer it independently.</p>
+<h2 id="keep-deployment-choices-in-one-place"><a class="anchor" href="#keep-deployment-choices-in-one-place" aria-hidden="true" tabindex="-1">#</a>Keep deployment choices in one place</h2>
+<p>Some installations need local-only operation. Others need local infrastructure with cloud access. Smaller installations may have no central local machine.</p>
+<p>I separate the responsibilities that change between those profiles:</p>
 <ul>
 <li>Authentication and actor identity.</li>
-<li>Runtime authority for sessions and assignments.</li>
+<li>Session and assignment authority.</li>
 <li>Telemetry transport.</li>
-<li>Viewer-facing session feeds.</li>
-<li>Patient-context storage and residency.</li>
-<li>Admin-facing read/write sources.</li>
+<li>Session feeds for viewers.</li>
+<li>Patient-context storage and data residency.</li>
+<li>Admin read and write sources.</li>
 </ul>
-<p>Application code should depend on those seams, not on raw profile checks. Profile selection should happen at composition time. If a screen needs a session feed, it should not care whether that feed is local, cloud-routed, or bridged.</p>
-<p>This is not abstraction for its own sake. It prevents deployment policy from becoming a scattered conditional across the codebase.</p>
-<h2 id="degraded-state-is-a-product-feature"><a class="anchor" href="#degraded-state-is-a-product-feature" aria-hidden="true" tabindex="-1">#</a>Degraded State Is A Product Feature</h2>
-<p>When infrastructure disappears, silence is dangerous.</p>
-<p>The system needs to distinguish:</p>
-<ul>
-<li>Live data.</li>
-<li>Last known data.</li>
-<li>Disconnected device.</li>
-<li>Broker unavailable.</li>
-<li>Viewer offline.</li>
-<li>Data delayed or replayed after reconnect.</li>
-<li>Monitoring intentionally paused.</li>
-</ul>
-<p>Those states may share implementation paths, but they should not collapse into the same user experience. A stale heart-rate value and a live heart-rate value are not equivalent. A paused slot and a failed reconnect are not equivalent. A local server outage and a wearable disconnection are not equivalent.</p>
-<p>The engineering lesson is that observability and UX are connected. If the runtime cannot name the state, the UI cannot explain it. If the UI cannot explain it, users invent their own interpretation.</p>
-<h2 id="compliance-changes-the-engineering-shape"><a class="anchor" href="#compliance-changes-the-engineering-shape" aria-hidden="true" tabindex="-1">#</a>Compliance Changes The Engineering Shape</h2>
-<p>Even when you are not writing final regulatory submissions, health-adjacent systems benefit from compliance-aware engineering habits:</p>
-<ul>
-<li>Record architecture decisions close to the code.</li>
-<li>Keep requirements traceable to implementation and tests.</li>
-<li>Treat external libraries, SDKs, OS APIs, and cloud services as managed dependencies.</li>
-<li>Document known platform limits instead of burying them in comments.</li>
-<li>Make release readiness depend on evidence, not only feature completion.</li>
-</ul>
-<p>This does not mean turning every commit into paperwork. It means leaving enough evidence that future engineers can understand why the system behaves the way it does. It is engineering evidence hygiene, not a substitute for formal regulatory, clinical, security, or privacy review.</p>
-<p>In practice, lightweight architecture decision records and product requirement notes were more useful than long retrospective documents. They forced unresolved policy decisions into the open before implementation made them expensive.</p>
-<h2 id="the-main-lesson"><a class="anchor" href="#the-main-lesson" aria-hidden="true" tabindex="-1">#</a>The Main Lesson</h2>
-<p>The hard part of realtime telemetry is not always the realtime transport. Sometimes the hard part is deciding what the system is allowed to promise when the environment is unreliable.</p>
-<p>Should it promise live monitoring only? Should it promise bounded recovery? Should it promise lossless history? Should it recommend one mobile platform over another for unattended operation? Should patient context ever cross a cloud boundary? Each answer changes the architecture.</p>
-<p>The most valuable engineering work was making those questions explicit, then building the code around the answers instead of hiding ambiguity behind retries and caches.</p>
-<p>That is the difference between a demo that moves data and a platform that can be operated, reviewed, and maintained.</p>
-<p>This article is part of a short series on realtime wearable monitoring. The companion pieces cover <a href="/blog/ios-background-ble-is-not-android-background-ble">why iOS background BLE is not Android background BLE</a> and <a href="/blog/building-a-ble-reconnect-soak-tester">building a BLE reconnect soak tester</a>.</p>
+<p>Select the implementations when composing the application. A screen that needs a session feed should use that interface without checking the deployment profile itself. This keeps deployment policy from spreading through screens and services.</p>
+<h2 id="show-the-state-the-user-is-actually-in"><a class="anchor" href="#show-the-state-the-user-is-actually-in" aria-hidden="true" tabindex="-1">#</a>Show the state the user is actually in</h2>
+<p>The UI needs names for live data, last-known data, a disconnected device, an unavailable broker, an offline viewer, delayed replay, and intentionally paused monitoring.</p>
+<p>Those states can share code, but they mean different things to a user. A stale heart-rate value must not look current. An intentional pause must not look like a failed reconnect. A server outage must not look like a wearable disconnection.</p>
+<p>This ties observability to interface design. The runtime has to identify the state before the UI can explain it.</p>
+<h2 id="keep-the-evidence-close-to-the-implementation"><a class="anchor" href="#keep-the-evidence-close-to-the-implementation" aria-hidden="true" tabindex="-1">#</a>Keep the evidence close to the implementation</h2>
+<p>For systems used around health workflows, I want architecture decisions near the code and requirements linked to implementation and tests. External libraries, SDKs, OS APIs, and cloud services need to be tracked as dependencies. Known platform limits need documentation, and release decisions need test evidence.</p>
+<p>These habits support later review. They do not replace regulatory, clinical, security, or privacy review.</p>
+<p>Short ADRs and product requirement notes helped us more than long documents written afterward. They brought unanswered questions into view while we could still change the design cheaply.</p>
+<p>Before promising live-only operation, bounded recovery, or lossless history, decide which result the users need. Make the same explicit decision about unattended mobile operation and whether patient context may cross a cloud boundary. Each answer changes the code we should build.</p>
+<p>This article is part of a series on realtime wearable monitoring. The companion pieces cover <a href="/blog/ios-background-ble-is-not-android-background-ble">why iOS background BLE is not Android background BLE</a> and <a href="/blog/building-a-ble-reconnect-soak-tester">building a BLE reconnect soak tester</a>.</p>
 
     </div>
   </article>

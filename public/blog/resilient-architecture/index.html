@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Building Resilient Architecture: A Practical Guide | Zafar.dev</title>
-<meta name="description" content="Practical patterns for building systems that survive failures gracefully and recover quickly.">
+<title>What happens when a dependency fails? | Zafar.dev</title>
+<meta name="description" content="Circuit breakers, resource isolation, and recovery paths that keep an outage from stopping everything.">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://zafar.dev/blog/resilient-architecture/">
 <link rel="alternate" hreflang="en" href="https://zafar.dev/blog/resilient-architecture/">
 <link rel="alternate" hreflang="ja" href="https://zafar.dev/ja/blog/resilient-architecture/">
 <link rel="alternate" hreflang="de" href="https://zafar.dev/de/blog/resilient-architecture/">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Building Resilient Architecture: A Practical Guide | Zafar.dev">
-<meta property="og:description" content="Practical patterns for building systems that survive failures gracefully and recover quickly.">
+<meta property="og:title" content="What happens when a dependency fails? | Zafar.dev">
+<meta property="og:description" content="Circuit breakers, resource isolation, and recovery paths that keep an outage from stopping everything.">
 <meta property="og:url" content="https://zafar.dev/blog/resilient-architecture/">
 <meta property="og:image" content="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&amp;w=800">
 <meta property="article:published_time" content="2025-10-15">
@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
-<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<link rel="stylesheet" href="/blog/blog.css?v=18a31658">
 <script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body class="is-post">
@@ -48,59 +48,35 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
   <a class="back" href="/blog/"><span aria-hidden="true">←</span> all notes</a>
   <article class="post">
     <header class="post-head">
-      <span class="label"><time datetime="2025-10-15">Oct 15, 2025</time> · 7 min read</span>
-      <h1>Building Resilient Architecture: A Practical Guide</h1>
-      <p class="sub">Practical patterns for building systems that survive failures gracefully and recover quickly.</p>
+      <span class="label"><time datetime="2025-10-15">Oct 15, 2025</time> · 3 min read</span>
+      <h1>What happens when a dependency fails?</h1>
+      <p class="sub">Circuit breakers, resource isolation, and recovery paths that keep an outage from stopping everything.</p>
     </header>
     <figure class="cover">
       <span class="tape"></span>
       <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&amp;w=800" alt="">
     </figure>
     <div class="prose">
-<p>In an ideal world, services never fail, networks are always reliable, and databases never go down. In the real world, everything fails eventually. The difference between good systems and great ones is how they handle these inevitable failures.</p>
-<h2 id="understanding-failure-modes"><a class="anchor" href="#understanding-failure-modes" aria-hidden="true" tabindex="-1">#</a>Understanding Failure Modes</h2>
-<p>Before building resilience, you need to understand how systems fail. I&#39;ve categorized failures I&#39;ve encountered into three types:</p>
-<h3 id="1-hardware-infrastructure-failures"><a class="anchor" href="#1-hardware-infrastructure-failures" aria-hidden="true" tabindex="-1">#</a>1. Hardware/Infrastructure Failures</h3>
-<ul>
-<li>Server crashes</li>
-<li>Network partitions</li>
-<li>Disk failures</li>
-<li>Data center outages</li>
-</ul>
-<h3 id="2-software-failures"><a class="anchor" href="#2-software-failures" aria-hidden="true" tabindex="-1">#</a>2. Software Failures</h3>
-<ul>
-<li>Memory leaks</li>
-<li>Infinite loops</li>
-<li>Resource exhaustion</li>
-<li>Deployment bugs</li>
-</ul>
-<h3 id="3-dependency-failures"><a class="anchor" href="#3-dependency-failures" aria-hidden="true" tabindex="-1">#</a>3. Dependency Failures</h3>
-<ul>
-<li>Third-party API downtime</li>
-<li>Database connection issues</li>
-<li>Cache cluster failures</li>
-<li>Message broker problems</li>
-</ul>
-<p>Each type requires different resilience strategies.</p>
-<h2 id="the-resilience-patterns-that-actually-work"><a class="anchor" href="#the-resilience-patterns-that-actually-work" aria-hidden="true" tabindex="-1">#</a>The Resilience Patterns That Actually Work</h2>
-<h3 id="circuit-breakers"><a class="anchor" href="#circuit-breakers" aria-hidden="true" tabindex="-1">#</a>Circuit Breakers</h3>
-<p>The circuit breaker pattern is one of the most effective tools in my resilience toolkit. Instead of repeatedly calling a failing service and making things worse, the circuit breaker detects failures and temporarily blocks requests.</p>
-<p><strong>Implementation tips:</strong></p>
-<ul>
-<li>Set thresholds based on observed failure rates</li>
-<li>Include a half-open state for gradual recovery detection</li>
-<li>Always have a fallback—never fail silently</li>
-</ul>
-<p>At AXA, circuit breakers saved us from cascading failures during a third-party API outage. While competitors&#39; systems went down, ours gracefully degraded to cached data.</p>
-<h3 id="bulkheads"><a class="anchor" href="#bulkheads" aria-hidden="true" tabindex="-1">#</a>Bulkheads</h3>
-<p>Named after the partitions in a ship&#39;s hull, bulkheads isolate failures to prevent them from spreading. In software, this means:</p>
-<ul>
-<li>Separate thread pools for critical vs. non-critical operations</li>
-<li>Isolated resources for different service areas</li>
-<li>Rate limiting per tenant or endpoint</li>
-</ul>
-<h3 id="timeouts-and-retries"><a class="anchor" href="#timeouts-and-retries" aria-hidden="true" tabindex="-1">#</a>Timeouts and Retries</h3>
-<p>Never wait indefinitely. Set aggressive timeouts and implement intelligent retry strategies:</p>
+<p>At AXA, a third-party API outage gave us a useful test of our design. Circuit breakers stopped repeated calls to the failing service, and the application fell back to cached data. Other systems went down; ours continued with reduced functionality.</p>
+<p>That experience shaped how I think about reliability. I want to know what a user can still do when a dependency fails, and how we will tell that recovery has worked.</p>
+<h2 id="name-the-failures-you-expect"><a class="anchor" href="#name-the-failures-you-expect" aria-hidden="true" tabindex="-1">#</a>Name the failures you expect</h2>
+<p>The failures I have encountered fall into three broad groups. Infrastructure failures include crashed servers, network partitions, broken disks, and data center outages. Software failures include memory leaks, infinite loops, resource exhaustion, and deployment bugs. Dependencies add their own failures: unavailable APIs, database connection problems, failed caches, and broker outages.</p>
+<p>Each needs a response. A retry policy alone cannot cover all of them.</p>
+<h2 id="stop-repeated-calls-to-a-failing-service"><a class="anchor" href="#stop-repeated-calls-to-a-failing-service" aria-hidden="true" tabindex="-1">#</a>Stop repeated calls to a failing service</h2>
+<p>A circuit breaker temporarily blocks calls after failures reach a threshold. Set that threshold from observed behavior, and include a half-open state to test recovery. Give callers a fallback or a visible error.</p>
+<figure class="concept concept--flow">
+<div class="concept-title">A circuit breaker tests recovery</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17v4 M9 12v9 M15 7v14 M21 2v19"/></svg><strong>Closed</strong><span>Requests pass through.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4v16 M17 4v16"/></svg><strong>Open</strong><span>Calls stop after the failure threshold.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7a9 9 0 0 0-16 3 M4 3v7h7 M4 17a9 9 0 0 0 16-3 M20 21v-7h-7"/></svg><strong>Half-open</strong><span>Limited calls test the dependency.</span></li>
+</ol>
+<figcaption>After a recovery test: close on success, reopen on failure. Provide a fallback while open.</figcaption>
+</figure>
+
+<p>Bulkheads address a related problem: one failure consuming resources that other work needs. Separate thread pools for critical and non-critical operations, isolate resources between service areas, and set rate limits per tenant or endpoint. The name comes from the partitions in a ship&#39;s hull.</p>
+<h2 id="put-limits-on-waiting-and-retrying"><a class="anchor" href="#put-limits-on-waiting-and-retrying" aria-hidden="true" tabindex="-1">#</a>Put limits on waiting and retrying</h2>
+<p>Set explicit timeouts. Make retry counts and delays part of the design. This example shows the intended policy; the actual options depend on the API client:</p>
 <pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D">// Bad: No timeout, infinite retries</span></span>
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">const</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> result</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> =</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> await</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> callExternalAPI</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">();</span></span>
 <span class="line"></span>
@@ -110,96 +86,32 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  retries: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">3</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">,</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  backoff: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">'exponential'</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">});</span></span></code></pre>
-<p><strong>Retry guidelines:</strong></p>
-<ul>
-<li>Don&#39;t retry 4xx errors (client errors)</li>
-<li>Use exponential backoff to avoid thundering herds</li>
-<li>Add jitter to prevent synchronized retries</li>
-<li>Consider idempotency before implementing retries</li>
-</ul>
-<h3 id="graceful-degradation"><a class="anchor" href="#graceful-degradation" aria-hidden="true" tabindex="-1">#</a>Graceful Degradation</h3>
-<p>When parts of your system fail, the rest should continue functioning. I&#39;ve implemented this pattern multiple times:</p>
-<ul>
-<li><strong>Product listings without recommendations</strong>: Still show products, just without personalized suggestions</li>
-<li><strong>Checkout without fraud scoring</strong>: Process orders with manual review queue</li>
-<li><strong>Analytics without real-time data</strong>: Show cached data with a &quot;last updated&quot; timestamp</li>
-</ul>
-<h2 id="testing-resilience"><a class="anchor" href="#testing-resilience" aria-hidden="true" tabindex="-1">#</a>Testing Resilience</h2>
-<p>You can&#39;t claim resilience until you&#39;ve tested it. I use several approaches:</p>
-<h3 id="chaos-engineering"><a class="anchor" href="#chaos-engineering" aria-hidden="true" tabindex="-1">#</a>Chaos Engineering</h3>
-<p>Introduce failures intentionally. Tools like Chaos Monkey randomly terminate instances, forcing your system to handle unexpected failures.</p>
-<p>Start small:</p>
-<ol>
-<li>Kill a single instance during low traffic</li>
-<li>Simulate network latency</li>
-<li>Introduce resource exhaustion</li>
-<li>Progress to entire availability zone failures</li>
-</ol>
-<h3 id="load-testing"><a class="anchor" href="#load-testing" aria-hidden="true" tabindex="-1">#</a>Load Testing</h3>
-<p>Know your limits before you hit them. I load test to:</p>
-<ul>
-<li>Identify breaking points</li>
-<li>Validate auto-scaling policies</li>
-<li>Discover resource leaks</li>
-<li>Test circuit breaker thresholds</li>
-</ul>
-<h3 id="failure-injection"><a class="anchor" href="#failure-injection" aria-hidden="true" tabindex="-1">#</a>Failure Injection</h3>
-<p>Use tools like Toxiproxy or custom middleware to inject:</p>
-<ul>
-<li>Network delays</li>
-<li>Packet loss</li>
-<li>Connection timeouts</li>
-<li>Error responses</li>
-</ul>
-<h2 id="monitoring-for-resilience"><a class="anchor" href="#monitoring-for-resilience" aria-hidden="true" tabindex="-1">#</a>Monitoring for Resilience</h2>
-<p>You need visibility into how your system behaves under stress:</p>
-<h3 id="key-metrics"><a class="anchor" href="#key-metrics" aria-hidden="true" tabindex="-1">#</a>Key Metrics</h3>
-<ol>
-<li><strong>Availability</strong>: Uptime percentage, error rates</li>
-<li><strong>Latency</strong>: P50, P95, P99 response times</li>
-<li><strong>Saturation</strong>: CPU, memory, connection pool usage</li>
-<li><strong>Business impact</strong>: Failed transactions, revenue impact</li>
-</ol>
-<h3 id="alerting"><a class="anchor" href="#alerting" aria-hidden="true" tabindex="-1">#</a>Alerting</h3>
-<p>Alert on symptoms, not causes:</p>
-<ul>
-<li>✅ &quot;Payment success rate below 99%&quot;</li>
-<li>❌ &quot;CPU usage above 80%&quot;</li>
-</ul>
-<h2 id="building-a-resilience-culture"><a class="anchor" href="#building-a-resilience-culture" aria-hidden="true" tabindex="-1">#</a>Building a Resilience Culture</h2>
-<p>Technical patterns aren&#39;t enough. Resilience requires organizational commitment:</p>
-<h3 id="blameless-post-mortems"><a class="anchor" href="#blameless-post-mortems" aria-hidden="true" tabindex="-1">#</a>Blameless Post-Mortems</h3>
-<p>Every incident is a learning opportunity. Conduct post-mortems that focus on:</p>
-<ul>
-<li>What happened (timeline)</li>
-<li>Why it happened (root causes)</li>
-<li>What we learned</li>
-<li>What we&#39;re changing</li>
-</ul>
-<p>Never focus on who to blame.</p>
-<h3 id="game-days"><a class="anchor" href="#game-days" aria-hidden="true" tabindex="-1">#</a>Game Days</h3>
-<p>Regularly scheduled practice sessions where teams simulate failures. These exercises:</p>
-<ul>
-<li>Build muscle memory for incident response</li>
-<li>Validate runbooks and procedures</li>
-<li>Identify gaps in monitoring</li>
-<li>Build team confidence</li>
-</ul>
-<h2 id="conclusion"><a class="anchor" href="#conclusion" aria-hidden="true" tabindex="-1">#</a>Conclusion</h2>
-<p>Resilient architecture isn&#39;t about preventing failures—it&#39;s about surviving them. By implementing patterns like circuit breakers, bulkheads, and graceful degradation, you can build systems that handle failures gracefully and recover quickly.</p>
-<p>Remember: The goal is not zero downtime (impossible), but minimizing the impact of downtime when it happens.</p>
-<p>What resilience patterns have worked best for you? Share your experiences in the comments.</p>
+<p>Use exponential backoff and jitter so clients do not all retry together. Check whether an operation is idempotent before repeating it. Do not retry a client error without considering its cause; the response and API contract should determine whether a retry makes sense.</p>
+<h2 id="choose-the-fallback-before-the-outage"><a class="anchor" href="#choose-the-fallback-before-the-outage" aria-hidden="true" tabindex="-1">#</a>Choose the fallback before the outage</h2>
+<p>I have used several forms of reduced service. A product listing can work without recommendations. Analytics can show cached results with a last-updated time. In a checkout workflow, orders can enter a manual review queue when fraud scoring is unavailable, if that is the agreed policy.</p>
+<p>These choices affect users and operations. The team needs to agree on them before an incident forces a decision.</p>
+<h2 id="test-the-failure-paths"><a class="anchor" href="#test-the-failure-paths" aria-hidden="true" tabindex="-1">#</a>Test the failure paths</h2>
+<p>I start failure testing with one instance during low traffic. Then I add network latency and resource exhaustion. Wider tests, such as an availability zone failure, come after the smaller cases are understood.</p>
+<p>Chaos Monkey is one way to terminate instances deliberately. Toxiproxy or custom middleware can introduce delays, packet loss, timeouts, and error responses. Load tests help find breaking points, check scaling policies, expose resource leaks, and test circuit-breaker thresholds.</p>
+<p>The useful result is evidence of how the system behaves under stress.</p>
+<h2 id="measure-the-effect-on-users"><a class="anchor" href="#measure-the-effect-on-users" aria-hidden="true" tabindex="-1">#</a>Measure the effect on users</h2>
+<p>Track availability and error rates, P50/P95/P99 latency, and resource saturation, including connection pools. Track failed transactions and revenue effects as well.</p>
+<p>An alert that payment success has fallen below 99% tells the team about a user problem. CPU above 80% provides diagnostic context, but on its own it does not say whether payments are failing.</p>
+<h2 id="practice-as-a-team"><a class="anchor" href="#practice-as-a-team" aria-hidden="true" tabindex="-1">#</a>Practice as a team</h2>
+<p>After an incident, record the timeline, causes, lessons, and changes. Keep the discussion focused on the system instead of the person who happened to trigger the failure.</p>
+<p>Scheduled game days give people practice with the response process. They also expose missing monitoring and incomplete runbooks before the next outage.</p>
+<p>The next useful reliability question is concrete: if this dependency stops responding, what happens to the request already in progress? Follow that request through the timeout, fallback, alert, and recovery path.</p>
 
     </div>
   </article>
   <nav class="pager" aria-label="More notes">
     <a class="pg pg-older" href="/blog/leading-without-authority/" rel="prev">
       <span class="label">← older</span>
-      <span class="pg-title">Leading Without Authority: Engineering Leadership Lessons</span>
+      <span class="pg-title">Leading before you have the title</span>
     </a>
     <a class="pg pg-newer" href="/blog/technical-decision-making/" rel="next">
       <span class="label">newer →</span>
-      <span class="pg-title">The Art of Technical Decision Making</span>
+      <span class="pg-title">How I make technical decisions I can live with</span>
     </a>
   </nav>
 </main>

@@ -1,9 +1,9 @@
 ---
-title: "Building Resilient Architecture: A Practical Guide"
-description: "Practical patterns for building systems that survive failures gracefully and recover quickly."
+title: "What happens when a dependency fails?"
+description: "Circuit breakers, resource isolation, and recovery paths that keep an outage from stopping everything."
 date: 2025-10-15
 image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800"
-minRead: 7
+minRead: 3
 tags:
   - Resilience
   - Reliability
@@ -11,56 +11,35 @@ tags:
   - DevOps
 ---
 
-In an ideal world, services never fail, networks are always reliable, and databases never go down. In the real world, everything fails eventually. The difference between good systems and great ones is how they handle these inevitable failures.
+At AXA, a third-party API outage gave us a useful test of our design. Circuit breakers stopped repeated calls to the failing service, and the application fell back to cached data. Other systems went down; ours continued with reduced functionality.
 
-## Understanding Failure Modes
+That experience shaped how I think about reliability. I want to know what a user can still do when a dependency fails, and how we will tell that recovery has worked.
 
-Before building resilience, you need to understand how systems fail. I've categorized failures I've encountered into three types:
+## Name the failures you expect
 
-### 1. Hardware/Infrastructure Failures
-- Server crashes
-- Network partitions
-- Disk failures
-- Data center outages
+The failures I have encountered fall into three broad groups. Infrastructure failures include crashed servers, network partitions, broken disks, and data center outages. Software failures include memory leaks, infinite loops, resource exhaustion, and deployment bugs. Dependencies add their own failures: unavailable APIs, database connection problems, failed caches, and broker outages.
 
-### 2. Software Failures
-- Memory leaks
-- Infinite loops
-- Resource exhaustion
-- Deployment bugs
+Each needs a response. A retry policy alone cannot cover all of them.
 
-### 3. Dependency Failures
-- Third-party API downtime
-- Database connection issues
-- Cache cluster failures
-- Message broker problems
+## Stop repeated calls to a failing service
 
-Each type requires different resilience strategies.
+A circuit breaker temporarily blocks calls after failures reach a threshold. Set that threshold from observed behavior, and include a half-open state to test recovery. Give callers a fallback or a visible error.
 
-## The Resilience Patterns That Actually Work
+<figure class="concept concept--flow">
+<div class="concept-title">A circuit breaker tests recovery</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17v4 M9 12v9 M15 7v14 M21 2v19"/></svg><strong>Closed</strong><span>Requests pass through.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4v16 M17 4v16"/></svg><strong>Open</strong><span>Calls stop after the failure threshold.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7a9 9 0 0 0-16 3 M4 3v7h7 M4 17a9 9 0 0 0 16-3 M20 21v-7h-7"/></svg><strong>Half-open</strong><span>Limited calls test the dependency.</span></li>
+</ol>
+<figcaption>After a recovery test: close on success, reopen on failure. Provide a fallback while open.</figcaption>
+</figure>
 
-### Circuit Breakers
+Bulkheads address a related problem: one failure consuming resources that other work needs. Separate thread pools for critical and non-critical operations, isolate resources between service areas, and set rate limits per tenant or endpoint. The name comes from the partitions in a ship's hull.
 
-The circuit breaker pattern is one of the most effective tools in my resilience toolkit. Instead of repeatedly calling a failing service and making things worse, the circuit breaker detects failures and temporarily blocks requests.
+## Put limits on waiting and retrying
 
-**Implementation tips:**
-- Set thresholds based on observed failure rates
-- Include a half-open state for gradual recovery detection
-- Always have a fallback—never fail silently
-
-At AXA, circuit breakers saved us from cascading failures during a third-party API outage. While competitors' systems went down, ours gracefully degraded to cached data.
-
-### Bulkheads
-
-Named after the partitions in a ship's hull, bulkheads isolate failures to prevent them from spreading. In software, this means:
-
-- Separate thread pools for critical vs. non-critical operations
-- Isolated resources for different service areas
-- Rate limiting per tenant or endpoint
-
-### Timeouts and Retries
-
-Never wait indefinitely. Set aggressive timeouts and implement intelligent retry strategies:
+Set explicit timeouts. Make retry counts and delays part of the design. This example shows the intended policy; the actual options depend on the API client:
 
 ```javascript
 // Bad: No timeout, infinite retries
@@ -74,93 +53,32 @@ const result = await callExternalAPI({
 });
 ```
 
-**Retry guidelines:**
-- Don't retry 4xx errors (client errors)
-- Use exponential backoff to avoid thundering herds
-- Add jitter to prevent synchronized retries
-- Consider idempotency before implementing retries
+Use exponential backoff and jitter so clients do not all retry together. Check whether an operation is idempotent before repeating it. Do not retry a client error without considering its cause; the response and API contract should determine whether a retry makes sense.
 
-### Graceful Degradation
+## Choose the fallback before the outage
 
-When parts of your system fail, the rest should continue functioning. I've implemented this pattern multiple times:
+I have used several forms of reduced service. A product listing can work without recommendations. Analytics can show cached results with a last-updated time. In a checkout workflow, orders can enter a manual review queue when fraud scoring is unavailable, if that is the agreed policy.
 
-- **Product listings without recommendations**: Still show products, just without personalized suggestions
-- **Checkout without fraud scoring**: Process orders with manual review queue
-- **Analytics without real-time data**: Show cached data with a "last updated" timestamp
+These choices affect users and operations. The team needs to agree on them before an incident forces a decision.
 
-## Testing Resilience
+## Test the failure paths
 
-You can't claim resilience until you've tested it. I use several approaches:
+I start failure testing with one instance during low traffic. Then I add network latency and resource exhaustion. Wider tests, such as an availability zone failure, come after the smaller cases are understood.
 
-### Chaos Engineering
+Chaos Monkey is one way to terminate instances deliberately. Toxiproxy or custom middleware can introduce delays, packet loss, timeouts, and error responses. Load tests help find breaking points, check scaling policies, expose resource leaks, and test circuit-breaker thresholds.
 
-Introduce failures intentionally. Tools like Chaos Monkey randomly terminate instances, forcing your system to handle unexpected failures.
+The useful result is evidence of how the system behaves under stress.
 
-Start small:
-1. Kill a single instance during low traffic
-2. Simulate network latency
-3. Introduce resource exhaustion
-4. Progress to entire availability zone failures
+## Measure the effect on users
 
-### Load Testing
+Track availability and error rates, P50/P95/P99 latency, and resource saturation, including connection pools. Track failed transactions and revenue effects as well.
 
-Know your limits before you hit them. I load test to:
-- Identify breaking points
-- Validate auto-scaling policies
-- Discover resource leaks
-- Test circuit breaker thresholds
+An alert that payment success has fallen below 99% tells the team about a user problem. CPU above 80% provides diagnostic context, but on its own it does not say whether payments are failing.
 
-### Failure Injection
+## Practice as a team
 
-Use tools like Toxiproxy or custom middleware to inject:
-- Network delays
-- Packet loss
-- Connection timeouts
-- Error responses
+After an incident, record the timeline, causes, lessons, and changes. Keep the discussion focused on the system instead of the person who happened to trigger the failure.
 
-## Monitoring for Resilience
+Scheduled game days give people practice with the response process. They also expose missing monitoring and incomplete runbooks before the next outage.
 
-You need visibility into how your system behaves under stress:
-
-### Key Metrics
-
-1. **Availability**: Uptime percentage, error rates
-2. **Latency**: P50, P95, P99 response times
-3. **Saturation**: CPU, memory, connection pool usage
-4. **Business impact**: Failed transactions, revenue impact
-
-### Alerting
-
-Alert on symptoms, not causes:
-- ✅ "Payment success rate below 99%"
-- ❌ "CPU usage above 80%"
-
-## Building a Resilience Culture
-
-Technical patterns aren't enough. Resilience requires organizational commitment:
-
-### Blameless Post-Mortems
-
-Every incident is a learning opportunity. Conduct post-mortems that focus on:
-- What happened (timeline)
-- Why it happened (root causes)
-- What we learned
-- What we're changing
-
-Never focus on who to blame.
-
-### Game Days
-
-Regularly scheduled practice sessions where teams simulate failures. These exercises:
-- Build muscle memory for incident response
-- Validate runbooks and procedures
-- Identify gaps in monitoring
-- Build team confidence
-
-## Conclusion
-
-Resilient architecture isn't about preventing failures—it's about surviving them. By implementing patterns like circuit breakers, bulkheads, and graceful degradation, you can build systems that handle failures gracefully and recover quickly.
-
-Remember: The goal is not zero downtime (impossible), but minimizing the impact of downtime when it happens.
-
-What resilience patterns have worked best for you? Share your experiences in the comments.
+The next useful reliability question is concrete: if this dependency stops responding, what happens to the request already in progress? Follow that request through the timeout, fallback, alert, and recovery path.

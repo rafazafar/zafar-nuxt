@@ -46,3 +46,20 @@ A translation is the same file name under `posts/ja/` or `posts/de/`. Posts that
 - Don't write a `# Heading` at the top of a post. The title from the frontmatter is already the page's heading, so start sections at `##`.
 - Code fences get syntax highlighting. The supported languages are listed in `CODE_LANGS` in `build.mjs`.
 - The design tokens in `blog.css` are copied from `public/index.html`. When one changes, update the other.
+
+## Article diagrams
+
+Posts can contain a static HTML `<figure class="concept concept--flow">` with a
+`concept-title`, an ordered list with class `concept-nodes`, and a `figcaption`.
+Each list item contains a decorative SVG, a short label in `strong`, and an
+explanation in `span`. Set `aria-hidden="true"` and `focusable="false"` on each
+decorative SVG. Keep all explanations in visible text.
+
+Use `flow` for a sequence, `timeline` for recorded events, `horizon` for time
+comparisons, `layers` for a component structure, `board` for work states, and
+`split` for separate responsibilities or alternatives. See the existing posts
+for examples. Write labels and captions in the article's language.
+
+The diagrams use the blog's theme colors and become a single column on small
+screens. They need no client script or external image service. After editing,
+run `bun run blog` and check the result at desktop and phone widths in both themes.

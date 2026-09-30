@@ -1,9 +1,9 @@
 ---
-title: "Resiliente Architektur aufbauen: Ein praktischer Leitfaden"
-description: "Praktische Muster für den Aufbau von Systemen, die Ausfälle elegant überstehen und sich schnell erholen."
+title: "Was passiert, wenn eine Abhängigkeit ausfällt?"
+description: "Circuit Breaker, getrennte Ressourcen und geplante Fallbacks begrenzen die Folgen eines Ausfalls."
 date: 2025-10-15
 image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800"
-minRead: 7
+minRead: 2
 tags:
   - Resilienz
   - Zuverlässigkeit
@@ -11,63 +11,48 @@ tags:
   - DevOps
 ---
 
-In einer idealen Welt versagen Services nie, Netzwerke sind immer zuverlässig und Datenbanken gehen niemals offline. In der realen Welt versagt irgendwann alles. Der Unterschied zwischen guten und großartigen Systemen liegt darin, wie sie mit diesen unvermeidlichen Ausfällen umgehen.
+Wenn ein Dienst ausfällt, interessiert mich zuerst, was ein Nutzer noch tun kann. Wartet die Anwendung unbegrenzt? Wiederholt sie den gleichen Fehler? Oder kann sie mit eingeschränkter Funktion weiterarbeiten?
 
-## Resilienz-Muster, die tatsächlich funktionieren
+Diese Fragen machen Zuverlässigkeit für mich konkret. Die folgenden Muster helfen, die Antworten im Voraus festzulegen.
 
-### Circuit Breaker
+## Aufrufe bei wiederholten Fehlern stoppen
 
-Das Circuit-Breaker-Muster ist eines der effektivsten Tools in meinem Resilienz-Werkzeugkasten. Anstatt wiederholt einen fehlenden Service aufzurufen und die Dinge zu verschlimmern, erkennt der Circuit Breaker Fehler und blockiert temporär Anfragen.
+Ein Circuit Breaker unterbricht Aufrufe an einen fehlerhaften Dienst vorübergehend. Lege die Schwelle anhand beobachteter Fehlerraten fest. Ein Half-Open-Zustand erlaubt später einzelne Versuche, um die Erholung zu prüfen.
 
-**Implementierungstipps:**
-- Setze Schwellenwerte basierend auf beobachteten Fehlerraten
-- Füge einen Half-Open-Zustand für die schrittweise Erholungserkennung hinzu
-- Hab immer einen Fallback – versage niemals stillschweigend
+Der Aufrufer braucht währenddessen einen Fallback oder eine sichtbare Fehlermeldung.
 
-### Bulkheads
+<figure class="concept concept--flow">
+<div class="concept-title">Ein Circuit Breaker prüft die Erholung</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17v4 M9 12v9 M15 7v14 M21 2v19"/></svg><strong>Closed</strong><span>Anfragen werden zugelassen.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4v16 M17 4v16"/></svg><strong>Open</strong><span>Nach der Fehlerschwelle stoppen.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7a9 9 0 0 0-16 3 M4 3v7h7 M4 17a9 9 0 0 0 16-3 M20 21v-7h-7"/></svg><strong>Half-open</strong><span>Mit wenigen Aufrufen prüfen.</span></li>
+</ol>
+<figcaption>Nach dem Test: bei Erfolg schließen, bei Fehlern wieder öffnen. Währenddessen einen Fallback anbieten.</figcaption>
+</figure>
 
-Benannt nach den Schotten in einem Schiffsrumpf, isolieren Bulkheads Fehler, um deren Ausbreitung zu verhindern. In Software bedeutet das:
+## Ressourcen voneinander trennen
 
-- Separate Thread-Pools für kritische vs. nicht-kritische Operationen
-- Isolierte Ressourcen für verschiedene Service-Bereiche
-- Rate Limiting pro Tenant oder Endpunkt
+Bulkheads heißen nach den Schotten eines Schiffes. In einer Anwendung sollen sie verhindern, dass ein Fehler alle verfügbaren Ressourcen belegt.
 
-### Timeouts und Retries
+Dazu eignen sich getrennte Thread-Pools für kritische und weniger kritische Aufgaben, isolierte Ressourcen für verschiedene Dienste und Limits pro Mandant oder Endpunkt.
 
-Warte niemals unendlich. Setze aggressive Timeouts und implementiere intelligente Retry-Strategien:
+## Warten und Wiederholen begrenzen
 
-**Retry-Richtlinien:**
-- Wiederhole keine 4xx-Fehler (Client-Fehler)
-- Verwende exponentielles Backoff, um Stampeding Herds zu vermeiden
-- Füge Jitter hinzu, um synchronisierte Retries zu verhindern
-- Erwäge Idempotenz, bevor du Retries implementierst
+Jeder externe Aufruf braucht ein Zeitlimit. Für Wiederholungen helfen exponentielles Backoff und Jitter, damit Clients nicht gleichzeitig erneut anfragen.
 
-### Graceful Degradation
+Prüfe vor einem Retry, ob die Operation idempotent ist. Wiederhole Clientfehler nicht blind; der konkrete Fehler und der API-Vertrag müssen einen weiteren Versuch rechtfertigen.
 
-Wenn Teile deines Systems ausfallen, sollte der Rest weiter funktionieren:
+## Den Fallback bewusst wählen
 
-- **Produktlistings ohne Empfehlungen**: Zeige weiterhin Produkte, nur ohne personalisierte Vorschläge
-- **Checkout ohne Fraud-Scoring**: Verarbeite Bestellungen mit manueller Review-Queue
-- **Analytics ohne Echtzeitdaten**: Zeige gecachte Daten mit einem „Zuletzt aktualisiert“ Zeitstempel
+Ein Produktkatalog kann auch ohne Empfehlungen weiterarbeiten. Analytics können ältere Daten mit dem Zeitpunkt der letzten Aktualisierung zeigen. Fällt das Fraud-Scoring aus, können Bestellungen in eine manuelle Prüfung gehen, sofern dieser Ablauf vereinbart ist.
 
-## Resilienz testen
+Solche Entscheidungen betreffen den Betrieb und die Nutzer. Sie gehören vor den Ausfall.
 
-Du kannst keine Resilienz beanspruchen, bis du sie getestet hast:
+## Die Fehlerpfade testen
 
-### Chaos Engineering
+Chaos Engineering führt Fehler absichtlich herbei. Chaos Monkey kann beispielsweise Instanzen beenden. Damit lässt sich beobachten, ob die Anwendung den Ausfall wie vorgesehen behandelt.
 
-Führe absichtlich Fehler ein. Tools wie Chaos Monkey beenden zufällig Instanzen und zwingen dein System, mit unerwarteten Ausfällen umzugehen.
+Lasttests zeigen Belastungsgrenzen, prüfen Auto-Scaling-Regeln, decken Ressourcenlecks auf und helfen, die Schwellen des Circuit Breakers zu prüfen.
 
-### Load Testing
-
-Kenne deine Grenzen, bevor du sie erreichst. Ich teste mit Last, um:
-- Breaking Points zu identifizieren
-- Auto-Scaling-Richtlinien zu validieren
-- Ressourcenlecks zu entdecken
-- Circuit-Breaker-Schwellen zu testen
-
-## Fazit
-
-Resiliente Architektur geht nicht darum, Ausfälle zu verhindern – es geht darum, sie zu überstehen. Durch die Implementierung von Mustern wie Circuit Breakers, Bulkheads und Graceful Degradation kannst du Systeme aufbauen, die Ausfälle elegant handhaben und sich schnell erholen.
-
-Denk daran: Das Ziel ist nicht Null-Downtime (unmöglich), sondern die Minimierung der Auswirkungen von Downtime, wenn sie auftritt.
+Ein Muster im Architekturdiagramm ist noch kein Nachweis. Erst der Test zeigt, welche Funktion bei einem Ausfall verfügbar bleibt und wie die Anwendung zurückkehrt.

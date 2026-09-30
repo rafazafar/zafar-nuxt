@@ -1,31 +1,32 @@
 ---
-title: Schreiben Sie besseres Typescript und weniger Unit-Tests
-description: Warum das Entwerfen digitaler Erlebnisse, die Benutzer dazu anregen, langsamer zu werden und sich intensiv zu engagieren, zu bedeutungsvolleren Interaktionen und besseren Ergebnissen führen kann.
+title: "Bessere TypeScript-Typen, sinnvollere Tests"
+description: "Doppelte Typprüfungen vermeiden und Validierung sowie Verhaltenstests gezielt einsetzen."
 date: 2025-01-28
 image: https://images.pexels.com/photos/4050314/pexels-photo-4050314.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1
-minRead: 7
+minRead: 2
 ---
 
-Ich habe festgestellt, dass die Verwendung starker und gut definierter TypeScript-Typisierungen den Bedarf an umfangreichen Unit-Tests erheblich reduzieren kann. Während das Testen ein wesentlicher Bestandteil der Softwareentwicklung ist, kann es, nein, es wird oft zeitaufwändig sein und den Entwicklungsprozess enorm verlangsamen. Mit gut typisiertem Code verhindern wir viele Fehler, bevor sie überhaupt auftreten.
+Ich lasse einen falschen Argumenttyp lieber vom Compiler finden, bevor ich dafür einen Test schreiben muss. Klare TypeScript-Typen reduzieren wiederholte Prüfungen und erleichtern Änderungen am Code. Für Verhalten bleiben Tests nötig.
 
-Dadurch können wir viele Fehler zur Kompilierungszeit abfangen, bevor sie zum Testen/in die Produktion gelangen. Dies spart nicht nur Zeit und Mühe, sondern macht unseren Code auch zuverlässiger und einfacher zu warten.
-
-Das heißt nicht, dass ich andeuten möchte, dass Testen nicht wichtig ist. Im Gegenteil, Unit-Testing ist immer noch ein entscheidender Teil der Softwareentwicklung. Durch die Verwendung von TypeScript können wir jedoch die Menge der durchzuführenden Tests reduzieren.
-
-Denken Sie daran, das Verhältnis zwischen dem Produktionscode und dem Testcode kann zwischen 1:1 und 1:3 liegen.
+Das lohnt sich besonders, wenn Testcode so umfangreich wie der Produktivcode oder sogar dreimal so groß wird. Jeder Test verursacht Pflegeaufwand. Er sollte deshalb etwas prüfen, das der Compiler nicht schon abdeckt.
 
 > *Tests sind gut; unmögliche Zustände sind besser – Richard Feldman*
 
-Darüber hinaus ermöglicht uns TypeScript die Verwendung des Konzepts der „unmöglichen Zustände“. Unmögliche Zustände sind Zustände, die unmöglich zu erreichen sind, da sie durch unsere Typisierungen verhindert werden. Durch die Verwendung können wir viele unnötige Tests eliminieren, da wir wissen, dass diese Zustände niemals eintreten können und daher nicht getestet werden müssen.
+Die Idee dahinter: Typen können ungültige Kombinationen im geprüften Code ausschließen. So gibt es weniger Zustände zu behandeln. Daten von außerhalb der Anwendung brauchen trotzdem eine Validierung.
 
----
+<figure class="concept concept--split">
+<div class="concept-title">Drei Prüfungen, drei Aufgaben</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 6l-6 6 6 6 M16 6l6 6-6 6 M14 3l-4 18"/></svg><strong>Typprüfung</strong><span>Werden Typen konsistent verwendet?</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2l9 4v6c0 5-9 10-9 10S3 17 3 12V6z M8 12l3 3 5-6"/></svg><strong>Validierung</strong><span>Passen eingehende Daten zum Vertrag?</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12l5 5L20 6"/></svg><strong>Verhaltenstests</strong><span>Tut das Programm das Richtige?</span></li>
+</ol>
+<figcaption>Jede Prüfung beantwortet eine andere Frage.</figcaption>
+</figure>
 
-Hier sind häufige Beispiele dafür, wie die Verwendung besserer TypeScript-Typisierungen in React effizienter sein kann als umfangreiche Unit-Tests:
+## Props und State beschreiben
 
-## 1. Typüberprüfung von Props und State
-In React empfangen Komponenten häufig Props und verwalten ihren eigenen Zustand. Ohne TypeScript kann es schwierig sein sicherzustellen, dass die richtigen Datentypen für Props und State verwendet werden. Dies kann zu Laufzeitfehlern und einem Bedarf an umfangreichen Unit-Tests führen.
-
-Mit TypeScript können wir jedoch Schnittstellen für unsere Props und unseren State definieren, die Fehler zur Kompilierungszeit abfangen und die Notwendigkeit einiger Unit-Tests eliminieren können. Zum Beispiel:
+Interfaces legen fest, welche Formen Props und State einer React-Komponente haben:
 
 ```ts
 interface Props {
@@ -43,9 +44,9 @@ class MyComponent extends React.Component<Props, State> {
 }
 ```
 
-Durch die Definition dieser Schnittstellen können wir sicherstellen, dass die richtigen Datentypen für unsere Props und unseren State verwendet werden, was Fehler zur Kompilierungszeit abfangen und unseren Code zuverlässiger machen kann.
+Hier erwartet der Compiler einen String für `name`, eine Zahl für `age`, einen Boolean für `isMale` und eine Zahl für `count`. Tests müssen diese Typdeklarationen nicht wiederholen.
 
-Anstatt von :
+Die folgenden Tests prüfen allerdings andere Eigenschaften:
 
 ```ts
 it('renders with correct props', () => {
@@ -59,11 +60,11 @@ it('renders with correct state', () => {
 });
 ```
 
-## 2. Definieren von Event-Handlern
+Ein Typ beweist weder, dass die Komponente rendert, noch dass `count` anfangs null ist. Sinnvolle Verhaltenstests bleiben bestehen. Einsparen lassen sich Prüfungen, die lediglich Typregeln doppeln.
 
-Event-Handler werden häufig verwendet, um Benutzerinteraktionen wie Klicks oder Formularübermittlungen zu behandeln. Ohne TypeScript kann es schwierig sein sicherzustellen, dass Event-Handler korrekt definiert sind und die richtigen Arten von Ereignissen behandeln.
+## Den Vertrag eines Event-Handlers festlegen
 
-Mit TypeScript können wir jedoch Typen für unsere Event-Handler definieren, die Fehler zur Kompilierungszeit abfangen und die Notwendigkeit einiger Unit-Tests eliminieren können. Zum Beispiel:
+Der Callback kann den erwarteten Ereignistyp ausdrücklich nennen:
 
 ```ts
 interface MyComponentProps {
@@ -77,9 +78,7 @@ function MyComponent(props: MyComponentProps) {
 }
 ```
 
-Durch die Definition der onClick-Prop mit einem Typ, der den React.MouseEvent-Typ enthält, können wir sicherstellen, dass der Event-Handler korrekt definiert ist und die richtigen Arten von Ereignissen behandelt, was unseren Code zuverlässiger machen und den Bedarf an Unit-Tests reduzieren kann.
-
-Ohne TypeScript-Typisierungen müssten wir Unit-Tests schreiben, um sicherzustellen, dass Event-Handler korrekt definiert sind und die richtigen Arten von Ereignissen behandeln.
+Die Signatur beschreibt ein Mausereignis auf einem Button. Sie beweist nicht, dass ein Klick den Callback wirklich auslöst. Dafür kann dieser Test weiterhin sinnvoll sein:
 
 ```ts
 it('calls onClick handler when button is clicked', () => {
@@ -90,13 +89,14 @@ it('calls onClick handler when button is clicked', () => {
 });
 ```
 
-## 3. Typüberprüfung externer APIs
+Er prüft die Verbindung zwischen Button und Handler zur Laufzeit.
 
-Für jede App/Web-App ist es üblich, externe APIs wie REST-APIs oder GraphQL-APIs zu verwenden, um Daten für unsere Komponenten abzurufen. Ohne TypeScript kann es schwierig sein sicherzustellen, dass die richtigen Datentypen in der gesamten App verwendet werden. Dies macht das Refactoring von Code zu einem absoluten Albtraum.
+## API-Antworten gesondert prüfen
 
-Durch die Verwendung von Typen sind Backend-/API-Entwickler auch weniger eingeschränkt, da sie wissen, dass das Frontend das neue DTO schnell abrufen und den Frontend-Code schnell aktualisieren kann. Dies gewährleistet weniger Legacy-Ballast und einen schnelleren Entwicklungszyklus.
+Gemeinsame DTO-Typen helfen Frontend und Backend bei Änderungen. Ändert sich ein Feld, kann der Compiler betroffene Stellen im typisierten Code zeigen. Das erleichtert Refactoring und den Abbau alter Datenstrukturen.
 
-Zum Beispiel:
+Das folgende Beispiel beschreibt die gewünschte Antwort, zeigt aber auch die Grenze einer Typbehauptung:
+
 ```ts
 interface UserDto {
   id: number;
@@ -111,9 +111,9 @@ async function fetchUser(id: number): Promise<UserDto> {
 }
 ```
 
-Durch die Definition der User-Schnittstelle für die API-Antwort können wir sicherstellen, dass die richtigen Datentypen für die API-Antwort verwendet werden, was Fehler zur Kompilierungszeit abfangen und unseren Code zuverlässiger machen kann.
+Die Rückgabe nennt `UserDto`, die Assertion dagegen `User`. Beide Namen sollten zum vorgesehenen Vertrag passen. Vor allem prüft weder die Annotation noch `as User` die empfangenen JSON-Daten. Assertions werden beim Kompilieren entfernt. Das erklärt das [TypeScript-Handbuch](https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-assertions).
 
-Ohne TS müssten wir Unit-Tests schreiben, um sicherzustellen, dass die richtigen Datentypen für die API-Antworten verwendet werden. Zum Beispiel:
+Wenn die Antwort nicht verlässlich zum Typ passt, ist eine Prüfung an dieser Grenze nötig. Auch ein Test mit einer bekannten Antwort bleibt nützlich:
 
 ```ts
 it('fetches user data and returns the correct object', async () => {
@@ -124,11 +124,11 @@ it('fetches user data and returns the correct object', async () => {
 });
 ```
 
+Dieser Test deckt eine erwartete Antwort ab. Fehlerhafte Daten und fehlgeschlagene Requests sind weitere Fälle.
 
-## 4. Typüberprüfung von Redux-Aktionen
-Bei der Verwendung von Redux zur Verwaltung des Zustands in einer Webanwendung ist es wichtig sicherzustellen, dass die Aktionen gut typisiert und konsistent sind. Ohne TypeScript müssten wir möglicherweise umfangreiche Unit-Tests schreiben, um sicherzustellen, dass die Aktionen korrekt versendet werden und Fehler angemessen behandeln.
+## Redux-Aktionen eingrenzen
 
-Stattdessen können wir Schnittstellen für unsere Redux-Aktionen definieren. Zum Beispiel:
+Mit einer Union bekommt jede Aktion ihre passende Payload:
 
 ```ts
 interface User {
@@ -159,8 +159,12 @@ function fetchUser(id: number): UserAction {
 }
 ```
 
-Durch die Definition der UserAction-Schnittstelle für die Redux-Aktionen können wir sicherstellen, dass die Aktionen gut typisiert und konsistent sind, was Fehler zur Kompilierungszeit abfangen und unseren Code zuverlässiger machen kann.
+`FETCH_USER` enthält eine ID, `RECEIVE_USER` einen Nutzer. `UserAction` erlaubt dem Compiler, die Fälle zu unterscheiden und falsche Payloads im geprüften Code abzulehnen.
 
-Zusammenfassend lässt sich sagen, dass die Verwendung besserer TypeScript-Typisierungen dazu beiträgt, Fehler zur Kompilierungszeit abzufangen, unseren Code zuverlässiger zu machen und die Notwendigkeit einiger Unit-Tests zu eliminieren. Indem wir sicherstellen, dass die richtigen Datentypen für Props, State, Event-Handler und API-Antworten verwendet werden, können wir Kosten senken und die Auslieferung beschleunigen.
+Tests prüfen weiterhin Dispatch, Zustandsänderungen und Fehlerbehandlung. Sie müssen nicht dieselben Objektformen noch einmal beschreiben.
 
-Wichtiger Hinweis: Bitte blockieren Sie das Testen/die Vorschau von CICD nicht nur wegen Typfehlern. Das Blockieren von Main oder Produktion ist sicher, aber verlangsamen Sie das Testen von Entwicklern nicht vorzeitig. Viel Spaß beim Codieren!
+## Rückmeldungen während der Entwicklung ermöglichen
+
+Ich möchte Tests und Vorschauen möglichst auch nutzen können, während Typfehler noch behoben werden. Für Hauptbranch und Produktion müssen die vorgesehenen Typprüfungen trotzdem gelten.
+
+Der Compiler prüft Typregeln, die Validierung prüft eingehende Daten und Tests prüfen Verhalten. Mit dieser Aufteilung bleibt der Nutzen klar, ohne von TypeScript mehr zu erwarten, als es leisten kann.

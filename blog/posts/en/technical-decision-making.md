@@ -1,9 +1,9 @@
 ---
-title: "The Art of Technical Decision Making"
-description: "How senior engineers evaluate trade-offs and make decisions that stand the test of time."
+title: "How I make technical decisions I can live with"
+description: "A few questions about time, reversibility, and the team that will maintain the result."
 date: 2025-11-28
 image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800"
-minRead: 6
+minRead: 3
 tags:
   - Leadership
   - Decision Making
@@ -11,86 +11,59 @@ tags:
   - Best Practices
 ---
 
-As engineers progress in their careers, the nature of their work changes. Early on, it's about writing code and solving technical problems. But as you become senior, your impact comes increasingly from decisions—architectural choices, technology selections, and trade-off evaluations that affect entire teams and products.
+Some of the technical decisions I regret looked sensible on the day I made them. I understood the technology. I had given less thought to the work it would create for the team a year later.
 
-## Decision Making Frameworks That Actually Work
+As an engineer becomes more senior, these choices take up more of the job. A database, framework, or architecture decision can affect everyone who works on the product. I use a few questions to give those decisions more structure.
 
-After years of making (and sometimes regretting) technical decisions, I've developed a framework that helps me evaluate options more systematically.
+## Look beyond the first release
 
-### The 3-Month, 1-Year, 3-Year Test
+For a significant choice, I consider three points in time.
 
-For any significant decision, I ask: How will this look in 3 months, 1 year, and 3 years?
+<figure class="concept concept--horizon">
+<div class="concept-title">One decision, three time horizons</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18 M12 7v5l4 2"/></svg><strong>3 months</strong><span>Learning and migration.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3a3 3 0 1 0 0 6 3 3 0 1 0 0-6 M2 21v-4a6 6 0 0 1 12 0v4 M17 4a3 3 0 0 1 0 6 M17 13a5 5 0 0 1 5 5v3"/></svg><strong>1 year</strong><span>Operations and team adoption.</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7a9 9 0 0 0-16 3 M4 3v7h7 M4 17a9 9 0 0 0 16-3 M20 21v-7h-7"/></svg><strong>3 years</strong><span>Scale, debt, and lasting benefits.</span></li>
+</ol>
+<figcaption>Consider the cost of operating the choice as well as the cost of introducing it.</figcaption>
+</figure>
 
-- **3 months**: Short-term pain and learning curves
-- **1 year**: Operational overhead and team adoption
-- **3 years**: Technical debt or advantages, scalability
+At three months, I expect learning costs and some disruption. After a year, I want to know who operates the system and whether the team has adopted it. At three years, I ask whether the choice leaves us with useful capabilities or difficult debt.
 
-This simple exercise has saved me from choosing shiny new technologies that would create problems down the road.
+This exercise has stopped me from choosing a new technology simply because I wanted to use it.
 
-### The Reversibility Principle
+## Ask how hard it will be to change course
 
-Not all decisions are created equal. Jeff Bezos's framework of Type 1 (irreversible) and Type 2 (reversible) decisions applies perfectly to engineering.
+I find Jeff Bezos's distinction between Type 1 and Type 2 decisions useful: some decisions are hard to reverse, while others allow a quick experiment.
 
-**Type 1 decisions** (hard to reverse):
-- Database migrations
-- Core architecture choices
-- Vendor lock-in situations
+Database migrations, core architecture choices, and dependence on a vendor often belong in the first group. Libraries with close alternatives, internal tools, and UI choices made before much code exists can be easier to change.
 
-**Type 2 decisions** (easily reversible):
-- Library choices with similar alternatives
-- UI framework selections
-- Internal tooling
+The scale of the commitment matters. I would not treat replacing a mature application's UI framework as a quick reversal. But if React and Vue both meet the needs of a new project, weeks of comparison may teach us less than building with one of them.
 
-For Type 2 decisions, I optimize for speed and learning. Don't spend weeks evaluating React vs. Vue if either would work. Pick one and ship.
+## Use your team's constraints
 
-## Common Decision Traps
+I have made the “Netflix uses microservices, so we should too” argument. It ignores the difference between an organization with thousands of engineers and a team of five.
 
-### The "Google Does It" Fallacy
+I now look at the team's existing skills, the learning curve, the documentation, and whether we can hire people to maintain the result. A technically attractive choice can still be a poor fit for the people who must run it.
 
-I've fallen into this trap. "Netflix uses microservices, so we should too." No. Netflix has thousands of engineers. You're a team of five. The constraints are different, so the optimal solution is different.
+Research also needs a stopping point. I set a decision deadline, then make the best call the available evidence supports. Otherwise, another comparison can become a way to avoid choosing.
 
-### Analysis Paralysis
+## Write down what you decided
 
-At some point, more research is just procrastination. I've learned to set a "decision deadline" for myself. After that date, I make the best call with available information.
+For significant choices, I use a short architecture decision record:
 
-### Ignoring the Team
+1. Context: the problem we need to solve.
+2. Decision: the approach we chose.
+3. Consequences: the benefits and costs we accept.
+4. Status: accepted, deprecated, or superseded.
 
-The best technical decision is worthless if your team can't execute it. I've learned to evaluate decisions based on:
-- Current team expertise
-- Learning curve and documentation
-- Hiring implications (can we find people who know this?)
+Six months later, this is often more useful than the discussion everyone remembers differently.
 
-## Documenting Decisions
+I ask stakeholders for input before the decision is final. I also record uncertainty and the conditions that would make us reconsider. “We are trying this because…” leaves room to learn without pretending we know the outcome.
 
-Every significant decision should be documented. I use Architecture Decision Records (ADRs) with a simple template:
+## Correct a decision when the evidence changes
 
-1. **Context**: What problem are we solving?
-2. **Decision**: What did we decide?
-3. **Consequences**: What are the trade-offs?
-4. **Status**: Accepted, deprecated, superseded
+When a choice turns out poorly, I try to acknowledge it quickly. We examine why it failed without assigning blame, change course, and record what we learned.
 
-This documentation becomes invaluable when the context is forgotten six months later.
-
-## The Human Side of Technical Decisions
-
-Technical decisions often have political and social dimensions. I've learned to:
-
-- **Build consensus early**: Get input from stakeholders before the decision is finalized
-- **Acknowledge uncertainty**: "We're trying this because..." is better than false confidence
-- **Plan for pivoting**: Be explicit about conditions that would cause us to revisit the decision
-
-## Learning from Bad Decisions
-
-Not every decision will be right. The mark of a senior engineer isn't never being wrong—it's how you handle it when you are.
-
-When a decision turns out to be suboptimal:
-1. Acknowledge it quickly
-2. Analyze why (without blame)
-3. Course-correct decisively
-4. Document the learning
-
-## Conclusion
-
-Technical decision making is a skill that improves with practice and reflection. The goal isn't to be perfect—it's to be intentional, learn from mistakes, and build organizational knowledge over time.
-
-What's your approach to technical decision making? I'd love to hear your frameworks and lessons learned.
+That record gives the next decision a better starting point. Experience is useful only if the team can still find it.

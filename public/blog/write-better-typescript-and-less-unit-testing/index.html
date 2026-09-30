@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Write better Typescript and less Unit Testing | Zafar.dev</title>
-<meta name="description" content="Why designing digital experiences that encourage users to slow down and engage deeply can lead to more meaningful interactions and better outcomes.">
+<title>Better TypeScript, more useful tests | Zafar.dev</title>
+<meta name="description" content="Use types to reduce duplicate checks while keeping runtime validation and tests for behavior.">
 <link rel="icon" href="/favicon.ico">
 <link rel="canonical" href="https://zafar.dev/blog/write-better-typescript-and-less-unit-testing/">
 <link rel="alternate" hreflang="en" href="https://zafar.dev/blog/write-better-typescript-and-less-unit-testing/">
 <link rel="alternate" hreflang="ja" href="https://zafar.dev/ja/blog/write-better-typescript-and-less-unit-testing/">
 <link rel="alternate" hreflang="de" href="https://zafar.dev/de/blog/write-better-typescript-and-less-unit-testing/">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Write better Typescript and less Unit Testing | Zafar.dev">
-<meta property="og:description" content="Why designing digital experiences that encourage users to slow down and engage deeply can lead to more meaningful interactions and better outcomes.">
+<meta property="og:title" content="Better TypeScript, more useful tests | Zafar.dev">
+<meta property="og:description" content="Use types to reduce duplicate checks while keeping runtime validation and tests for behavior.">
 <meta property="og:url" content="https://zafar.dev/blog/write-better-typescript-and-less-unit-testing/">
 <meta property="og:image" content="https://images.pexels.com/photos/4050314/pexels-photo-4050314.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1260&amp;h=750&amp;dpr=1">
 <meta property="article:published_time" content="2025-01-28">
@@ -20,7 +20,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap">
-<link rel="stylesheet" href="/blog/blog.css?v=88cd9c95">
+<link rel="stylesheet" href="/blog/blog.css?v=18a31658">
 <script>try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}</script>
 </head>
 <body class="is-post">
@@ -48,28 +48,33 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
   <a class="back" href="/blog/"><span aria-hidden="true">←</span> all notes</a>
   <article class="post">
     <header class="post-head">
-      <span class="label"><time datetime="2025-01-28">Jan 28, 2025</time> · 7 min read</span>
-      <h1>Write better Typescript and less Unit Testing</h1>
-      <p class="sub">Why designing digital experiences that encourage users to slow down and engage deeply can lead to more meaningful interactions and better outcomes.</p>
+      <span class="label"><time datetime="2025-01-28">Jan 28, 2025</time> · 3 min read</span>
+      <h1>Better TypeScript, more useful tests</h1>
+      <p class="sub">Use types to reduce duplicate checks while keeping runtime validation and tests for behavior.</p>
     </header>
     <figure class="cover">
       <span class="tape"></span>
       <img src="https://images.pexels.com/photos/4050314/pexels-photo-4050314.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1260&amp;h=750&amp;dpr=1" alt="">
     </figure>
     <div class="prose">
-<p>I’ve found that using strong and well-defined TypeScript typings can greatly reduce the need for extensive unit testing. While testing is an essential part of software development, it can, no, it will often be time-consuming and can slow down the development process tremendously. With well-typed code, we prevent many errors before they even happen.</p>
-<p>By doing so, we can catch a lot of errors at compile-time, before they make it to testing/production. This not only saves time and effort, but it also makes our code more reliable and easier to maintain.</p>
-<p>That being said, I don’t want to suggest that testing is not important. On the contrary, unit testing is still a crucial part of software development. However, by using TypeScript, we can reduce the amount of testing that needs to be done.</p>
-<p>Remember, the ratio between the production code and the test code could be anywhere between 1:1 and 1:3.</p>
+<p>I prefer to let TypeScript catch a wrong argument before I need to write a test for it. Clear types reduce repetitive checks and make refactoring easier. They also leave more time for tests that exercise behavior.</p>
+<p>That matters when test code can be as large as production code, or even three times its size. Maintaining a test suite is real work. I want each test to tell me something the compiler cannot.</p>
 <blockquote>
 <p><em>Tests are good; impossible states are better — Richard Feldman</em></p>
 </blockquote>
-<p>In addition, TypeScript allows us to use the concept of “impossible states.” Impossible states are states that are impossible to reach because they are prevented by our typings. By using it, we can eliminate a lot of unnecessary testing, as we know that these states can never happen, and therefore, don’t need to be tested.</p>
-<hr>
-<p>Heres common examples of how using better TypeScript typings in React can be more efficient than extensive unit testing:</p>
-<h2 id="1-type-checking-props-and-state"><a class="anchor" href="#1-type-checking-props-and-state" aria-hidden="true" tabindex="-1">#</a>1. Type-checking props and state</h2>
-<p>In React, components often receive props and manage their own state. Without TypeScript, it can be difficult to ensure that the correct data types are being used for props and state. This can lead to runtime errors and a need for extensive unit testing.</p>
-<p>With TypeScript, however, we can define interfaces for our props and state, which can catch errors at compile-time and eliminate the need for some unit tests. For example:</p>
+<p>The useful idea here is to design types that exclude invalid combinations. Within correctly typed code, there are then fewer states to handle. Data arriving from outside the application still needs validation.</p>
+<figure class="concept concept--split">
+<div class="concept-title">Three checks with different jobs</div>
+<ol class="concept-nodes" role="list">
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 6l-6 6 6 6 M16 6l6 6-6 6 M14 3l-4 18"/></svg><strong>Type checking</strong><span>Are typed values used consistently?</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2l9 4v6c0 5-9 10-9 10S3 17 3 12V6z M8 12l3 3 5-6"/></svg><strong>Runtime validation</strong><span>Does incoming data match the contract?</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 12l5 5L20 6"/></svg><strong>Behavior tests</strong><span>Does the program do the right thing?</span></li>
+</ol>
+<figcaption>Use each check for the question it can answer.</figcaption>
+</figure>
+
+<h2 id="give-props-and-state-clear-shapes"><a class="anchor" href="#give-props-and-state-clear-shapes" aria-hidden="true" tabindex="-1">#</a>Give props and state clear shapes</h2>
+<p>React components receive props and keep state. Interfaces let the compiler check the types used at those boundaries:</p>
 <pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">interface</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> Props</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
 <span class="line"><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">  name</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">;</span></span>
 <span class="line"><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">  age</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">;</span></span>
@@ -83,8 +88,8 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">class</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> MyComponent</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> extends</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> React</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Component</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">Props</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">State</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">> {</span></span>
 <span class="line"><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D">  // ...</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre>
-<p>By defining these interfaces, we can ensure that the correct data types are being used for our props and state, which can catch errors at compile-time and make our code more reliable.</p>
-<p>Instead of :</p>
+<p>These types require a string for <code>name</code>, a number for <code>age</code>, a boolean for <code>isMale</code>, and a number for <code>count</code>. Tests do not need to repeat those declarations just to check their types.</p>
+<p>But the following tests ask different questions:</p>
 <pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">it</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">'renders with correct props'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  const</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> wrapper</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> =</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> shallow</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(&#x3C;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">MyComponent</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> name</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">=</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"John"</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> age</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">={</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">30</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">} </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">isMale</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">={</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">} />);</span></span>
 <span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">  expect</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(wrapper.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">exists</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">()).</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">toBe</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">);</span></span>
@@ -94,9 +99,9 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  const</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> wrapper</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> =</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> shallow</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(&#x3C;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">MyComponent</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> name</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">=</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">"John"</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> age</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">={</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">30</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">} </span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">isMale</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">={</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">true</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">} />);</span></span>
 <span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">  expect</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(wrapper.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">state</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">()).</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">toEqual</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">({ count: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">0</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> });</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">});</span></span></code></pre>
-<h2 id="2-defining-event-handlers"><a class="anchor" href="#2-defining-event-handlers" aria-hidden="true" tabindex="-1">#</a>2. Defining event handlers</h2>
-<p>Event handlers are often used to handle user interactions, such as clicks or form submissions. Without TypeScript, it can be difficult to ensure that event handlers are defined correctly and handle the correct types of events.</p>
-<p>With TypeScript, however, we can define types for our event handlers, which can catch errors at compile-time and eliminate the need for some unit tests. For example:</p>
+<p>A type declaration does not prove that the component renders or that <code>count</code> starts at zero. Keep tests for behavior that matters. The opportunity is to remove duplicate type checks, not every test near a typed interface.</p>
+<h2 id="describe-the-event-a-handler-accepts"><a class="anchor" href="#describe-the-event-a-handler-accepts" aria-hidden="true" tabindex="-1">#</a>Describe the event a handler accepts</h2>
+<p>An event handler type makes the callback contract clear:</p>
 <pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">interface</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> MyComponentProps</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
 <span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">  onClick</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> (</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">event</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> React</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">MouseEvent</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">&#x3C;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">HTMLButtonElement</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">>) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> void</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">;</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span>
@@ -106,18 +111,18 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">    &#x3C;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">button onClick</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">{props.onClick}</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">Click me</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">&#x3C;/</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">button</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">></span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  );</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre>
-<p>By defining the onClick prop with a type that includes the React.MouseEvent type, we can ensure that the event handler is defined correctly and handles the correct types of events, which can make our code more reliable and reduce the need for unit tests.</p>
-<p>Without TypeScript typings, we would need to write unit tests to ensure that event handlers are defined correctly and handle the correct types of events.</p>
+<p>The callback accepts a mouse event from a button. TypeScript can check that signature at a typed call site. It cannot prove that a user action actually invokes the callback.</p>
+<p>That is why this behavior test can still be useful:</p>
 <pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">it</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">'calls onClick handler when button is clicked'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  const</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> handleClick</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> =</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> jest.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">fn</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">();</span></span>
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  const</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> wrapper</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> =</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> shallow</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(&#x3C;</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">MyComponent</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> onClick</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">={</span><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">handleClick</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">} />);</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  wrapper.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">find</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">'button'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">).</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">simulate</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">'click'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">);</span></span>
 <span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">  expect</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(handleClick).</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">toHaveBeenCalled</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">();</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">});</span></span></code></pre>
-<h2 id="3-type-checking-external-apis"><a class="anchor" href="#3-type-checking-external-apis" aria-hidden="true" tabindex="-1">#</a>3. Type-checking external APIs</h2>
-<p>For any app/webapp it’s common to use external APIs, such as REST APIs or GraphQL APIs, to retrieve data for our components. Without TypeScript, it can be difficult to ensure that the correct data types are being used throughout the app. This makes refactoring code an absolute nightmare.</p>
-<p>Using types, Backend/API developers will also be less restricted knowing the frontend can quickly grab the new DTO and quckly update frontend code. This ensure less legacy bloat and faster development cycle.</p>
-<p>For example:</p>
+<p>It checks the connection between the button and the callback. The function&#39;s type alone does not check that connection at runtime.</p>
+<h2 id="treat-an-api-response-as-a-separate-boundary"><a class="anchor" href="#treat-an-api-response-as-a-separate-boundary" aria-hidden="true" tabindex="-1">#</a>Treat an API response as a separate boundary</h2>
+<p>Shared data transfer object (DTO) types help frontend and backend developers change an API together. When a field changes, the compiler can identify affected typed code. That makes refactoring easier and reduces the pressure to retain obsolete shapes.</p>
+<p>This example shows the intended response type, but it also shows a limit of assertions:</p>
 <pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">interface</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> UserDto</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
 <span class="line"><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">  id</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">;</span></span>
 <span class="line"><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">  name</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">;</span></span>
@@ -129,17 +134,17 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  const</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> data</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> =</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> await</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> response.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">json</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">();</span></span>
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  return</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> data </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">as</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> User</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">;</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre>
-<p>By defining the User interface for the API response, we can ensure that the correct data types are being used for the API response, which can catch errors at compile-time and make our code more reliable.</p>
-<p>Without TS , we would need to write unit tests to ensure that the correct data types are being used for the API responses. For example:</p>
+<p>The declaration names <code>UserDto</code>, while the assertion names <code>User</code>. Those names should refer to the intended contract. More importantly, neither the return annotation nor <code>as User</code> validates the JSON. TypeScript removes assertions during compilation; they do not perform a runtime check. The <a href="https://www.typescriptlang.org/docs/handbook/2/everyday-types.html#type-assertions" target="_blank" rel="noopener">TypeScript handbook</a> explains this limit.</p>
+<p>Keep a validation step at the boundary when the response cannot be trusted to match the type. A test with a known response remains useful too:</p>
 <pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">it</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">'fetches user data and returns the correct object'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">async</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> () </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">=></span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  const</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> expectedUser</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> =</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> { id: </span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, name: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">'John'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">, email: </span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF">'john@example.com'</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> };</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  fetch.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">mockResponseOnce</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">JSON</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">.</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">stringify</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(expectedUser));</span></span>
 <span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">  const</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> user</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> =</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583"> await</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> fetchUser</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF">1</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">);</span></span>
 <span class="line"><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">  expect</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(user).</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0">toEqual</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">(expectedUser);</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">});</span></span></code></pre>
-<h2 id="4-type-checking-redux-actions"><a class="anchor" href="#4-type-checking-redux-actions" aria-hidden="true" tabindex="-1">#</a>4. Type-checking Redux actions</h2>
-<p>When using Redux to manage state in a web application, it’s important to ensure that the actions are well-typed and consistent. Without TypeScript, we might need to write extensive unit tests to ensure that the actions are being dispatched correctly and handling errors appropriately.</p>
-<p>Instead, we can define interfaces for our Redux actions. For example:</p>
+<p>This test checks one expected response. It does not establish how the function handles malformed data or a failed request.</p>
+<h2 id="restrict-the-shapes-of-redux-actions"><a class="anchor" href="#restrict-the-shapes-of-redux-actions" aria-hidden="true" tabindex="-1">#</a>Restrict the shapes of Redux actions</h2>
+<p>A union of action types lets each action carry the payload it needs:</p>
 <pre class="shiki shiki-themes github-light github-dark" style="--shiki-light:#24292e;--shiki-dark:#e1e4e8;--shiki-light-bg:#fff;--shiki-dark-bg:#24292e" tabindex="0"><code><span class="line"><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">interface</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0"> User</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8"> {</span></span>
 <span class="line"><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">  id</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> number</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">;</span></span>
 <span class="line"><span style="--shiki-light:#E36209;--shiki-dark:#FFAB70">  name</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583">:</span><span style="--shiki-light:#005CC5;--shiki-dark:#79B8FF"> string</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">;</span></span>
@@ -166,20 +171,22 @@ m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">    payload: { id }</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">  };</span></span>
 <span class="line"><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8">}</span></span></code></pre>
-<p>By defining the UserAction interface for the Redux actions, we can ensure that the actions are well-typed and consistent, which can catch errors at compile-time and make our code more reliable.</p>
-<p>In summary, using better TypeScript typings will help catch errors at compile-time, make our code more reliable, and eliminate the need for some unit tests. By ensuring that the correct data types are being used for props, state, event handlers, and API responses, we can reduce cost and make ship happen faster</p>
-<p>Important Note: Please dont block testing/preview CICD just because of Type errors. Blocking main or production sure but dont slowdown developers testing prematurely. Happy coding!</p>
+<p><code>FETCH_USER</code> carries an ID. <code>RECEIVE_USER</code> carries a user. The <code>UserAction</code> union lets the compiler distinguish those cases and reject mismatched payloads in checked code.</p>
+<p>Tests still have work to do: checking dispatch, state changes, and error handling. Clear types narrow that work to behavior rather than repeating the permitted object shapes.</p>
+<h2 id="keep-feedback-available-during-development"><a class="anchor" href="#keep-feedback-available-during-development" aria-hidden="true" tabindex="-1">#</a>Keep feedback available during development</h2>
+<p>My preference is to let developers run tests and use previews while they resolve type errors, where the project allows it. The main branch and production release should still have the required type checks.</p>
+<p>Use the compiler for the rules it can check. Use runtime validation for incoming data. Use tests to check what the program does. That division makes the suite more useful without asking types to prove more than they can.</p>
 
     </div>
   </article>
   <nav class="pager" aria-label="More notes">
     <a class="pg pg-older" href="/blog/git-cheatsheet/" rel="prev">
       <span class="label">← older</span>
-      <span class="pg-title">Git Cheatsheet: Essential Commands for Developers</span>
+      <span class="pg-title">The Git commands I keep close by</span>
     </a>
     <a class="pg pg-newer" href="/blog/why-vue-is-the-most-reliable-framework-for-the-long-haul/" rel="next">
       <span class="label">newer →</span>
-      <span class="pg-title">Why Vue is the Most Reliable Framework for the Long Haul</span>
+      <span class="pg-title">Why I like Vue for projects that need to last</span>
     </a>
   </nav>
 </main>
