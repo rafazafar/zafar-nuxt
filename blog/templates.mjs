@@ -8,7 +8,7 @@ const SITE = 'https://zafar.dev'
 const RESUME = 'https://docs.google.com/document/d/e/2PACX-1vTqFnfyHNvn48h_-v__nIAxO77b1cJLzTVT_O5cpRvjzDlYLy6bwhQZcagAiF5dXc21eblTIPVgJy6y/pub'
 const MEETING = 'https://cal.com/zafar'
 const DEFAULT_OG = `${SITE}/home/profile.jpg`
-const FONTS = 'https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap'
+const FONTS = 'https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&family=JetBrains+Mono:wght@400;500;600&display=swap'
 
 // Runs in <head> before first paint so a theme picked on another page sticks (shared with public/index.html).
 const THEME_BOOT = `try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}`
@@ -59,7 +59,7 @@ function masthead(s, blogPath, isIndex) {
   return `<div class="masthead" id="top">
   <div class="sky" aria-hidden="true"></div>
   <header class="top">
-    <a class="sig" href="${s.home}">zafar ✎</a>
+    <a class="sig" href="${s.home}">zafar<span class="cur">_</span></a>
     <nav class="top-r">
       <a href="${RESUME}" target="_blank" rel="noopener">${s.resume}</a>
       <a href="${blogPath}"${isIndex ? ' aria-current="page"' : ''}>${s.blog}</a>
@@ -163,6 +163,18 @@ ${list.map(p => `      <li><a class="row" href="${p.path}">
       canonical: blogPath,
       alternates
     }
+  })
+}
+
+export function notFoundPage({ s, css, blogPath }) {
+  const body = `  <section class="intro">
+    <span class="label">404</span>
+    <h1>Nothing here.</h1>
+    <p class="sub">This page moved, or it never existed. Try <a href="/">the homepage</a> or <a href="${blogPath}">the notes</a>.</p>
+  </section>`
+  return shell({
+    s, blogPath, body, bodyClass: 'is-404',
+    headArgs: { lang: 'en', css, title: 'Not found | Zafar.dev', description: 'This page does not exist.', canonical: '/404' }
   })
 }
 
