@@ -42,7 +42,7 @@ useSeoMeta({
       <!-- eslint-disable vue/no-v-html -- trusted Markdown from our own content/*.yml -->
       <div
         class="space-y-4 [&_a]:underline"
-        v-html="renderMarkdown(page.content)"
+        v-html="renderMarkdown(page)"
       />
       <!-- eslint-enable vue/no-v-html -->
       <div class="flex flex-row justify-center items-center py-10 space-x-[-2rem]">
