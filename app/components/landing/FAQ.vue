@@ -55,7 +55,7 @@ const ui = {
             <!-- eslint-disable vue/no-v-html -- trusted Markdown from our own content/*.yml -->
             <div
               class="px-4 [&_a]:underline"
-              v-html="renderMarkdown((_item as { content: string }).content)"
+              v-html="renderMarkdown(_item as { contentHtml?: string })"
             />
             <!-- eslint-enable vue/no-v-html -->
           </template>

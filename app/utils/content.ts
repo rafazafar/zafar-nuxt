@@ -1,7 +1,6 @@
 // Site content: the YAML files in content/<locale>/, bundled at build time.
 // No database, no queries. Edit the YAML and rebuild.
 // (.yml imports are turned into plain objects by the small Vite plugin in nuxt.config.ts)
-import { marked } from 'marked'
 
 export type Locale = 'en' | 'ja' | 'de'
 
@@ -58,6 +57,7 @@ export interface AboutPage extends Seo {
   title: string
   description: string
   content: string
+  contentHtml?: string
   images: Image[]
 }
 
@@ -109,7 +109,8 @@ export function getProjects(locale: string): Project[] {
     .sort((a, b) => String(b.date).localeCompare(String(a.date)))
 }
 
-/** Short Markdown (paragraphs, links, emphasis) from the YAML files, as HTML. */
-export function renderMarkdown(text: string | undefined): string {
-  return text ? marked.parse(text, { async: false }) : ''
+/** Short Markdown (paragraphs, links, emphasis) from the YAML files, as HTML.
+ * Rendered at build time by the YAML plugin in nuxt.config.ts (`content` -> `contentHtml`). */
+export function renderMarkdown(item: { contentHtml?: string } | undefined): string {
+  return item?.contentHtml ?? ''
 }
