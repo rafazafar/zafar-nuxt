@@ -64,7 +64,7 @@ const NOTES = [
   ['site', 'Correction issued', [1.9, 7.1, -3.4]],
   ['seekers', 'Job ad, written by AI', [10.1, 13.6, -2.4]],
   ['seekers', 'Candidate matched', [7.2, 6.2, -2]],
-  ['kokoromil', 'Live ECG over Bluetooth', [-12.2, 5.9, 11.9]],
+  ['kokoromil', 'Local-first ECG, live', [-12.2, 5.9, 11.9]],
   ['cars', 'Price history per listing', [2.5, 4, 10]]
 ]
 const KEYS = ['nexco', 'axa', 'site', 'seekers', 'kokoromil', 'cars']
@@ -550,7 +550,7 @@ function start () {
     hemi.intensity = mix(mix(1.05, .34, N), mix(.8, .4, N), Wm) * (1 - X * .7)
     shadowMat.opacity = mix(.2, .3, Math.max(N, Wm)) * (1 - X) * (1 - D)
     const glow = Math.max(N * .62, Wm * mix(.7, .95, N)) * (1 - X)
-    bloom.strength = X * .95 + N * .18 * (1 - X) + Wm * .1
+    bloom.strength = X * .32 + N * .18 * (1 - X) + Wm * .1
     for (const g of grids) {
       g.material.color.copy(ink).lerp(PAL.teal, X)
       g.material.opacity = g.userData.o * mix(1, .7, X) * mix(1, 1.6, D)
