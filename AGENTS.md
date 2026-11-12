@@ -1,94 +1,26 @@
 # AGENTS.md
 
-This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
+Guidance for coding agents working in this repository.
 
-## Project Overview
+## What this is
 
-This is a personal portfolio website built with Nuxt 4, showcasing Zafar's work, experience, and blog posts. The site is configured for deployment on Cloudflare.
+zafar.dev, Zafar's personal site. It is **static files only**, deployed to Cloudflare as Workers static assets (`wrangler.jsonc`, no Worker script). There is no framework and no runtime server code apart from `party/`.
 
-**Static parts (not Nuxt):** the English homepage is hand-written `public/index.html`, and the blog is static HTML generated from Markdown by `blog/build.mjs` (see `blog/README.md` to add a post). Links into either from the Nuxt app must be full page loads (`external: true`).
+- `public/index.html` - the homepage, hand-written HTML/CSS/JS in one file. The hero is a WebGPU shader of the Tokyo sky driven by the real Tokyo time and date (timetable, windows, towers, seasons, moon phase), with a CSS gradient fallback.
+- `blog/` - Markdown posts in `blog/posts/<lang>/` (en, ja, de) and `blog/build.mjs`, which renders them to `public/blog/`, `public/ja/blog/`, `public/de/blog/` and `public/404.html`. Templates are in `blog/templates.mjs`, UI text in `blog/strings.mjs`, styles in `blog/blog.css`. See `blog/README.md`.
+- `public/_redirects` - sends the retired Nuxt URLs (/projects, /about, /speaking, /services, /ja, /de, …) to the homepage or the ja/de blogs.
+- `party/` - a separate Durable Object Worker (`zafar-party`) that syncs the homepage photo pile and serves the weather. It has its own package.json and deploy.
 
-## Development Commands
+## Commands
 
-### Core Commands
-- `bun dev` - Start development server
-- `bun build` - Build for production
-- `bun generate` - Generate static site
-- `bun preview` - Preview production build
+- `bun dev` - watch-build the blog and serve `public/` with `wrangler dev`
+- `bun run build` - generate the blog
+- `bun run deploy` - build, then `wrangler deploy`
+- `bun run lint` / `bun run lint:fix` - ESLint (2 spaces, single quotes, no semicolons, no trailing commas, 1tbs)
 
-### Code Quality
-- `bun lint` - Run ESLint
-- `bun lint:fix` - Fix linting issues automatically
-- `bun typecheck` - Run TypeScript type checking
+## Notes
 
-### Installation
-- `bun install` - Install dependencies (uses Bun as package manager)
-
-## Architecture
-
-### Directory Structure
-- `app/` - Main application code
-  - `pages/` - File-based routing (index, about, projects, speaking, services)
-  - `components/` - Vue components, organized with `landing/` subfolder for homepage sections
-  - `layouts/` - Layout components
-  - `assets/css/` - Global CSS
-  - `utils/` - Utility functions (clipboard, links)
-- `content/` - Page content as plain YAML, bundled at build time by `app/utils/content.ts` (no Nuxt Content, no database)
-  - `projects/` - Project data in YAML
-  - Individual YAML files for page content (about.yml, speaking.yml, etc.)
-- `public/` - Static assets including images organized by project/category
-- `server/` - Server-side code
-
-### Key Technologies
-- **Nuxt 4** (upgraded from v3 with full v4 support)
-- **Nuxt UI Pro** for UI components
-- **Nuxt Image** for optimized images
-- **Motion-v** for animations
-- **VueUse** for Vue composition utilities
-- **Nuxt OG Image** for social media previews
-
-### Content Management
-Content is plain YAML in `content/<locale>/`. A small Vite plugin in `nuxt.config.ts` turns `.yml` imports into objects, and `app/utils/content.ts` exposes typed helpers:
-- `getPage(locale, 'index' | 'about' | 'speaking' | 'projects')` - falls back to English
-- `getProjects(locale)` - every file in `content/<locale>/projects/`, newest first
-- `renderMarkdown(text)` - for the short Markdown fields (about text, FAQ answers)
-
-The types for each file live in `app/utils/content.ts`. Edit the YAML and rebuild; there is nothing to query at runtime.
-
-### Deployment Configuration
-- **Target**: Cloudflare Workers (`cloudflare_module` preset), configured in `wrangler.jsonc` (Cloudflare's build runs `npx wrangler deploy`, which needs that file)
-- **Rendering**: SSR only, no prerendering. `/` and the blog are static files in `public/`, served as assets before the Worker runs
-- **Observability**: Cloudflare logging enabled
-
-### Styling and UI
-- Custom CSS in `assets/css/main.css`
-- Nuxt UI components with consistent design system
-- Dark/light mode support via ColorModeButton component
-- ESLint configured with specific stylistic rules (1tbs brace style, no comma dangle)
-
-## Development Notes
-
-### Content Structure
-Each YAML file has a TypeScript type in `app/utils/content.ts`:
-- **Projects**: Include title, description, image, URL, tags, and date
-- **Speaking events**: Categorized as Live talk, Podcast, or Conference
-- **Index page**: Contains hero, about, experience, testimonials, blog, and FAQ sections
-
-### Component Organization
-- Landing page components are in `components/landing/`
-- Reusable UI components at root level of `components/`
-- App-level components (header, footer) prefixed with "App"
-
-### Image Management
-- Images stored in `public/img/` with organized subdirectories
-- Image schemas enforce alt text and media input validation
-- Optimized image loading via Nuxt Image module
-
-### Internationalization (i18n)
-- **@nuxtjs/i18n** module integrated with English and Japanese locales
-- Locale files in `i18n/locales/` directory (en.json, ja.json)
-- Language selector component in header with globe icon
-- Navigation links use `useNavLinks()` composable for translations
-- Strategy: `prefix_except_default` (English is default, Japanese uses `/ja` prefix)
-- Browser language detection with cookie persistence
-- All UI strings extracted to locale files for easy translation
+- Never edit generated files under `public/blog`, `public/ja/blog`, `public/de/blog` or `public/404.html`. Change `blog/` and rebuild.
+- The design tokens (colours, fonts) in `blog/blog.css` are copied from `public/index.html`. Keep the two in step.
+- The homepage and blog share the light/dark choice via `localStorage('theme')` and use cross-document view transitions (`view-transition-name: sky` and `site-top`).
+- English is the focus. Japanese and German exist only as blog translations for now.

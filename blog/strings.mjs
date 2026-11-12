@@ -28,7 +28,7 @@ export const LANGS = {
   },
   ja: {
     name: '日本語',
-    home: '/ja',
+    home: '/',
     blogTitle: 'Notes',
     label: '書き留めたこと',
     sub: 'プロダクトづくり、<em>切れやすいBluetooth</em>、大きなシステムを退屈に保つことについて。',
@@ -52,7 +52,7 @@ export const LANGS = {
   },
   de: {
     name: 'Deutsch',
-    home: '/de',
+    home: '/',
     blogTitle: 'Notizen',
     label: 'Dinge, die ich aufgeschrieben habe',
     sub: 'Über Produkte, <em>wackeliges Bluetooth</em> und darüber, große Systeme langweilig zu halten.',

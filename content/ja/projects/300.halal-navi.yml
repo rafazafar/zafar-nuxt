@@ -1,7 +1,0 @@
-title: Halal Naviアプリ
-description: イスラム教徒向け旅行アプリのプロダクトマネージャー。楽しいソーシャルプラットフォームで地元のビジネスと体験をつなぐ
-image: https://r2.zafar.dev/img/halalnavi/hn1.png
-url: "https://halal-navi.jp/"
-tags: ["開発"]
-techStack: ["ネイティブアプリ", "Vue", "Django"]
-date: "2018"

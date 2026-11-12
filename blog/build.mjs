@@ -4,9 +4,8 @@
 //   bun run blog          build once
 //   bun run blog:watch    rebuild whenever something in blog/ changes
 //
-// Writes:
-//   public/blog/**, public/ja/blog/**, public/de/blog/**   (generated, don't edit by hand)
-//   app/data/blog-latest.json                             (latest posts for the ja/de Nuxt homepages)
+// Writes public/blog/**, public/ja/blog/**, public/de/blog/** and public/404.html
+// (all generated, don't edit by hand).
 
 import fs from 'node:fs'
 import path from 'node:path'
@@ -16,12 +15,11 @@ import { Marked } from 'marked'
 import { createHighlighter } from 'shiki'
 import { parse as parseYaml } from 'yaml'
 import { LANGS, DEFAULT_LANG } from './strings.mjs'
-import { indexPage, postPage, esc } from './templates.mjs'
+import { indexPage, postPage, notFoundPage, esc } from './templates.mjs'
 
 const BLOG = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(BLOG, '..')
 const PUBLIC = path.join(ROOT, 'public')
-const LATEST_JSON = path.join(ROOT, 'app/data/blog-latest.json')
 
 const blogPath = lang => (lang === DEFAULT_LANG ? '/blog/' : `/${lang}/blog/`)
 const outDir = lang => path.join(PUBLIC, ...blogPath(lang).split('/').filter(Boolean))
@@ -165,10 +163,8 @@ export function build() {
     })
   }
 
-  const latest = Object.fromEntries(withPosts.map(l => [l, all[l].slice(0, 3).map(p => ({
-    title: p.title, description: p.description, date: p.date, image: p.image, minRead: p.minRead, path: p.path
-  }))]))
-  write(LATEST_JSON, JSON.stringify(latest, null, 2) + '\n')
+  // the site-wide 404 (wrangler.jsonc serves it for any missing path)
+  write(path.join(PUBLIC, '404.html'), notFoundPage({ s: LANGS[DEFAULT_LANG], css, blogPath: blogPath(DEFAULT_LANG) }))
 
   console.log(`blog: ${count} posts (${withPosts.map(l => `${l} ${all[l].length}`).join(', ')}) in ${Date.now() - t0}ms`)
 }

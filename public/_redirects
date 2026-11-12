@@ -1,0 +1,24 @@
+# The Nuxt pages are gone. Old links land somewhere useful instead of a 404.
+# (English is the focus: the homepage. Japanese and German have their blogs.)
+/projects             /           301
+/projects/*           /           301
+/about                /           301
+/speaking             /           301
+/services             /           301
+/services/*           /           301
+
+/ja                   /ja/blog/   301
+/ja/                  /ja/blog/   301
+/ja/projects          /ja/blog/   301
+/ja/projects/*        /ja/blog/   301
+/ja/about             /ja/blog/   301
+/ja/speaking          /ja/blog/   301
+/ja/services/*        /ja/blog/   301
+
+/de                   /de/blog/   301
+/de/                  /de/blog/   301
+/de/projects          /de/blog/   301
+/de/projects/*        /de/blog/   301
+/de/about             /de/blog/   301
+/de/speaking          /de/blog/   301
+/de/services/*        /de/blog/   301

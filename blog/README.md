@@ -1,6 +1,6 @@
 # The blog
 
-Plain static HTML, generated from Markdown by one small script. No Nuxt, no database.
+Plain static HTML, generated from Markdown by one small script. No framework, no database.
 It uses the same look as the homepage (`public/index.html`).
 
 ```
@@ -34,7 +34,7 @@ blog/
 
 3. Run `bun run blog` (or `bun run blog:watch` while writing), then open `/blog/`.
 
-`bun dev`, `bun run build` and `bun run deploy` all run the generator first, so you can't deploy a stale blog.
+`bun dev` rebuilds on every save, and `bun run build` / `bun run deploy` run the generator first, so you can't deploy a stale blog.
 
 Optional frontmatter: `imageAlt`, `minRead` (worked out from the text if you leave it out), `tags`, and `draft: true` to keep a post out of the build.
 
@@ -42,7 +42,7 @@ A translation is the same file name under `posts/ja/` or `posts/de/`. Posts that
 
 ## Good to know
 
-- `public/blog/`, `public/ja/blog/`, `public/de/blog/` and `app/data/blog-latest.json` are generated. Every build wipes and rewrites them, so edit the files in `blog/` instead.
+- `public/blog/`, `public/ja/blog/`, `public/de/blog/` and `public/404.html` are generated. Every build wipes and rewrites them, so edit the files in `blog/` instead.
 - Don't write a `# Heading` at the top of a post. The title from the frontmatter is already the page's heading, so start sections at `##`.
 - Code fences get syntax highlighting. The supported languages are listed in `CODE_LANGS` in `build.mjs`.
 - The design tokens in `blog.css` are copied from `public/index.html`. When one changes, update the other.
