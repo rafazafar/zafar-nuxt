@@ -130,6 +130,7 @@ p { margin: 0 0 18px; color: var(--ink-soft); transition: color .7s; }
 .slide { flex: 0 0 100%; scroll-snap-align: start; display: flex; flex-direction: column; }
 .slide h2 { font-size: clamp(1.6rem, 2.4vw, 2.1rem); margin-bottom: 10px; }
 .slide p:last-child { margin: 0; }
+.slide .chips, .slide .row { margin-top: auto; }
 .deck-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .deck-nav button { width: 40px; height: 36px; border: 1px solid var(--rule); border-radius: 3px; background: var(--panel); color: var(--ink); font: 1rem var(--f-mono); cursor: pointer; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: border-color .2s, opacity .2s; }
 .deck-nav button:hover { border-color: var(--accent); }
@@ -352,9 +353,9 @@ footer { width: 100%; margin-top: 44px; padding-top: 16px; border-top: 1px solid
     </aside>
   </section>
 
-  <section class="ch" id="people" data-cam="people" data-mode="people">
+  <section class="ch" id="people" data-cam="people" data-mode="people" data-cams="people5,people,people2,people3,people4,people5">
     <div class="copy deck">
-      <div class="slides" id="slides" tabindex="0" role="group" aria-label="How I design for the person using it, in six slides">
+      <div class="slides" tabindex="0" role="group" aria-label="How I design for the person using it, in six slides">
         <article class="card slide">
           <p class="eyebrow">People <b>1 / 6</b></p>
           <div class="viz v-flow" aria-hidden="true">
@@ -411,9 +412,72 @@ footer { width: 100%; margin-top: 44px; padding-top: 16px; border-top: 1px solid
         </article>
       </div>
       <div class="deck-nav">
-        <button type="button" id="deck-prev" aria-label="Previous slide">←</button>
-        <div class="dots" id="deck-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <button type="button" id="deck-next" aria-label="Next slide">→</button>
+        <button type="button" class="prev" aria-label="Previous slide">←</button>
+        <div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <button type="button" class="next" aria-label="Next slide">→</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" id="zero" data-cam="zero" data-mode="built" data-cams="zero,zero,zero,zero,zero,zero,zero,zero2">
+    <div class="copy deck">
+      <div class="slides" tabindex="0" role="group" aria-label="From idea to running business, in eight slides">
+        <article class="card slide">
+          <p class="eyebrow">0 → 1 <b>1 / 8 · Idea</b></p>
+          <h2>People are already waiting.</h2>
+          <p>Bring the rough idea. It leaves as a scope, an estimate and a plan someone can say yes to.</p>
+          <ul class="chips"><li>Discovery</li><li>Scoping</li><li>Estimates</li></ul>
+        </article>
+        <article class="card slide">
+          <p class="eyebrow">0 → 1 <b>2 / 8 · Proof of concept</b></p>
+          <h2>One desk. One patient.</h2>
+          <p>The smallest thing that proves it works, on real data. Cheap to throw away if it doesn't.</p>
+          <ul class="chips"><li>Research</li><li>Prototypes</li><li>Feasibility</li></ul>
+        </article>
+        <article class="card slide">
+          <p class="eyebrow">0 → 1 <b>3 / 8 · MVP</b></p>
+          <h2>Build the whole floor.</h2>
+          <p>Design, frontend, backend, cloud. Everything works. Nothing is in the right place yet.</p>
+          <ul class="chips"><li>Product design</li><li>Full stack</li><li>Cloud</li></ul>
+        </article>
+        <article class="card slide">
+          <p class="eyebrow">0 → 1 <b>4 / 8 · Live</b></p>
+          <h2>Staff it. Keep it running.</h2>
+          <p>Things break and get fixed. Every room gets specified, secured and signed off.</p>
+          <ul class="chips"><li>Ops</li><li>Security</li><li>Policy and docs</li></ul>
+        </article>
+        <article class="card slide">
+          <p class="eyebrow">0 → 1 <b>5 / 8 · Reorganised</b></p>
+          <h2>Move the rooms.</h2>
+          <p>Watch how people really use it, then put things where they belong.</p>
+          <ul class="chips"><li>Business ops</li><li>Process design</li></ul>
+        </article>
+        <article class="card slide">
+          <p class="eyebrow">0 → 1 <b>6 / 8 · Tuned</b></p>
+          <h2>Shorten every walk.</h2>
+          <p>Second desk, shorter routes, less waiting. The same floor does more.</p>
+          <ul class="chips"><li>Logic optimisation</li><li>Performance</li><li>Cost</li></ul>
+        </article>
+        <article class="card slide">
+          <p class="eyebrow">0 → 1 <b>7 / 8 · Known</b></p>
+          <h2>Put up the sign.</h2>
+          <p>Writing, demos and talks from the person who built it. More people arrive, and the floor copes.</p>
+          <ul class="chips"><li>Technical marketing</li><li>Writing</li><li>Talks</li></ul>
+        </article>
+        <article class="card slide">
+          <p class="eyebrow">0 → 1 <b>8 / 8 · All of it</b></p>
+          <h2>One person. Every stage.</h2>
+          <p>No hand-offs between the idea and the invoice.</p>
+          <div class="row">
+            <a class="btn" href="mailto:hello@zafar.dev">Email me</a>
+            <a class="btn ghost" href="https://cal.com/zafar">Book a call</a>
+          </div>
+        </article>
+      </div>
+      <div class="deck-nav">
+        <button type="button" class="prev" aria-label="Previous slide">←</button>
+        <div class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <button type="button" class="next" aria-label="Next slide">→</button>
       </div>
     </div>
   </section>
@@ -504,14 +568,20 @@ footer { width: 100%; margin-top: 44px; padding-top: 16px; border-top: 1px solid
 })()
 </script>
 <script>
-// People deck: buttons, dots and arrow keys step the slides; each slide asks the scene for its own view
-(() => {
-  const box = document.getElementById('slides')
-  if (!box) return
-  const slides = [...box.children], dots = [...document.getElementById('deck-dots').children]
-  const prev = document.getElementById('deck-prev'), next = document.getElementById('deck-next')
-  const section = document.getElementById('people'), cams = ['people5', 'people', 'people2', 'people3', 'people4', 'people5']
-  let at = -1, timer
+// Decks: buttons, dots and arrow keys step the slides; each slide tells the scene which view or stage to show
+for (const deck of document.querySelectorAll('.deck')) {
+  const box = deck.querySelector('.slides'), slides = [...box.children], dots = [...deck.querySelector('.dots').children]
+  const prev = deck.querySelector('.prev'), next = deck.querySelector('.next')
+  const section = deck.closest('section'), cams = section.dataset.cams ? section.dataset.cams.split(',') : null
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches
+  let at = -1, timer, seen = false, held = false
+  const go = i => box.scrollTo({ left: slides[Math.max(0, Math.min(slides.length - 1, i))].offsetLeft - box.offsetLeft, behavior: 'smooth' })
+  // autoplay: move on once the slide has played, while the deck is on screen and nobody is holding it
+  const arm = () => {
+    clearTimeout(timer)
+    if (still || !seen || held) return
+    timer = setTimeout(() => go(at === slides.length - 1 ? 0 : at + 1), 6000)
+  }
   const show = i => {
     if (i === at) return
     at = i
@@ -519,23 +589,15 @@ footer { width: 100%; margin-top: 44px; padding-top: 16px; border-top: 1px solid
     dots.forEach((d, k) => d.classList.toggle('on', k === i))
     prev.disabled = i === 0
     next.disabled = i === slides.length - 1
-    section.dataset.cam = cams[i]
+    if (cams) section.dataset.cam = cams[i]
+    section.dataset.step = i
     dispatchEvent(new Event('scroll'))
     arm()
-  }
-  // autoplay: move on once the diagram has played, while the deck is on screen and nobody is holding it
-  const still = matchMedia('(prefers-reduced-motion: reduce)').matches
-  let seen = false, held = false
-  const arm = () => {
-    clearTimeout(timer)
-    if (still || !seen || held) return
-    timer = setTimeout(() => go(at === slides.length - 1 ? 0 : at + 1), 6000)
   }
   new IntersectionObserver(([e]) => {
     seen = e.isIntersecting
     arm()
   }, { threshold: .6 }).observe(section)
-  const deck = box.parentElement
   for (const [on, off] of [['pointerenter', 'pointerleave'], ['focusin', 'focusout']]) {
     deck.addEventListener(on, () => {
       held = true
@@ -546,7 +608,6 @@ footer { width: 100%; margin-top: 44px; padding-top: 16px; border-top: 1px solid
       arm()
     })
   }
-  const go = i => box.scrollTo({ left: slides[Math.max(0, Math.min(slides.length - 1, i))].offsetLeft - box.offsetLeft, behavior: 'smooth' })
   box.addEventListener('scroll', () => show(Math.round(box.scrollLeft / (slides[0].offsetWidth + 16))), { passive: true })
   prev.addEventListener('click', () => go(at - 1))
   next.addEventListener('click', () => go(at + 1))
@@ -557,7 +618,7 @@ footer { width: 100%; margin-top: 44px; padding-top: 16px; border-top: 1px solid
     e.preventDefault()
   })
   show(0)
-})()
+}
 </script>
 <script type="importmap">
 { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.min.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/" } }

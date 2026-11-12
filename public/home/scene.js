@@ -8,6 +8,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js'
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { buildBlock, stages, crane, traffic, lot, billboard, lift, ambulance, rnd } from './block.js'
+import { buildHospital } from './hospital.js'
 
 const root = document.documentElement
 const canvas = document.getElementById('block')
@@ -44,6 +45,8 @@ const CAM = {
   people3: [[-3, 5.5, 25], [-12, 1.2, 12.5]],
   people4: [[22, 4, 8], [2, 1.6, 1]],
   people5: [[32, 15, 38], [0, 3, 0]],
+  zero: [[1, 19, 29.5], [-10.75, 0, 9.9]],
+  zero2: [[4, 23.5, 34.5], [-10.75, 0, 9.9]],
   plan: [[0, 96, 2], [0, 0, 1.5]]
 }
 const TAGS = [
@@ -70,7 +73,12 @@ const NOTES = [
 const KEYS = ['nexco', 'axa', 'site', 'seekers', 'kokoromil', 'cars']
 const OPEN = { axa: .42, seekers: .4 }
 const WARM = new THREE.Color('#ffd08a')
-const NARROW = { xray: .58 }
+const NARROW = { xray: .58, zero: .54, zero2: .58 }
+// and some sit higher, clear of the card at the bottom
+const DROP = { zero: 1.5, zero2: 1.5 }
+// the clinic floor is long: portrait screens look down its length from the door end instead
+const TALL = { zero: [[14.5, 17.5, 13], [-11.5, 0, 10]] }
+TALL.zero2 = TALL.zero
 
 function start () {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' })
@@ -138,7 +146,19 @@ function start () {
 
   const mat4 = new THREE.Matrix4(), quat = new THREE.Quaternion(), scl = V(1, 1, 1), tmp = V()
   buildBlock(scene)
-  for (const c of traffic) if (c.fast) c.s.key = 'nexco'
+  for (const c of traffic) {
+    if (c.fast) c.s.key = 'nexco'
+    c.s.veh = true
+  }
+  stages[0].base = stages[1].base = true
+  // the 0-to-1 chapter flattens the block back to a plan and runs one clinic floor on it
+  const Z = { on: 0, step: 0 }
+  const zTarget = s => {
+    if (s === stages[0]) return .55
+    if (s.key === 'kokoromil' || s.veh || !(s.base || s.key)) return 0
+    return Z.step ? .3 : 0
+  }
+  for (const s of stages) s.z = 1
 
   // people: one instanced mesh, coloured only once the block is about people
   const body = mergeGeometries([new THREE.CapsuleGeometry(.11, .34, 3, 8).translate(0, .28, 0), new THREE.SphereGeometry(.1, 10, 8).translate(0, .68, 0)])
@@ -191,6 +211,7 @@ function start () {
   cast.castShadow = true
   actors.forEach((a, i) => cast.setColorAt(i, tmpC.set(a.c)))
   scene.add(cast)
+  const hospital = buildHospital(scene, body, rnd)
   // things that only read while the block is solid: monitor lights, welding sparks, the ambulance beacon
   const liveMats = []
   const live = m => {
@@ -438,6 +459,14 @@ function start () {
   const hudLog = document.getElementById('hud-log'), hudN = document.getElementById('hud-n')
   const LOG = ['threat-model: trust boundaries mapped', 'authz: IDOR on order lookup, fixed', 'deps: advisories open 3 → 0', 'waf: sqli probe dropped', 'session: token replay blocked', 'ble: pairing downgrade refused', 'secrets: none in repo history', 'cve: advisory → patch → verified', 'rate-limit: credential stuffing throttled', 'csp: inline script blocked', 'audit: PII fields masked', 'tls: weak cipher refused', 'upload: content type spoof rejected', 'ssrf: metadata endpoint unreachable', 'backup: restore drill passed']
   let logAt = 0, logI = 0
+  // the clinic's two counters: who is still waiting at the door, and who has been seen
+  const counters = ['Waiting', 'Seen'].map(name => {
+    const el = document.createElement('div')
+    el.className = 'tag note'
+    el.innerHTML = `<span>${name} <b>0</b></span><i></i>`
+    tagBox.append(el)
+    return { el, n: el.querySelector('b'), v: -1 }
+  })
   const alertEl = document.createElement('div')
   alertEl.className = 'tag alert'
   alertEl.innerHTML = '<span></span><i></i>'
@@ -473,7 +502,7 @@ function start () {
   const T = { x: 0, warm: 0, draft: 0, focus: 0 }
   // how far each project is opened up; only the one the camera is on
   const F = Object.fromEntries(KEYS.map(k => [k, 0]))
-  let buildStart = performance.now(), camKey = 'hero', covered = false
+  let buildStart = performance.now(), camKey = 'hero', covered = false, over = false, inZero = false
   const BUILD_MS = 9000
   const sections = [...document.querySelectorAll('[data-cam]')]
   const solid = document.querySelector('.solid')
@@ -484,8 +513,11 @@ function start () {
     if (solid) {
       const r = solid.getBoundingClientRect()
       covered = r.top <= 0 && r.bottom >= H
+      // labels live above the page: clip them where the solid sections cover the scene
+      tagBox.style.clipPath = r.top >= H || r.bottom <= 0 ? '' : r.top > 0 ? `inset(0 0 ${(H - r.top).toFixed(0)}px 0)` : `inset(${Math.min(H, r.bottom).toFixed(0)}px 0 0 0)`
       if (r.top < H * .5 && r.bottom > H * .5) s = null
     }
+    over = !s
     if (!s) {
       root.dataset.mode = 'built'
       return
@@ -497,6 +529,8 @@ function start () {
     T.warm = mode === 'people' ? 1 : 0
     T.draft = mode === 'draft' ? 1 : 0
     T.focus = camKey === 'nexco' ? 1 : 0
+    inZero = s.id === 'zero'
+    Z.step = inZero ? +s.dataset.step || 0 : 5
   }
   addEventListener('scroll', readScroll, { passive: true })
   readScroll()
@@ -515,7 +549,7 @@ function start () {
 
   const pos = V(...CAM.hero[0]), at = V(...CAM.hero[1]), tp = V(), ta = V(), UP = V(0, 1, 0)
   const bg = col(0), ink = col(0), soft = col(0), tc = col(0)
-  let last = performance.now(), zoom = 1
+  let last = performance.now(), zoom = 1, drop = 0
 
   function frame (now) {
     requestAnimationFrame(frame)
@@ -550,7 +584,10 @@ function start () {
     sun.position.set(mix(-24, -34, Wm), mix(38, 16, Wm), mix(20, 12, Wm))
     hemi.intensity = mix(mix(1.05, .34, N), mix(.8, .4, N), Wm) * (1 - X * .7)
     shadowMat.opacity = mix(.2, .3, Math.max(N, Wm)) * (1 - X) * (1 - D)
-    const glow = Math.max(N * .62, Wm * mix(.7, .95, N)) * (1 - X)
+    Z.on += ((inZero ? 1 : 0) - Z.on) * k
+    const zo = Z.on
+    const clinic = hospital({ on: zo, step: Z.step, k, t, dt, night: N, ink, soft })
+    const glow = Math.max(N * .62, Wm * mix(.7, .95, N)) * (1 - X) * (1 - zo)
     bloom.strength = X * .32 + N * .18 * (1 - X) + Wm * .1
     for (const g of grids) {
       g.material.color.copy(ink).lerp(PAL.teal, X)
@@ -559,7 +596,8 @@ function start () {
     titleMat.color.copy(ink).lerp(PAL.teal, X)
 
     for (const s of stages) {
-      const l = clamp((S.build * 1.1 - s.at) / s.dur)
+      s.z += (zTarget(s) - s.z) * k * .8
+      const l = mix(clamp((S.build * 1.1 - s.at) / s.dur), s.z, zo)
       s.root.visible = l > 0
       if (l <= 0) continue
       const f = clamp(l / .35), e = easeOut(clamp((l - .3) / .4)), c = clamp((l - .7) / .3) * (1 - D)
@@ -626,10 +664,10 @@ function start () {
         c.ghost.visible = Math.abs(c.ghost.position.x) < 20
       }
     }
-    ghostMat.opacity = Math.max(X, S.focus * .9) * done
+    ghostMat.opacity = Math.max(X, S.focus * .9) * done * (1 - zo)
     ghostMat.color.copy(ink).lerp(PAL.teal, X)
 
-    const pl = clamp((S.build * 1.1 - .9) / .14), pc = ease(clamp((pl - .2) / .8)) * (1 - D)
+    const pl = clamp((S.build * 1.1 - .9) / .14), pc = ease(clamp((pl - .2) / .8)) * (1 - D) * (1 - zo)
     people.visible = pc > .01
     if (people.visible) {
       const tone = Math.round(Math.max(Wm, .22) * 40)
@@ -821,7 +859,7 @@ function start () {
     }
 
     // camera
-    const stop = CAM[camKey] || CAM.hero
+    const stop = (camera.aspect < 1 && TALL[camKey]) || CAM[camKey] || CAM.hero
     const ck = reduced ? 1 : 1 - Math.exp(-dt * 2.1)
     pos.lerp(tp.set(...stop[0]), ck)
     at.lerp(ta.set(...stop[1]), ck)
@@ -830,18 +868,20 @@ function start () {
     const sway = reduced ? 0 : Math.sin(t * .11) * .09 + mouse.sx * .14 - (1 - ease(clamp(S.build * 1.15))) * .5
     // portrait screens pull the camera back to fit the block; some stops read better closer in
     zoom += ((camera.aspect < 1 ? NARROW[camKey] || 1 : 1) - zoom) * ck
+    drop += ((camera.aspect < 1 ? DROP[camKey] || 0 : 0) - drop) * ck
     const far = Math.max(1, 1.5 / camera.aspect) * zoom
     scene.fog.near = 95 * far
     scene.fog.far = 210 * far
     tmp.copy(pos).sub(at).multiplyScalar(far).applyAxisAngle(UP, sway)
     camera.position.copy(at).add(tmp)
     camera.position.y += mouse.sy * -2.5 * (1 - D)
-    camera.lookAt(at)
+    camera.position.y -= drop
+    camera.lookAt(tmp.copy(at).setY(at.y - drop))
     camera.updateMatrixWorld()
 
     const hero = camKey === 'hero'
     for (const g of tags) {
-      const on = hero && S.build * 1.1 >= g.stage + .2
+      const on = (hero && S.build * 1.1 >= g.stage + .2)
       g.el.classList.toggle('on', on)
       if (!on) continue
       tmp.copy(g.pos).project(camera)
@@ -854,6 +894,15 @@ function start () {
       tmp.copy(g.pos).project(camera)
       g.el.style.transform = `translate(${((tmp.x * .5 + .5) * W).toFixed(1)}px, ${((-tmp.y * .5 + .5) * H).toFixed(1)}px) translate(-50%, -100%)`
     }
+    counters.forEach((g, i) => {
+      const on = !over && inZero && zo > .6 && (i === 0 || Z.step > 0)
+      g.el.classList.toggle('on', on)
+      if (!on) return
+      const v = i ? clinic.treated : clinic.wait
+      if (v !== g.v) g.n.textContent = g.v = v
+      tmp.copy(i ? clinic.pOut : clinic.pWait).project(camera)
+      g.el.style.transform = `translate(${((tmp.x * .5 + .5) * W).toFixed(1)}px, ${((-tmp.y * .5 + .5) * H).toFixed(1)}px) translate(-50%, -100%)`
+    })
     const alertOn = camKey === 'xray' && X > .6 && done > .5
     alertEl.classList.toggle('on', alertOn)
     if (alertOn) {
