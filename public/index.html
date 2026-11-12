@@ -143,6 +143,19 @@ p { margin: 0 0 18px; color: var(--ink-soft); transition: color .7s; }
 .slide:not(.on) .viz * { animation-play-state: paused !important; }
 @keyframes v-in { from { opacity: 0; transform: translateY(4px); } }
 @keyframes v-leave { to { opacity: .14; transform: translateY(10px) scale(.8); } }
+.v-flow { flex-direction: column; justify-content: center; gap: 26px; }
+.tr { display: grid; grid-template-columns: 7.5em 1fr 4.6em; align-items: center; gap: 10px; }
+.tr .rail { position: relative; height: 14px; border-bottom: 1px solid var(--ink-soft); }
+.tr.rough .rail { background: repeating-linear-gradient(90deg, transparent 0 22px, var(--ink-soft) 22px 24px); }
+.tr i { position: absolute; left: 0; bottom: 3px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent); }
+.tr b { font-weight: 500; text-transform: uppercase; color: var(--ok); opacity: 0; }
+.tr.rough b { color: var(--hanko); }
+@keyframes v-glide { to { left: calc(100% - 12px); } }
+@keyframes v-stall { 18%, 34% { left: 12%; } 50%, 68% { left: 27%; } 84% { left: 41%; background: var(--accent); } 100% { left: 41%; background: var(--hanko); } }
+.on .tr i { animation: v-glide 1.5s .5s cubic-bezier(.4, 0, .2, 1) forwards; }
+.on .tr.rough i { animation: v-stall 3s .5s ease-in-out forwards; }
+.on .tr b { animation: v-show .4s 2.1s forwards; }
+.on .tr.rough b { animation-delay: 3.6s; }
 .v-drop ul { flex: 0 0 46%; display: grid; gap: 4px; align-content: start; }
 .v-drop li { height: 19px; padding: 0 8px; line-height: 17px; border: 1px solid var(--rule); border-radius: 3px; }
 .v-drop .crowd { flex: 1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px 6px; align-content: center; justify-items: center; }
@@ -341,9 +354,18 @@ footer { width: 100%; margin-top: 44px; padding-top: 16px; border-top: 1px solid
 
   <section class="ch" id="people" data-cam="people" data-mode="people">
     <div class="copy deck">
-      <div class="slides" id="slides" tabindex="0" role="group" aria-label="How I design for the person using it, in five slides">
+      <div class="slides" id="slides" tabindex="0" role="group" aria-label="How I design for the person using it, in six slides">
         <article class="card slide">
-          <p class="eyebrow">People <b>1 / 5</b></p>
+          <p class="eyebrow">People <b>1 / 6</b></p>
+          <div class="viz v-flow" aria-hidden="true">
+            <div class="tr rough"><small>With friction</small><span class="rail"><i></i></span><b>gave up</b></div>
+            <div class="tr"><small>Without</small><span class="rail"><i></i></span><b>done</b></div>
+          </div>
+          <h2>If it's hard to use, it isn't finished.</h2>
+          <p>Nobody sees the architecture. They feel every wait and every extra tap. So the friction gets engineered out first.</p>
+        </article>
+        <article class="card slide">
+          <p class="eyebrow">People <b>2 / 6</b></p>
           <div class="viz v-drop" aria-hidden="true">
             <ul><li style="--d:0">Name</li><li style="--d:1">Email</li><li style="--d:2">Phone</li><li style="--d:3">Address</li><li style="--d:4">Company</li><li style="--d:5">Job title</li></ul>
             <div class="crowd"><i style="--d:5"></i><i style="--d:3"></i><i></i><i style="--d:1"></i><i style="--d:4"></i><i style="--d:2"></i><i style="--d:5"></i><i></i><i style="--d:0"></i><i style="--d:3"></i><i style="--d:1"></i><i style="--d:4"></i><i style="--d:2"></i><i style="--d:0"></i><i style="--d:4"></i></div>
@@ -352,7 +374,7 @@ footer { width: 100%; margin-top: 44px; padding-top: 16px; border-top: 1px solid
           <p>A long form doesn't collect more data. It collects fewer people.</p>
         </article>
         <article class="card slide">
-          <p class="eyebrow">People <b>2 / 5</b></p>
+          <p class="eyebrow">People <b>3 / 6</b></p>
           <div class="viz v-ask" aria-hidden="true">
             <div class="form"><small>Book a call</small><span data-l="Name"></span><span class="gone"></span><span class="gone"></span><span data-l="Time"></span><span class="gone"></span><span class="gone"></span><span class="gone"></span><b></b></div>
           </div>
@@ -360,7 +382,7 @@ footer { width: 100%; margin-top: 44px; padding-top: 16px; border-top: 1px solid
           <p>Booking a call takes a name and a time. Everything else waits until it matters.</p>
         </article>
         <article class="card slide">
-          <p class="eyebrow">People <b>3 / 5</b></p>
+          <p class="eyebrow">People <b>4 / 6</b></p>
           <div class="viz v-fill" aria-hidden="true">
             <div class="fr"><small>Postcode</small><span class="typed"><em>150-0001</em></span></div>
             <div class="fr"><small>Prefecture</small><span class="auto" style="--d:0"><em>Tokyo</em></span></div>
@@ -371,7 +393,7 @@ footer { width: 100%; margin-top: 44px; padding-top: 16px; border-top: 1px solid
           <p>A postcode knows the address. A login knows the name. Typing is the last resort.</p>
         </article>
         <article class="card slide">
-          <p class="eyebrow">People <b>4 / 5</b></p>
+          <p class="eyebrow">People <b>5 / 6</b></p>
           <div class="viz v-skip" aria-hidden="true">
             <ol><li>Start</li><li class="cut">Verify</li><li class="cut">Profile</li><li class="cut">Confirm</li><li>Done</li></ol>
             <small><span class="was">5 steps</span><span class="now">2 steps</span></small>
@@ -380,7 +402,7 @@ footer { width: 100%; margin-top: 44px; padding-top: 16px; border-top: 1px solid
           <p>The fastest screen is the one that isn't there. Whole flows get rewritten for this.</p>
         </article>
         <article class="card slide">
-          <p class="eyebrow">People <b>5 / 5</b></p>
+          <p class="eyebrow">People <b>6 / 6</b></p>
           <div class="viz v-keep" aria-hidden="true">
             <ul><li>Core features</li><li class="k">Autofill and defaults</li><li class="k">Skipped steps</li><li class="k">Empty and error states</li></ul>
           </div>
@@ -390,7 +412,7 @@ footer { width: 100%; margin-top: 44px; padding-top: 16px; border-top: 1px solid
       </div>
       <div class="deck-nav">
         <button type="button" id="deck-prev" aria-label="Previous slide">←</button>
-        <div class="dots" id="deck-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="dots" id="deck-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <button type="button" id="deck-next" aria-label="Next slide">→</button>
       </div>
     </div>
@@ -488,7 +510,7 @@ footer { width: 100%; margin-top: 44px; padding-top: 16px; border-top: 1px solid
   if (!box) return
   const slides = [...box.children], dots = [...document.getElementById('deck-dots').children]
   const prev = document.getElementById('deck-prev'), next = document.getElementById('deck-next')
-  const section = document.getElementById('people'), cams = ['people', 'people2', 'people3', 'people4', 'people5']
+  const section = document.getElementById('people'), cams = ['people5', 'people', 'people2', 'people3', 'people4', 'people5']
   let at = -1, timer
   const show = i => {
     if (i === at) return

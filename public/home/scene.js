@@ -70,6 +70,7 @@ const NOTES = [
 const KEYS = ['nexco', 'axa', 'site', 'seekers', 'kokoromil', 'cars']
 const OPEN = { axa: .42, seekers: .4 }
 const WARM = new THREE.Color('#ffd08a')
+const NARROW = { xray: .58 }
 
 function start () {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' })
@@ -514,7 +515,7 @@ function start () {
 
   const pos = V(...CAM.hero[0]), at = V(...CAM.hero[1]), tp = V(), ta = V(), UP = V(0, 1, 0)
   const bg = col(0), ink = col(0), soft = col(0), tc = col(0)
-  let last = performance.now()
+  let last = performance.now(), zoom = 1
 
   function frame (now) {
     requestAnimationFrame(frame)
@@ -827,7 +828,9 @@ function start () {
     mouse.sx += (mouse.x - mouse.sx) * k
     mouse.sy += (mouse.y - mouse.sy) * k
     const sway = reduced ? 0 : Math.sin(t * .11) * .09 + mouse.sx * .14 - (1 - ease(clamp(S.build * 1.15))) * .5
-    const far = Math.max(1, 1.5 / camera.aspect)
+    // portrait screens pull the camera back to fit the block; some stops read better closer in
+    zoom += ((camera.aspect < 1 ? NARROW[camKey] || 1 : 1) - zoom) * ck
+    const far = Math.max(1, 1.5 / camera.aspect) * zoom
     scene.fog.near = 95 * far
     scene.fog.far = 210 * far
     tmp.copy(pos).sub(at).multiplyScalar(far).applyAxisAngle(UP, sway)
