@@ -8,26 +8,15 @@ const SITE = 'https://zafar.dev'
 const RESUME = 'https://docs.google.com/document/d/e/2PACX-1vTqFnfyHNvn48h_-v__nIAxO77b1cJLzTVT_O5cpRvjzDlYLy6bwhQZcagAiF5dXc21eblTIPVgJy6y/pub'
 const MEETING = 'https://cal.com/zafar'
 const DEFAULT_OG = `${SITE}/home/profile.jpg`
-const FONTS = 'https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Shantell+Sans:wght@400;600&family=Atkinson+Hyperlegible+Next:wght@400;700&family=JetBrains+Mono:wght@400;500;600&display=swap'
+const FONTS = 'https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wdth,wght@0,75..100,400..700&family=Atkinson+Hyperlegible+Next:wght@400;700&family=JetBrains+Mono:wght@400;500;600&display=swap'
 
 // Runs in <head> before first paint so a theme picked on another page sticks (shared with public/index.html).
 const THEME_BOOT = `try{var t=localStorage.getItem('theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}`
-
-// The homepage hero is a live sky over Tokyo. The blog keeps a thin strip of the same sky,
-// coloured by the current Tokyo hour, so the two pages flow into each other.
-const SKY = `(()=>{const P=[[0,'#070d26','#1b2350',1],[4.5,'#101a45','#3a3f74',.9],[5.6,'#34407e','#f2a58e',.55],[7,'#78c1ee','#e6f5ff',0],[15,'#5fb2e6','#d4eeff',0],[17,'#ea7f5a','#ffd79c',.2],[18.6,'#3a2d6b','#e1768c',.65],[20,'#0c1434','#2a3264',1],[24,'#070d26','#1b2350',1]];
-const rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)),mix=(a,b,t)=>'rgb('+rgb(a).map((v,i)=>Math.round(v+(rgb(b)[i]-v)*t)).join(',')+')';
-const p=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Tokyo',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
-const h=+p.find(x=>x.type==='hour').value+p.find(x=>x.type==='minute').value/60;let i=0;while(P[i+1][0]<=h)i++;
-const a=P[i],b=P[i+1],t=(h-a[0])/(b[0]-a[0]),m=document.getElementById('top');
-m.style.setProperty('--sky-top',mix(a[1],b[1],t));m.style.setProperty('--sky-bot',mix(a[2],b[2],t));m.classList.toggle('is-night',a[3]+(b[3]-a[3])*t>.5)})()`
 
 const LAMP_JS = `(()=>{const l=document.getElementById('lamp'),r=document.documentElement;
 const dark=()=>r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
 const sync=()=>l.setAttribute('aria-pressed',String(dark()));
 l.addEventListener('click',()=>{r.dataset.theme=dark()?'light':'dark';try{localStorage.setItem('theme',r.dataset.theme)}catch(e){}sync()});sync()})()`
-
-const SIGNATURE = '<svg viewBox="0 0 110 34" role="img" aria-label="Zafar\'s signature"><path d="M4 8 h20 l-18 18 h22 M34 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M50 26 c3 -8 5 -17 9 -18 c2 0 -2 8 -6 9 h8 M62 24 c-5 -6 5 -11 6 -3 c1 3 2 5 4 3 M76 26 c2 -6 3 -8 8 -8 M86 22 c8 2 14 -1 20 -8"/></svg>'
 
 function head({ lang, title, description, canonical, image, type = 'website', alternates = [], published, css }) {
   const alt = alternates.map(a => `<link rel="alternate" hreflang="${a.lang}" href="${SITE}${a.path}">`).join('\n')
@@ -56,21 +45,18 @@ ${published ? `<meta property="article:published_time" content="${published}">\n
 }
 
 function masthead(s, blogPath, isIndex) {
-  return `<div class="masthead" id="top">
-  <div class="sky" aria-hidden="true"></div>
-  <header class="top">
-    <a class="sig" href="${s.home}">zafar<span class="cur">_</span></a>
-    <nav class="top-r">
-      <a href="${RESUME}" target="_blank" rel="noopener">${s.resume}</a>
-      <a href="${blogPath}"${isIndex ? ' aria-current="page"' : ''}>${s.blog}</a>
-      <a href="/#hello">${s.sayHi}</a>
-      <button class="lamp" id="lamp" type="button" aria-label="${s.lamp}" aria-pressed="false">
-        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 a5.5 5.5 0 0 1 3 10 v2 h-6 v-2 a5.5 5.5 0 0 1 3 -10 z M8 17 h4"/></svg>
-      </button>
-    </nav>
-  </header>
-</div>
-<script>${SKY}</script>`
+  return `<div class="sheet" aria-hidden="true"></div>
+<header class="top">
+  <a class="sig" href="${s.home}">zafar<span class="cur">_</span></a>
+  <nav class="top-r">
+    <a class="wide" href="${RESUME}" target="_blank" rel="noopener">${s.resume}</a>
+    <a href="${blogPath}"${isIndex ? ' aria-current="page"' : ''}>${s.blog}</a>
+    <a href="/#hello">${s.sayHi}</a>
+    <button class="lamp" id="lamp" type="button" aria-label="${s.lamp}" aria-pressed="false">
+      <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 a5.5 5.5 0 0 1 3 10 v2 h-6 v-2 a5.5 5.5 0 0 1 3 -10 z M8 17 h4"/></svg>
+    </button>
+  </nav>
+</header>`
 }
 
 function hello(s) {
@@ -85,7 +71,6 @@ function footer(s, langLinks) {
   return `<footer>
     <span>${s.footer}</span>
     ${langLinks ? `<span class="langs">${langLinks}</span>` : ''}
-    ${SIGNATURE}
   </footer>`
 }
 
@@ -121,7 +106,6 @@ export function indexPage({ lang, s, posts, blogPath, css, alternates }) {
 
   const featured = latest
     ? `<a class="featured${latest.image ? '' : ' no-img'}" href="${latest.path}">
-    <span class="tape"></span>
     ${latest.image ? `<span class="f-img"><img src="${esc(latest.image)}" alt="${esc(latest.imageAlt)}"></span>` : ''}
     <span class="f-body">
       <span class="label">${s.latest} · <time datetime="${latest.date}">${latest.dateLong}</time></span>
@@ -195,7 +179,6 @@ export function postPage({ lang, s, post, newer, older, blogPath, css, alternate
     </header>
     ${post.image
       ? `<figure class="cover">
-      <span class="tape"></span>
       <img src="${esc(post.image)}" alt="${esc(post.imageAlt)}">
     </figure>`
       : ''}
